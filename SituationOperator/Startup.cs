@@ -13,11 +13,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Prometheus;
 
 namespace SituationOperator
 {
     public class Startup
     {
+        /// <summary>
+        /// Port to scrape metrics from at `/metrics`
+        /// </summary>
+        public const int METRICS_PORT = 9913;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -104,6 +110,9 @@ namespace SituationOperator
             });
             #endregion
 
+            #region Prometheus
+            app.UseMetricServer(METRICS_PORT);
+            #endregion
         }
 
         /// <summary>
