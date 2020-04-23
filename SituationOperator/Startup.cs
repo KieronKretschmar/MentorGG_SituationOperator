@@ -129,6 +129,11 @@ namespace SituationOperator
                 options.EnableAnnotations();
             });
             #endregion
+
+            #region Rabbit
+            // Read environment variables
+            var AMQP_URI = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_URI");
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

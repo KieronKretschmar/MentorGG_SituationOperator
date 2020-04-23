@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\matchdb\Database\Database.csproj" />
     <ProjectReference Include="..\SituationDatabase\SituationDatabase.csproj" />
+    <ProjectReference Include="..\RabbitCommunicationLib\RabbitCommunicationLib.csproj" />
   </ItemGroup>
 
 
