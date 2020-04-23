@@ -6,12 +6,18 @@ WORKDIR /app
 
 # Copy csproj and restore as distinct layers
 
+WORKDIR /app/Database
+COPY ./Database/*.csproj ./
+RUN dotnet restore
+
 WORKDIR /app/SituationOperator
 COPY ./SituationOperator/*.csproj ./
 RUN dotnet restore
 
+
 # Copy everything else and build
 WORKDIR /app
+COPY ./Database ./Database
 COPY ./SituationOperator/ ./SituationOperator
 
 RUN dotnet publish SituationOperator/ -c Release -o out
