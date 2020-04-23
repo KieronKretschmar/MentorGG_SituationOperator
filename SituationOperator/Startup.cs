@@ -17,6 +17,7 @@ using Prometheus;
 using SituationOperator.Helpers;
 using SituationDatabase;
 using Microsoft.EntityFrameworkCore;
+using Database;
 
 namespace SituationOperator
 {
@@ -91,6 +92,26 @@ namespace SituationOperator
             {
                 Console.WriteLine("WARNING: IS_MIGRATING is true. This should not happen in production.");
                 return;
+            }
+            #endregion
+
+            #region Match Database
+            var MATCH_DB_MYSQL_CONNECTION_STRING = GetOptionalEnvironmentVariable<string>(Configuration, "MATCH_DB_MYSQL_CONNECTION_STRING", null);
+            // if a connectionString is set use mysql, else use InMemory
+            if (MATCH_DB_MYSQL_CONNECTION_STRING != null)
+            {
+                // Add context as Transient instead of Scoped, as Scoped lead to DI error and does not have advantages under non-http conditions
+                services.AddDbContext<MatchContext>(o => { o.UseMySql(MATCH_DB_MYSQL_CONNECTION_STRING); }, ServiceLifetime.Transient, ServiceLifetime.Transient);
+            }
+            else
+            {
+                Console.WriteLine("WARNING: Using InMemoryDatabase!");
+
+                services.AddEntityFrameworkInMemoryDatabase()
+                    .AddDbContext<MatchContext>((sp, options) =>
+                    {
+                        options.UseInMemoryDatabase(databaseName: "MyInMemoryDatabase").UseInternalServiceProvider(sp);
+                    }, ServiceLifetime.Transient, ServiceLifetime.Transient);
             }
             #endregion
 

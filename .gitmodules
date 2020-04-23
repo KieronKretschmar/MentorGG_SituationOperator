@@ -1,0 +1,3 @@
+[submodule "matchdb"]
+	path = matchdb
+	url = git@gitlab.com:mentorgg/csgo/matchdb.git
