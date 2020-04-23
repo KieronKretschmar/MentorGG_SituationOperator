@@ -30,6 +30,8 @@ namespace SituationOperator
         {
             services.AddControllers();
 
+            services.AddApiVersioning();
+
             #region Logging
             services.AddLogging(o =>
             {
