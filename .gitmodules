@@ -4,3 +4,6 @@
 [submodule "matchdb"]
 	path = matchdb
 	url = git@gitlab.com:mentorgg/csgo/matchdb.git
+[submodule "zonereader"]
+	path = zonereader
+	url = git@gitlab.com:mentorgg/csgo/zonereader.git
