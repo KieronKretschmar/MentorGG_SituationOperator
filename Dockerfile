@@ -14,11 +14,15 @@ WORKDIR /app/SituationOperator
 COPY ./SituationOperator/*.csproj ./
 RUN dotnet restore
 
+WORKDIR /app/ZoneReader/ZoneReader
+COPY ./ZoneReader/ZoneReader/*.csproj ./
+RUN dotnet restore
 
 # Copy everything else and build
 WORKDIR /app
 COPY ./Database ./Database
 COPY ./SituationOperator/ ./SituationOperator
+COPY ./ZoneReader/ZoneReader ./ZoneReader/ZoneReader
 
 RUN dotnet publish SituationOperator/ -c Release -o out
 
@@ -28,6 +32,14 @@ RUN dotnet publish SituationOperator/ -c Release -o out
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS runtime
 WORKDIR /app
 
+# Runtime resources
+WORKDIR /app/data
+COPY ./ZoneReader/ZoneReader/resources ./ZoneData
+
 COPY --from=build /app/out .
 ENTRYPOINT ["dotnet", "SituationOperator.dll"]
 
+# ===============
+# SET ENVIRONMENT VARIABLES
+# ===============
+ENV ZONEREADER_RESOURCE_PATH /app/data/ZoneData

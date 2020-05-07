@@ -22,6 +22,7 @@ using RabbitCommunicationLib.Queues;
 using RabbitCommunicationLib.Interfaces;
 using RabbitCommunicationLib.TransferModels;
 using RabbitCommunicationLib.Producer;
+using ZoneReader;
 
 namespace SituationOperator
 {
@@ -159,6 +160,14 @@ namespace SituationOperator
             services.AddTransient<IProducer<SituationOperatorResponseModel>>(sp =>
             {
                 return new Producer<SituationOperatorResponseModel>(callbackQueue);
+            });
+            #endregion
+
+            #region ZoneReader
+            var ZONEREADER_RESOURCE_PATH = GetRequiredEnvironmentVariable<string>(Configuration, "ZONEREADER_RESOURCE_PATH");
+            services.AddSingleton<IZoneReader, FileReader>(services =>
+            {
+                return new FileReader(services.GetService<ILogger<FileReader>>(), ZONEREADER_RESOURCE_PATH);
             });
             #endregion
 
