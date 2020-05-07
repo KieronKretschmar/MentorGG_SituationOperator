@@ -134,6 +134,10 @@ namespace SituationOperator
             // Read environment variables
             var AMQP_URI = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_URI");
             #endregion
+
+            #region Other worker services
+            services.AddTransient<IMessageProcessor, MessageProcessor>();
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
