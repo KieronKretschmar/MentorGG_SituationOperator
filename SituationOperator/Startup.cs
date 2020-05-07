@@ -23,6 +23,7 @@ using RabbitCommunicationLib.Interfaces;
 using RabbitCommunicationLib.TransferModels;
 using RabbitCommunicationLib.Producer;
 using ZoneReader;
+using EquipmentLib;
 
 namespace SituationOperator
 {
@@ -168,6 +169,18 @@ namespace SituationOperator
             services.AddSingleton<IZoneReader, FileReader>(services =>
             {
                 return new FileReader(services.GetService<ILogger<FileReader>>(), ZONEREADER_RESOURCE_PATH);
+            });
+            #endregion
+
+            #region EquipmentLib
+            var EQUIPMENT_CSV_DIRECTORY = GetRequiredEnvironmentVariable<string>(Configuration, "EQUIPMENT_CSV_DIRECTORY");
+            var EQUIPMENT_ENDPOINT = GetOptionalEnvironmentVariable<string>(Configuration, "EQUIPMENT_ENDPOINT", null);
+            services.AddSingleton<IEquipmentProvider, EquipmentProvider>(x =>
+            {
+                return new EquipmentProvider(
+                    x.GetService<ILogger<EquipmentProvider>>(),
+                    EQUIPMENT_CSV_DIRECTORY,
+                    EQUIPMENT_ENDPOINT);
             });
             #endregion
 

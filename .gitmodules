@@ -7,3 +7,6 @@
 [submodule "zonereader"]
 	path = zonereader
 	url = git@gitlab.com:mentorgg/csgo/zonereader.git
+[submodule "EquipmentLib"]
+	path = EquipmentLib
+	url = git@gitlab.com:mentorgg/csgo/EquipmentLib.git

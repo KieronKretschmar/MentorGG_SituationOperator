@@ -10,6 +10,7 @@ Accesses a MatchDb to compute, store and serve Situations.
 - `AMQP_EXCHANGE_NAME` : Rabbits exchange name for finding MatchData-Fanout [*]
 - `AMQP_EXCHANGE_CONSUME_QUEUE` : Rabbit queue's name for consuming messages from MatchData-Fanout 
 - `ZONEREADER_RESOURCE_PATH` : Path to directory containing ZoneReader's resources.
+- `EQUIPMENT_CSV_DIRECTORY` : Path to directory containing EquipmentLib's .csv resources.
 
 [\*] *Required*
 

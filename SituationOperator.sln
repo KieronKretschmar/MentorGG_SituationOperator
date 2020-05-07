@@ -24,6 +24,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatchEntities", "matchdb\Ma
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZoneReader", "zonereader\ZoneReader\ZoneReader.csproj", "{D8822C75-6D4C-4F3C-BD1B-6EEF0760BD72}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EquipmentLib", "EquipmentLib\EquipmentLib\EquipmentLib.csproj", "{19495419-91F4-4D93-A798-E490348B8C62}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +56,10 @@ Global
 		{D8822C75-6D4C-4F3C-BD1B-6EEF0760BD72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8822C75-6D4C-4F3C-BD1B-6EEF0760BD72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8822C75-6D4C-4F3C-BD1B-6EEF0760BD72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19495419-91F4-4D93-A798-E490348B8C62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19495419-91F4-4D93-A798-E490348B8C62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19495419-91F4-4D93-A798-E490348B8C62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19495419-91F4-4D93-A798-E490348B8C62}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
