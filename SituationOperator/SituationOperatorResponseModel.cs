@@ -8,6 +8,14 @@ namespace SituationOperator
 {
     public class SituationOperatorResponseModel : TransferModel
     {
+        /// <summary>
+        /// Id of the Match which was attempted to be analyzed by SituationOperator.
+        /// </summary>
+        public long MatchId { get; set; }
+
+        /// <summary>
+        /// The outcome of the attemped analysis.
+        /// </summary>
         public SituationOperatorResult Status { get; set; }
     }
 }

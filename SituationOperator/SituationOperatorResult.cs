@@ -17,7 +17,6 @@ namespace SituationOperator
         RedisKeyExpiredError = 401,
 
         UnknownError = 500,
-        RedisUnavailableError = 501,
-        UploadToDatabaseError = 502,
+        RedisError = 510,
     }
 }
