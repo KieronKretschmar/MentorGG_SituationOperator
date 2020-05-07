@@ -8,5 +8,6 @@ namespace SituationOperator
 {
     public class SituationOperatorResponseModel : TransferModel
     {
+        public SituationOperatorResult Status { get; set; }
     }
 }
