@@ -18,11 +18,17 @@ using SituationOperator.Helpers;
 using SituationDatabase;
 using Microsoft.EntityFrameworkCore;
 using Database;
+using RabbitCommunicationLib.Queues;
+using RabbitCommunicationLib.Interfaces;
+using RabbitCommunicationLib.TransferModels;
+using RabbitCommunicationLib.Producer;
 
 namespace SituationOperator
 {
     public class Startup
     {
+        private const ushort AMQP_PREFETCH_COUNT_DEFAULT = 0;
+
         /// <summary>
         /// Port to scrape metrics from at `/metrics`
         /// </summary>
@@ -133,6 +139,27 @@ namespace SituationOperator
             #region Rabbit
             // Read environment variables
             var AMQP_URI = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_URI");
+
+            // Consumer for instructions from Fanout / DemoCentral
+            var AMQP_EXCHANGE_NAME = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_EXCHANGE_NAME");
+            var AMQP_PREFETCH_COUNT = GetOptionalEnvironmentVariable<ushort>(Configuration, "AMQP_PREFETCH_COUNT", AMQP_PREFETCH_COUNT_DEFAULT);
+            var AMQP_EXCHANGE_CONSUME_QUEUE = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_EXCHANGE_CONSUME_QUEUE");
+            var exchangeQueue = new ExchangeQueueConnection(AMQP_URI, AMQP_EXCHANGE_NAME, AMQP_EXCHANGE_CONSUME_QUEUE);
+            services.AddHostedService<RabbitConsumer>(serviceProvider =>
+            {
+                return new RabbitConsumer(
+                    serviceProvider,
+                    exchangeQueue,
+                    AMQP_PREFETCH_COUNT);
+            });
+
+            // Producer for Reports to DemoCentral
+            var AMQP_CALLBACK_QUEUE = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_CALLBACK_QUEUE");
+            var callbackQueue = new QueueConnection(AMQP_URI, AMQP_CALLBACK_QUEUE);
+            services.AddTransient<IProducer<SituationOperatorResponseModel>>(sp =>
+            {
+                return new Producer<SituationOperatorResponseModel>(callbackQueue);
+            });
             #endregion
 
             #region Other worker services
