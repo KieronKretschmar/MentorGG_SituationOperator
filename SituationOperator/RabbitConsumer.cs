@@ -37,7 +37,7 @@ namespace SituationOperator
                 using (var scope = _serviceProvider.CreateScope())
                 {
                     var processor = scope.ServiceProvider.GetRequiredService<MessageProcessor>();
-                    await processor.WorkAsync(model);
+                    await processor.ProcessMessage(model);
                     return ConsumedMessageHandling.Done;
                 }
             }
