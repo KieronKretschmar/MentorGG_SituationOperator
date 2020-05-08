@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SituationOperator
+namespace SituationOperator.Communications
 {
     /// <summary>
     /// Handles instructions to analyze match.

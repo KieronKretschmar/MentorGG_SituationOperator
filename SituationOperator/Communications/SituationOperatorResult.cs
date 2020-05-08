@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SituationOperator
+namespace SituationOperator.Communications
 {
     /// <summary>
     /// Describes the outcome of an attemped analysis by SituationOperator.

@@ -24,6 +24,7 @@ using RabbitCommunicationLib.TransferModels;
 using RabbitCommunicationLib.Producer;
 using ZoneReader;
 using EquipmentLib;
+using SituationOperator.Communications;
 
 namespace SituationOperator
 {
