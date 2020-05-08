@@ -68,7 +68,7 @@ namespace SituationOperator.Communications
                 }
 
                 // Extract and upload situations
-                await _matchWorker.ExtractAndUploadSituations(matchData);
+                await _matchWorker.ExtractAndUploadSituationsAsync(matchData);
             }
             catch (Exception e)
             {

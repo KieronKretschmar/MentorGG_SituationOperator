@@ -13,7 +13,7 @@ namespace SituationOperator
     /// </summary>
     public interface IMatchWorker
     {
-        Task<ExtractionResult> ExtractAndUploadSituations(MatchDataSet matchData);
+        Task<ExtractionResult> ExtractAndUploadSituationsAsync(MatchDataSet matchData);
     }
 
     /// <summary>
@@ -41,7 +41,7 @@ namespace SituationOperator
         /// </summary>
         /// <param name="matchData">Data of the match.</param>
         /// <returns></returns>
-        public async Task<ExtractionResult> ExtractAndUploadSituations(MatchDataSet matchData)
+        public async Task<ExtractionResult> ExtractAndUploadSituationsAsync(MatchDataSet matchData)
         {
             var managers = _managerProvider.GetManagers(Enums.SituationTypeCollection.ProductionExtractionDefault);
             var res = new ExtractionResult(managers);
