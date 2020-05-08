@@ -29,22 +29,22 @@ namespace SituationOperator.PatternDetectors.Misplays
         /// <summary>
         /// Returns all failed smoke attempts of known lineups.
         /// </summary>
-        /// <param name="matchData">Data of the match in which to look for situations for all players.</param>
+        /// <param name="data">Data of the match in which to look for situations for all players.</param>
         /// <returns></returns>
-        public async Task<IEnumerable<SmokeFail>> ExtractSituations(MatchDataSet matchData)
+        public async Task<IEnumerable<SmokeFail>> ExtractSituations(MatchDataSet data)
         {
-            var map = matchData.MatchStats.Map;
+            var map = data.MatchStats.Map;
 
             // If the map is not known, return empty collection
             if (!Enum.TryParse(map, true, out ZoneReader.Enums.Map mapFromEnum))
             {
-                _logger.LogDebug($"No zones are defined for map {map} and match {matchData.MatchId}, returning empty collection");
+                _logger.LogDebug($"No zones are defined for map {map} and match {data.MatchId}, returning empty collection");
                 return new List<SmokeFail>();
             }
 
             var lineups = _zoneReader.GetLineups(ZoneReader.Enums.LineupType.Smoke, mapFromEnum).Lineups;
 
-            var failedSmokes = matchData.SmokeList
+            var failedSmokes = data.SmokeList
                 .Where(x => x.Result == MatchEntities.Enums.TargetResult.Miss)
                 .Select(x => new SmokeFail
                 {

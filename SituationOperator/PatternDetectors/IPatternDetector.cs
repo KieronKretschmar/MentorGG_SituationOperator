@@ -16,8 +16,8 @@ namespace SituationOperator.PatternDetectors
         /// <summary>
         /// Returns situations that implement the specific pattern.
         /// </summary>
-        /// <param name="matchData"></param>
+        /// <param name="data"></param>
         /// <returns></returns>
-        Task<IEnumerable<TSituation>> ExtractSituations(MatchDataSet matchData);
+        Task<IEnumerable<TSituation>> ExtractSituations(MatchDataSet data);
     }
 }

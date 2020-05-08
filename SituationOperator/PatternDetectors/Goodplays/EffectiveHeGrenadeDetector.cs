@@ -27,9 +27,9 @@ namespace SituationOperator.PatternDetectors.Goodplays
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="matchData">Data of the match in which to look for situations for all players.</param>
+        /// <param name="data">Data of the match in which to look for situations for all players.</param>
         /// <returns></returns>
-        public async Task<IEnumerable<EffectiveHeGrenade>> ExtractSituations(MatchDataSet matchData)
+        public async Task<IEnumerable<EffectiveHeGrenade>> ExtractSituations(MatchDataSet data)
         {
             throw new NotImplementedException();
         }
