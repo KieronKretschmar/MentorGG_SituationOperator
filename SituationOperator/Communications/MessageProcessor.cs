@@ -24,21 +24,18 @@ namespace SituationOperator.Communications
     public class MessageProcessor : IMessageProcessor
     {
         private readonly ILogger<MessageProcessor> _logger;
-        private readonly SituationContext _context;
         private readonly IMatchDataSetProvider _matchDataProvider;
         private readonly IProducer<SituationOperatorResponseModel> _producer;
         private readonly IMatchWorker _matchWorker;
 
         public MessageProcessor(
             ILogger<MessageProcessor> logger,
-            SituationContext context,
             IMatchDataSetProvider matchDataProvider,
             IProducer<SituationOperatorResponseModel> producer,
             IMatchWorker matchWorker
             )
         {
             _logger = logger;
-            _context = context;
             _matchDataProvider = matchDataProvider;
             _producer = producer;
             _matchWorker = matchWorker;
