@@ -7,6 +7,7 @@ using RabbitCommunicationLib.Interfaces;
 using SituationDatabase;
 using SituationOperator;
 using SituationOperator.Communications;
+using SituationOperator.SituationManagers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -69,6 +70,24 @@ namespace SituationOperatorTestProject
 
         #endregion
 
+        #region Unmocked Dependencies
+        public static IEnumerable<ISituationManager> GetRealSituationManagers()
+        {
+            return new List<ISituationManager>()
+            {
+                new SmokeFailManager(),
+            };
+        }
+
+        public static ISituationManagerProvider GetRealProvider()
+        {
+            return new SituationManagerProvider(
+                GetMockLogger<SituationManagerProvider>(),
+                GetRealSituationManagers()
+                );
+        }
+        #endregion
+
         #region Mock dependencies
         public static ILogger<T> GetMockLogger<T>()
         {
@@ -102,11 +121,5 @@ namespace SituationOperatorTestProject
         }
         #endregion
 
-        #region Managers
-        public static ISituationManagerProvider GetRealProvider()
-        {
-            return new SituationManagerProvider(GetMockLogger<SituationManagerProvider>());
-        }
-        #endregion
     }
 }

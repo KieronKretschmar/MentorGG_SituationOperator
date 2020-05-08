@@ -27,17 +27,15 @@ namespace SituationOperator
         /// <summary>
         /// Complete list of all implemented SituationManagers
         /// </summary>
-        private readonly IEnumerable<ISituationManager> SituationManagers;
+        private readonly IEnumerable<ISituationManager> _situationManagers;
 
         public SituationManagerProvider(
-            ILogger<SituationManagerProvider> logger)
+            ILogger<SituationManagerProvider> logger,
+            IEnumerable<ISituationManager> situationManagers)
         {
             _logger = logger;
 
-            SituationManagers = new List<ISituationManager>
-            {
-                new SmokeFailManager()
-            };
+            _situationManagers = situationManagers;
         }
 
         /// <summary>
@@ -53,7 +51,7 @@ namespace SituationOperator
             {
                 case SituationTypeCollection.ProductionExtractionDefault:
                 case SituationTypeCollection.ProductionAccessDefault:
-                    return SituationManagers;
+                    return _situationManagers;
                 default:
                     throw new NotImplementedException();
             }

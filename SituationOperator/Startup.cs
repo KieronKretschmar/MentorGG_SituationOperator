@@ -25,6 +25,8 @@ using RabbitCommunicationLib.Producer;
 using ZoneReader;
 using EquipmentLib;
 using SituationOperator.Communications;
+using SituationOperator.SituationManagers;
+using SituationOperator.PatternDetectors;
 
 namespace SituationOperator
 {
@@ -183,6 +185,14 @@ namespace SituationOperator
                     EQUIPMENT_CSV_DIRECTORY,
                     EQUIPMENT_ENDPOINT);
             });
+            #endregion
+
+            #region SituationDetectors
+            services.AddTransient<SmokeFailDetector>();
+            #endregion
+
+            #region SituationManagers
+            services.AddTransient<ISituationManager, SmokeFailManager>();            
             #endregion
 
             #region Other worker services
