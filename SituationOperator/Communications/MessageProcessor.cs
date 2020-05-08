@@ -27,21 +27,21 @@ namespace SituationOperator.Communications
         private readonly SituationContext _context;
         private readonly IMatchDataSetProvider _matchDataProvider;
         private readonly IProducer<SituationOperatorResponseModel> _producer;
-        private readonly ISituationManagerProvider _managerProvider;
+        private readonly IMatchWorker _matchWorker;
 
         public MessageProcessor(
             ILogger<MessageProcessor> logger,
             SituationContext context,
             IMatchDataSetProvider matchDataProvider,
             IProducer<SituationOperatorResponseModel> producer,
-            ISituationManagerProvider managerProvider
+            IMatchWorker matchWorker
             )
         {
             _logger = logger;
             _context = context;
             _matchDataProvider = matchDataProvider;
             _producer = producer;
-            _managerProvider = managerProvider;
+            _matchWorker = matchWorker;
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace SituationOperator.Communications
                 }
 
                 // Extract and upload situations
-                await ExtractAndUploadSituations(matchData);
+                await _matchWorker.ExtractAndUploadSituations(matchData);
             }
             catch (Exception e)
             {
@@ -81,40 +81,6 @@ namespace SituationOperator.Communications
             finally
             {
                 _producer.PublishMessage(response);
-            }
-        }
-
-        /// <summary>
-        /// Tries to extract situations from one matches data and uploads them to database.
-        /// </summary>
-        /// <param name="matchData">Data of the match.</param>
-        /// <returns></returns>
-        public async Task ExtractAndUploadSituations(MatchDataSet matchData)
-        {
-            // Iterate through all situationManagers to extract and upload to their respective tables
-            foreach (var situationManager in _managerProvider.GetManagers(Enums.SituationTypeCollection.ProductionExtractionDefault))
-            {
-                try
-                {
-                    // Extract situations from data
-                    var situations = await situationManager.Detector.ExtractSituations(matchData);
-
-                    var dbTable = situationManager.TableSelector(_context);
-
-                    // Ensure no situations of this match from previous runs are in the table
-                    var existingEntries = dbTable.Where(x => x.MatchId == matchData.MatchStats.MatchId);
-                    dbTable.RemoveRange(existingEntries);
-
-                    // Add situations to context
-                    dbTable.AddRange(situations);
-
-                    // Save changes to database
-                    await _context.SaveChangesAsync();
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError(e, $"Error when working on situations of type [ {situationManager.SituationType.ToString()} ] for match [ {matchData.MatchStats.MatchId} ]. Skipping this SituationManager.");
-                }
             }
         }
     }

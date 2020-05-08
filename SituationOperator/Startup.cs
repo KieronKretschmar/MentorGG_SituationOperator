@@ -187,6 +187,7 @@ namespace SituationOperator
 
             #region Other worker services
             services.AddTransient<IMessageProcessor, MessageProcessor>();
+            services.AddTransient<IMatchWorker, MatchWorker>();
             services.AddTransient<ISituationManagerProvider, SituationManagerProvider>();
             #endregion
         }
