@@ -7,7 +7,7 @@ namespace SituationDatabase.Enums
     /// <summary>
     /// A type of situation.
     /// </summary>
-    public enum SituationType : int
+    public enum SituationCategory : int
     {
         Misplay = 1,
         Highlight = 2,

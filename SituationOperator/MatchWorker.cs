@@ -62,7 +62,7 @@ namespace SituationOperator
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError(e, $"Error when working on situations of type [ {situationManager.SituationType.ToString()} ] for match [ {matchData.MatchId} ]. Skipping this SituationManager.");
+                    _logger.LogError(e, $"Error when working on situations of type [ {situationManager.SituationCategory.ToString()} ] for match [ {matchData.MatchId} ]. Skipping this SituationManager.");
                     res.FailedManagers++;
                 }
             }

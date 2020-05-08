@@ -19,22 +19,29 @@ namespace SituationOperator
         /// <summary>
         /// Identifies the type of situation.
         /// </summary>
-        SituationType SituationType { get; }
+        SituationCategory SituationCategory { get; }
+
+        /// <summary>
+        /// Extracts situations from the data and uploads it to the database.
+        /// </summary>
+        Task AnalyzeAndUploadAsync(SituationContext context, MatchDataSet matchData);
 
         /// <summary>
         /// Clears the table of the SituationDatabase in which occurences of TSituation are stored.
         /// </summary>
         Task ClearTableAsync(SituationContext context, long matchId);
-
-        /// <summary>
-        /// Clears the table of the SituationDatabase in which occurences of TSituation are stored.
-        /// </summary>
-        Task AnalyzeAndUploadAsync(SituationContext context, MatchDataSet matchData);
     }
 
+    /// <summary>
+    /// Abstract base for all SituationManagers
+    /// </summary>
+    /// <typeparam name="TSituation">The type of Situation</typeparam>
     public abstract class SituationManager<TSituation> : ISituationManager where TSituation : class, ISituation
     {
-        public abstract SituationType SituationType { get; }
+        /// <summary>
+        /// Identifies the type of situation.
+        /// </summary>
+        public abstract SituationCategory SituationCategory { get; }
 
         /// <summary>
         /// The detector for extracting occurences of TSituation.
@@ -46,6 +53,9 @@ namespace SituationOperator
         /// </summary>
         protected abstract Func<SituationContext, DbSet<TSituation>> TableSelector { get; }
 
+        /// <summary>
+        /// Extracts situations from the data and uploads it to the database.
+        /// </summary>
         public async Task AnalyzeAndUploadAsync(SituationContext context, MatchDataSet matchData)
         {
             var situations = await Detector.ExtractSituations(matchData);
@@ -54,6 +64,9 @@ namespace SituationOperator
             await context.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Clears the table of the SituationDatabase in which occurences of TSituation are stored.
+        /// </summary>
         public async Task ClearTableAsync(SituationContext context, long matchId)
         {
             var table = TableSelector(context);

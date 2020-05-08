@@ -12,7 +12,7 @@ namespace SituationOperator.SituationManagers
 {
     public class SmokeFailManager : SituationManager<SmokeFail>
     {
-        public override SituationType SituationType => SituationType.Misplay;
+        public override SituationCategory SituationCategory => SituationCategory.Misplay;
 
         protected override IPatternDetector<SmokeFail> Detector => new SmokeFailDetector();
 
