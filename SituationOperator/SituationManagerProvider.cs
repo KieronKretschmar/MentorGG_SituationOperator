@@ -14,7 +14,7 @@ namespace SituationOperator
     /// </summary>
     public interface ISituationManagerProvider
     {
-        IEnumerable<ISituationManager<ISituation>> GetManagers(SituationTypeCollection collection);
+        IEnumerable<ISituationManager> GetManagers(SituationTypeCollection collection);
     }
 
     /// <summary>
@@ -27,14 +27,14 @@ namespace SituationOperator
         /// <summary>
         /// Complete list of all implemented SituationManagers
         /// </summary>
-        private readonly IEnumerable<ISituationManager<ISituation>> SituationManagers;
+        private readonly IEnumerable<ISituationManager> SituationManagers;
 
         public SituationManagerProvider(
             ILogger<SituationManagerProvider> logger)
         {
             _logger = logger;
 
-            SituationManagers = new List<ISituationManager<ISituation>>
+            SituationManagers = new List<ISituationManager>
             {
             };
         }
@@ -44,7 +44,7 @@ namespace SituationOperator
         /// </summary>
         /// <param name="collectionIdentifier"></param>
         /// <returns></returns>
-        public IEnumerable<ISituationManager<ISituation>> GetManagers(SituationTypeCollection collectionIdentifier)
+        public IEnumerable<ISituationManager> GetManagers(SituationTypeCollection collectionIdentifier)
         {
             _logger.LogTrace($"GetManagers called with identifier [ {collectionIdentifier} ]");
 

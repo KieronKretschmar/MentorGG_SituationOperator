@@ -1,4 +1,5 @@
 ﻿using MatchEntities;
+using SituationDatabase;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace SituationOperator.Interfaces
     /// Extracts Situations from match data that follow a specific pattern.
     /// </summary>
     /// <typeparam name="TSituation"> The type of Situation that is detected.</typeparam>
-    public interface IPatternDetector<TSituation>
+    public interface IPatternDetector<TSituation> where TSituation : ISituation
     {
         /// <summary>
         /// Returns situations that implement the specific pattern.
