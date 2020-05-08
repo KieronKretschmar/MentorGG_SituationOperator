@@ -10,19 +10,29 @@ using System.Threading.Tasks;
 
 namespace SituationOperator.SituationManagers.Misplays
 {
+    /// <summary>
+    /// Manager for failed smoke lineups.
+    /// </summary>
     public class SmokeFailManager : SituationManager<SmokeFail>
     {
-        private readonly SmokeFailDetector _smokeFailDetector;
+        private readonly SmokeFailDetector _detector;
 
-        public SmokeFailManager(SmokeFailDetector smokeFailDetector)
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="detector">Detector for this Situation</param>
+        public SmokeFailManager(SmokeFailDetector detector)
         {
-            _smokeFailDetector = smokeFailDetector;
+            _detector = detector;
         }
 
+        /// <inheritdoc/>
         public override SituationCategory SituationCategory => SituationCategory.Misplay;
 
-        protected override IPatternDetector<SmokeFail> Detector => _smokeFailDetector;
+        /// <inheritdoc/>
+        protected override IPatternDetector<SmokeFail> Detector => _detector;
 
+        /// <inheritdoc/>
         protected override Func<SituationContext, DbSet<SmokeFail>> TableSelector => context => context.SmokeFail;
     }
 }

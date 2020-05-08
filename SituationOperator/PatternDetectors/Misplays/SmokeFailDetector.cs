@@ -10,6 +10,9 @@ using ZoneReader;
 
 namespace SituationOperator.PatternDetectors.Misplays
 {
+    /// <summary>
+    /// Detects failed smoke lineups.
+    /// </summary>
     public class SmokeFailDetector : IPatternDetector<SmokeFail>
     {
         private readonly ILogger<SmokeFailDetector> _logger;
@@ -23,6 +26,11 @@ namespace SituationOperator.PatternDetectors.Misplays
             _zoneReader = zoneReader;
         }
 
+        /// <summary>
+        /// Returns all failed smoke attempts of known lineups.
+        /// </summary>
+        /// <param name="matchData">Data of the match in which to look for situations for all players.</param>
+        /// <returns></returns>
         public async Task<IEnumerable<SmokeFail>> ExtractSituations(MatchDataSet matchData)
         {
             var map = matchData.MatchStats.Map;
