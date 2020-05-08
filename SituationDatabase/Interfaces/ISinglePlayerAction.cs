@@ -7,7 +7,7 @@ namespace SituationDatabase
     /// <summary>
     /// An Action carried out by a single player, starting at a particular time.
     /// </summary>
-    public interface ISinglePlayerAction : ISituation
+    public interface ISinglePlayerSituation : ISituation
     {
         /// <summary>
         /// SteamId of the player who carried out the action.

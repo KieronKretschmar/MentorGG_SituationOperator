@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SituationDatabase.Models
 {
-    public class EffectiveHeGrenade : Situation, ISinglePlayerAction
+    public class EffectiveHeGrenade : Situation, ISinglePlayerSituation
     {
         public long SteamId { get; set; }
         public int LineupId { get; set; }

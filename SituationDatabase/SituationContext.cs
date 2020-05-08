@@ -48,7 +48,7 @@ namespace SituationDatabase
         }
 
         public static void AddSinglePlayerSituation<TSituation>(this ModelBuilder modelBuilder)
-            where TSituation : class, ISinglePlayerAction
+            where TSituation : class, ISinglePlayerSituation
         {
             modelBuilder.Entity<TSituation>(entity =>
             {
