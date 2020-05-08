@@ -7,7 +7,6 @@ using RabbitCommunicationLib.Interfaces;
 using SituationDatabase;
 using SituationOperator;
 using SituationOperator.Communications;
-using SituationOperator.Interfaces;
 using SituationOperator.PatternDetectors;
 using SituationOperator.SituationManagers;
 using System;

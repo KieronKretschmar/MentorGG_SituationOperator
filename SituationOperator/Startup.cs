@@ -27,6 +27,8 @@ using EquipmentLib;
 using SituationOperator.Communications;
 using SituationOperator.SituationManagers;
 using SituationOperator.PatternDetectors;
+using SituationOperator.SituationManagers.Misplays;
+using SituationOperator.PatternDetectors.Misplays;
 
 namespace SituationOperator
 {

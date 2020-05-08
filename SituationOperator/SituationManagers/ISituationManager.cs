@@ -2,14 +2,14 @@
 using Microsoft.EntityFrameworkCore;
 using SituationDatabase;
 using SituationDatabase.Enums;
-using SituationOperator.Interfaces;
+using SituationOperator.PatternDetectors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SituationOperator
+namespace SituationOperator.SituationManagers
 {
     /// <summary>
     /// Composition of required objects for the management of Situations that follow a specific pattern and are stored in a particular table in the database.

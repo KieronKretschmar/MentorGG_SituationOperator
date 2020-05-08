@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SituationOperator.Interfaces
+namespace SituationOperator.PatternDetectors
 {
     /// <summary>
     /// Extracts Situations from match data that follow a specific pattern.

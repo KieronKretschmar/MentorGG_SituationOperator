@@ -2,13 +2,13 @@
 using SituationDatabase;
 using SituationDatabase.Enums;
 using SituationDatabase.Models;
-using SituationOperator.Interfaces;
 using SituationOperator.PatternDetectors;
+using SituationOperator.PatternDetectors.Misplays;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SituationOperator.SituationManagers
+namespace SituationOperator.SituationManagers.Misplays
 {
     public class SmokeFailManager : SituationManager<SmokeFail>
     {

@@ -2,14 +2,13 @@
 using Microsoft.Extensions.Logging;
 using SituationDatabase;
 using SituationDatabase.Models;
-using SituationOperator.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ZoneReader;
 
-namespace SituationOperator.PatternDetectors
+namespace SituationOperator.PatternDetectors.Misplays
 {
     public class SmokeFailDetector : IPatternDetector<SmokeFail>
     {
