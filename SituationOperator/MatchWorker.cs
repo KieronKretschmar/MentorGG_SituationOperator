@@ -13,7 +13,7 @@ namespace SituationOperator
     /// </summary>
     public interface IMatchWorker
     {
-        Task ExtractAndUploadSituations(MatchDataSet matchData);
+        Task<ExtractionResult> ExtractAndUploadSituations(MatchDataSet matchData);
     }
 
     /// <summary>
@@ -41,33 +41,54 @@ namespace SituationOperator
         /// </summary>
         /// <param name="matchData">Data of the match.</param>
         /// <returns></returns>
-        public async Task ExtractAndUploadSituations(MatchDataSet matchData)
+        public async Task<ExtractionResult> ExtractAndUploadSituations(MatchDataSet matchData)
         {
+            var managers = _managerProvider.GetManagers(Enums.SituationTypeCollection.ProductionExtractionDefault);
+            var res = new ExtractionResult(managers);
+
             // Iterate through all situationManagers to extract and upload to their respective tables
-            foreach (var situationManager in _managerProvider.GetManagers(Enums.SituationTypeCollection.ProductionExtractionDefault))
+            foreach (var situationManager in managers)
             {
                 try
                 {
-                    // Extract situations from data
-                    var situations = await situationManager.Detector.ExtractSituations(matchData);
-
-                    var dbTable = situationManager.TableSelector(_context);
-
                     // Ensure no situations of this match from previous runs are in the table
-                    var existingEntries = dbTable.Where(x => x.MatchId == matchData.MatchStats.MatchId);
-                    dbTable.RemoveRange(existingEntries);
+                    await situationManager.ClearTableAsync(_context, matchData.MatchId);
 
                     // Add situations to context
-                    dbTable.AddRange(situations);
+                    await situationManager.AnalyzeAndUploadAsync(_context, matchData);
 
                     // Save changes to database
                     await _context.SaveChangesAsync();
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError(e, $"Error when working on situations of type [ {situationManager.SituationType.ToString()} ] for match [ {matchData.MatchStats.MatchId} ]. Skipping this SituationManager.");
+                    _logger.LogError(e, $"Error when working on situations of type [ {situationManager.SituationType.ToString()} ] for match [ {matchData.MatchId} ]. Skipping this SituationManager.");
+                    res.FailedManagers++;
                 }
             }
+
+            return res;
         }
+    }
+
+    /// <summary>
+    /// Describes the outcome of an attempt to analyse and upload different situations in a match.
+    /// </summary>
+    public class ExtractionResult
+    {
+        public ExtractionResult(IEnumerable<ISituationManager> managers)
+        {
+            AttemptedManagers = managers.Count();
+        }
+
+        /// <summary>
+        /// Number of SituationManagers that were attempted to be used for analysis.
+        /// </summary>
+        public int AttemptedManagers { get; set; }
+
+        /// <summary>
+        /// Number of SituationManagers that failed during analysis.
+        /// </summary>
+        public int FailedManagers { get; set; }
     }
 }
