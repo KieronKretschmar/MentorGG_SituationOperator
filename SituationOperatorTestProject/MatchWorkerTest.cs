@@ -33,7 +33,6 @@ namespace SituationOperatorTestProject
             // RUN
             var result = await matchWorker.ExtractAndUploadSituationsAsync(matchDataSet);
 
-
             // ASSERT
             Assert.IsTrue(result.AttemptedManagers > 0);
             Assert.IsTrue(result.FailedManagers == 0);
