@@ -184,17 +184,6 @@ namespace SituationOperator
             });
             #endregion
 
-            #region SituationManagers
-            services.AddTransient<IEnumerable<ISituationManager<ISituation>>>(services =>
-            {
-                var allSituationManagers = new List<ISituationManager<ISituation>>();
-
-                // Add situationManagers
-
-                return allSituationManagers;
-            });
-            #endregion
-
             #region Other worker services
             services.AddTransient<IMessageProcessor, MessageProcessor>();
             services.AddTransient<ISituationManagerProvider, SituationManagerProvider>();

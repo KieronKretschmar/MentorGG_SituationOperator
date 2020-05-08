@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
+using SituationDatabase;
 using SituationOperator.Enums;
+using SituationOperator.SituationManagers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,14 +23,20 @@ namespace SituationOperator
     public class SituationManagerProvider : ISituationManagerProvider
     {
         private readonly ILogger<SituationManagerProvider> _logger;
-        private readonly IEnumerable<ISituationManager<ISituation>> _situationManagers;
+
+        /// <summary>
+        /// Complete list of all implemented SituationManagers
+        /// </summary>
+        private readonly IEnumerable<ISituationManager<ISituation>> SituationManagers;
 
         public SituationManagerProvider(
-            ILogger<SituationManagerProvider> logger,
-            IEnumerable<ISituationManager<ISituation>> situationManagers)
+            ILogger<SituationManagerProvider> logger)
         {
             _logger = logger;
-            _situationManagers = situationManagers;
+
+            SituationManagers = new List<ISituationManager<ISituation>>
+            {
+            };
         }
 
         /// <summary>
@@ -44,7 +52,7 @@ namespace SituationOperator
             {
                 case SituationTypeCollection.ProductionExtractionDefault:
                 case SituationTypeCollection.ProductionAccessDefault:
-                    return _situationManagers;
+                    return SituationManagers;
                 default:
                     throw new NotImplementedException();
             }
