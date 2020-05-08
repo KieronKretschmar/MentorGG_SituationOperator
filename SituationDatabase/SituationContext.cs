@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SituationDatabase.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,10 +17,18 @@ namespace SituationDatabase
         {
             
         }
+        public virtual DbSet<SmokeFail> SmokeFail { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<SmokeFail>(entity =>
+            {
+                entity.HasKey(e => new { e.MatchId, e.Id });
 
+                entity.HasIndex(e => e.MatchId);
+
+                entity.Property(x => x.Id).ValueGeneratedOnAdd();
+            });
         }
     }
 }
