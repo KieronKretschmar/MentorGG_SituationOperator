@@ -26,6 +26,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZoneReader", "zonereader\Zo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EquipmentLib", "EquipmentLib\EquipmentLib\EquipmentLib.csproj", "{19495419-91F4-4D93-A798-E490348B8C62}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SituationOperatorTestProject", "SituationOperatorTestProject\SituationOperatorTestProject.csproj", "{6D52FDB9-0382-4D03-8D76-A1870D5DEB8A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,6 +62,10 @@ Global
 		{19495419-91F4-4D93-A798-E490348B8C62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19495419-91F4-4D93-A798-E490348B8C62}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19495419-91F4-4D93-A798-E490348B8C62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D52FDB9-0382-4D03-8D76-A1870D5DEB8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D52FDB9-0382-4D03-8D76-A1870D5DEB8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D52FDB9-0382-4D03-8D76-A1870D5DEB8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D52FDB9-0382-4D03-8D76-A1870D5DEB8A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
