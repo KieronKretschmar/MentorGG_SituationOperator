@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SituationDatabase
+namespace SituationDatabase.Models
 {
     /// <summary>
-    /// A Situation that occured in a specific round and started at a particular time.
+    /// Basic implementation of ISituation
     /// </summary>
-    public interface ISituation
+    public abstract class Situation : ISituation
     {
         /// <summary>
         /// Id of the Match in which the situation occured.
