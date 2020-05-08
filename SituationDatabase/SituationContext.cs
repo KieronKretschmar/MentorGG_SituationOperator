@@ -18,10 +18,21 @@ namespace SituationDatabase
             
         }
         public virtual DbSet<SmokeFail> SmokeFail { get; set; }
+        public virtual DbSet<EffectiveHeGrenade> EffectiveHeGrenade { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
             modelBuilder.Entity<SmokeFail>(entity =>
+            {
+                entity.HasKey(e => new { e.MatchId, e.Id });
+
+                entity.HasIndex(e => e.MatchId);
+
+                entity.Property(x => x.Id).ValueGeneratedOnAdd();
+            });
+
+            modelBuilder.Entity<EffectiveHeGrenade>(entity =>
             {
                 entity.HasKey(e => new { e.MatchId, e.Id });
 

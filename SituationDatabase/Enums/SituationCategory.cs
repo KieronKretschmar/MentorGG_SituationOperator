@@ -10,6 +10,6 @@ namespace SituationDatabase.Enums
     public enum SituationCategory : int
     {
         Misplay = 1,
-        Highlight = 2,
+        Goodplay = 2,
     }
 }
