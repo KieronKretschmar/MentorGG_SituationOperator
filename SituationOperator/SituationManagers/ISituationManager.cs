@@ -75,4 +75,37 @@ namespace SituationOperator.SituationManagers
             await context.SaveChangesAsync();
         }
     }
+
+    public class DefaultSituationManager<TSituation,TDetector> : ISituationManager
+        where TSituation : class, ISituation
+        where TDetector : IPatternDetector<TSituation>
+    {
+        private readonly Func<SituationContext, DbSet<TSituation>> _tableSelector;
+        private readonly TDetector _detector;
+
+        public DefaultSituationManager(TDetector detector, SituationCategory category, Func<SituationContext, DbSet<TSituation>> tableSelector)
+        {
+            _tableSelector = tableSelector;
+            SituationCategory = category;
+            _detector = detector;
+        }
+
+        public SituationCategory SituationCategory { get; }
+
+
+        public async Task AnalyzeAndUploadAsync(SituationContext context, MatchDataSet matchData)
+        {
+            var situations = await _detector.ExtractSituations(matchData);
+            var table = _tableSelector(context);
+            table.AddRange(situations);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task ClearTableAsync(SituationContext context, long matchId)
+        {
+            var entries = _tableSelector(context).Where(x => x.MatchId == matchId);
+            context.RemoveRange(entries);
+            await context.SaveChangesAsync();
+        }
+    }
 }

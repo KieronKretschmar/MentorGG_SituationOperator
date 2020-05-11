@@ -29,6 +29,8 @@ using SituationOperator.SituationManagers;
 using SituationOperator.PatternDetectors;
 using SituationOperator.SituationManagers.Misplays;
 using SituationOperator.PatternDetectors.Misplays;
+using SituationOperator.PatternDetectors.Goodplays;
+using SituationDatabase.Models;
 
 namespace SituationOperator
 {
@@ -194,7 +196,16 @@ namespace SituationOperator
             #endregion
 
             #region SituationManagers
-            services.AddTransient<ISituationManager, SmokeFailManager>();            
+            services.AddTransient<ISituationManager, DefaultSituationManager<SmokeFail, SmokeFailDetector>>(services =>
+            {
+                return new DefaultSituationManager<SmokeFail, SmokeFailDetector>(services.GetRequiredService<SmokeFailDetector>(), SituationDatabase.Enums.SituationCategory.Goodplay, x => x.SmokeFail);
+            });
+            services.AddTransient<ISituationManager, SmokeFailManager>();
+
+            services.AddTransient<ISituationManager, DefaultSituationManager<EffectiveHeGrenade, EffectiveHeGrenadeDetector>>(services =>
+            {
+                return new DefaultSituationManager<EffectiveHeGrenade, EffectiveHeGrenadeDetector>(services.GetRequiredService<EffectiveHeGrenadeDetector>(), SituationDatabase.Enums.SituationCategory.Goodplay, x => x.EffectiveHeGrenade);
+            });
             #endregion
 
             #region Other worker services
