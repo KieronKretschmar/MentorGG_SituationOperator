@@ -47,7 +47,7 @@ namespace SituationOperator.SituationManagers.GoodPlays
         {
             var hes = data.HeList
                 .Select(x=> new EffectiveHeGrenade(x, data.DamagesByHe(x)))
-                .Where(x => x.TotalEnemyDamage > MIN_TOTAL_DAMAGE);
+                .Where(x => x.TotalEnemyDamage > MIN_TOTAL_DAMAGE || x.EnemiesKilled > 0);
 
             return hes;
         }
