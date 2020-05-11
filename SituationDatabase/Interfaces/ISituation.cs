@@ -20,16 +20,6 @@ namespace SituationDatabase
         public long Id { get; set; }
 
         /// <summary>
-        /// Map on which the match was played.
-        /// </summary>
-        public string Map { get; set; }
-
-        /// <summary>
-        /// DateTime when the match was played.
-        /// </summary>
-        public DateTime MatchDate { get; set; }
-
-        /// <summary>
         /// Round in which the situation occured.
         /// </summary>
         public short Round { get; set; }

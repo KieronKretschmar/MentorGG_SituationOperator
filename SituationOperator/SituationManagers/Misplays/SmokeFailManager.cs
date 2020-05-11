@@ -62,17 +62,7 @@ namespace SituationOperator.SituationManagers.Misplays
 
                 var failedSmokes = data.SmokeList
                     .Where(x => x.Result == MatchEntities.Enums.TargetResult.Miss)
-                    .Select(x => new SmokeFail
-                    {
-                        MatchId = x.MatchId,
-                        Map = x.MatchStats.Map,
-                        MatchDate = x.MatchStats.MatchDate,
-                        Round = x.Round,
-                        StartTime = x.Time,
-                        PlayerId = x.PlayerId,
-                        LineupId = x.LineUp,
-                        LineupName = lineups[x.LineUp].Name
-                    })
+                    .Select(x => new SmokeFail(x))
                     .ToList();
 
                 return failedSmokes;

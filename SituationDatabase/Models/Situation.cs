@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MatchEntities;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,6 +10,13 @@ namespace SituationDatabase.Models
     /// </summary>
     public abstract class Situation : ISituation
     {
+        public Situation(long matchId, short round, int startTime)
+        {
+            MatchId = matchId;
+            Round = round;
+            StartTime = startTime;
+        }
+
         /// <summary>
         /// Id of the Match in which the situation occured.
         /// </summary>
@@ -18,16 +26,6 @@ namespace SituationDatabase.Models
         /// Id of this situation, unique for this table and Match.
         /// </summary>
         public long Id { get; set; }
-
-        /// <summary>
-        /// Map on which the match was played.
-        /// </summary>
-        public string Map { get; set; }
-
-        /// <summary>
-        /// DateTime when the match was played.
-        /// </summary>
-        public DateTime MatchDate { get; set; }
 
         /// <summary>
         /// Round in which the situation occured.
