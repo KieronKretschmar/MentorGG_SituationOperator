@@ -1,5 +1,6 @@
 ﻿using MatchEntities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SituationDatabase;
 using SituationDatabase.Enums;
 using SituationDatabase.Models;
@@ -15,12 +16,17 @@ namespace SituationOperator.SituationManagers.GoodPlays
     /// </summary>
     public class EffectiveHeGrenadeManager : SituationManager<EffectiveHeGrenade>
     {
+        private readonly IServiceProvider _sp;
+        private readonly ILogger<EffectiveHeGrenadeManager> _logger;
+
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="detector">Detector for this Situation</param>
-        public EffectiveHeGrenadeManager()
+        public EffectiveHeGrenadeManager(IServiceProvider sp, ILogger<EffectiveHeGrenadeManager> logger)
         {
+            _sp = sp;
+            _logger = logger;
         }
 
         /// <inheritdoc/>
