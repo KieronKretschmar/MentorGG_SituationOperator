@@ -29,6 +29,7 @@ using SituationOperator.SituationManagers;
 using SituationOperator.SituationManagers.Misplays;
 using SituationDatabase.Models;
 using SituationOperator.SituationManagers.GoodPlays;
+using StackExchange.Redis;
 using Moq;
 
 namespace SituationOperator
@@ -182,6 +183,22 @@ namespace SituationOperator
                 {
                     return new Producer<SituationOperatorResponseModel>(callbackQueue);
                 });
+            }
+            #endregion
+
+            #region Redis
+            if (IsDevelopment && GetOptionalEnvironmentVariable<bool>(Configuration, "MOCK_REDIS", false))
+            {
+                services.AddTransient<IMatchDataSetProvider, MockRedis>();
+            }
+            else
+            {
+                var REDIS_CONFIGURATION_STRING = GetRequiredEnvironmentVariable<string>(Configuration, "REDIS_CONFIGURATION_STRING");
+
+                // Add ConnectionMultiplexer as singleton as it is made to be reused
+                // see https://stackexchange.github.io/StackExchange.Redis/Basics.html
+                services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(REDIS_CONFIGURATION_STRING));
+                services.AddTransient<IMatchDataSetProvider, MatchRedis>();                
             }
             #endregion
 

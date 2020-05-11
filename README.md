@@ -17,6 +17,8 @@ Accesses a MatchDb to compute, store and serve Situations.
 - `IS_MIGRATING` : Warning: Do not use in production. If this is set to true, migrations to SituationDatabase will be applied but nothing else. Only works if `MYSQL_CONNECTION_STRING` is also provided.
 
 **Redis**
+- `MOCK_REDIS` : Whether a mocked redis connection should be used, making `REDIS_CONFIGURATION_STRING` unrequired. Only usable in Development.
+- `REDIS_CONFIGURATION_STRING` : Comma-seperated options for the configuration of the MatchData Redis cache. [\*] 
 
 **FileSystem**
 - `EQUIPMENT_CSV_DIRECTORY` : Relative path to the directory containing the equipment .csv files. Defaults to `/app/data/equipment`.
