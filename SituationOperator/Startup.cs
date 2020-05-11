@@ -26,11 +26,9 @@ using ZoneReader;
 using EquipmentLib;
 using SituationOperator.Communications;
 using SituationOperator.SituationManagers;
-using SituationOperator.PatternDetectors;
 using SituationOperator.SituationManagers.Misplays;
-using SituationOperator.PatternDetectors.Misplays;
-using SituationOperator.PatternDetectors.Goodplays;
 using SituationDatabase.Models;
+using SituationOperator.SituationManagers.GoodPlays;
 
 namespace SituationOperator
 {
@@ -191,21 +189,9 @@ namespace SituationOperator
             });
             #endregion
 
-            #region SituationDetectors
-            services.AddTransient<SmokeFailDetector>();
-            #endregion
-
             #region SituationManagers
-            services.AddTransient<ISituationManager, DefaultSituationManager<SmokeFail, SmokeFailDetector>>(services =>
-            {
-                return new DefaultSituationManager<SmokeFail, SmokeFailDetector>(services.GetRequiredService<SmokeFailDetector>(), SituationDatabase.Enums.SituationCategory.Goodplay, x => x.SmokeFail);
-            });
             services.AddTransient<ISituationManager, SmokeFailManager>();
-
-            services.AddTransient<ISituationManager, DefaultSituationManager<EffectiveHeGrenade, EffectiveHeGrenadeDetector>>(services =>
-            {
-                return new DefaultSituationManager<EffectiveHeGrenade, EffectiveHeGrenadeDetector>(services.GetRequiredService<EffectiveHeGrenadeDetector>(), SituationDatabase.Enums.SituationCategory.Goodplay, x => x.EffectiveHeGrenade);
-            });
+            services.AddTransient<ISituationManager, EffectiveHeGrenadeManager>();
             #endregion
 
             #region Other worker services

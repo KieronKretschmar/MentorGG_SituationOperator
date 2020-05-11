@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using SituationDatabase;
 using SituationDatabase.Enums;
-using SituationOperator.PatternDetectors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,11 +43,6 @@ namespace SituationOperator.SituationManagers
         public abstract SituationCategory SituationCategory { get; }
 
         /// <summary>
-        /// The detector for extracting occurences of TSituation.
-        /// </summary>
-        protected abstract IPatternDetector<TSituation> Detector { get; }
-
-        /// <summary>
         /// Selects the table of the SituationDatabase in which occurences of TSituation are stored.
         /// </summary>
         protected abstract Func<SituationContext, DbSet<TSituation>> TableSelector { get; }
@@ -58,7 +52,7 @@ namespace SituationOperator.SituationManagers
         /// </summary>
         public async Task AnalyzeAndUploadAsync(SituationContext context, MatchDataSet matchData)
         {
-            var situations = await Detector.ExtractSituations(matchData);
+            var situations = await ExtractSituationsAsync(matchData);
             var table = TableSelector(context);
             table.AddRange(situations);
             await context.SaveChangesAsync();
@@ -74,38 +68,12 @@ namespace SituationOperator.SituationManagers
             table.RemoveRange(existingEntries);
             await context.SaveChangesAsync();
         }
-    }
 
-    public class DefaultSituationManager<TSituation,TDetector> : ISituationManager
-        where TSituation : class, ISituation
-        where TDetector : IPatternDetector<TSituation>
-    {
-        private readonly Func<SituationContext, DbSet<TSituation>> _tableSelector;
-        private readonly TDetector _detector;
-
-        public DefaultSituationManager(TDetector detector, SituationCategory category, Func<SituationContext, DbSet<TSituation>> tableSelector)
-        {
-            _tableSelector = tableSelector;
-            SituationCategory = category;
-            _detector = detector;
-        }
-
-        public SituationCategory SituationCategory { get; }
-
-
-        public async Task AnalyzeAndUploadAsync(SituationContext context, MatchDataSet matchData)
-        {
-            var situations = await _detector.ExtractSituations(matchData);
-            var table = _tableSelector(context);
-            table.AddRange(situations);
-            await context.SaveChangesAsync();
-        }
-
-        public async Task ClearTableAsync(SituationContext context, long matchId)
-        {
-            var entries = _tableSelector(context).Where(x => x.MatchId == matchId);
-            context.RemoveRange(entries);
-            await context.SaveChangesAsync();
-        }
+        /// <summary>
+        /// Returns situations that implement the specific pattern.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        protected abstract Task<IEnumerable<TSituation>> ExtractSituationsAsync(MatchDataSet data);
     }
 }
