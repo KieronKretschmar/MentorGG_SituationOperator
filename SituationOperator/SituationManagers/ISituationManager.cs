@@ -23,12 +23,14 @@ namespace SituationOperator.SituationManagers
         /// <summary>
         /// Extracts situations from the data and uploads it to the database.
         /// </summary>
-        Task AnalyzeAndUploadAsync(SituationContext context, MatchDataSet matchData);
+        Task AnalyzeAndUploadAsync(MatchDataSet matchData);
 
         /// <summary>
         /// Clears the table of the SituationDatabase in which occurences of TSituation are stored.
         /// </summary>
-        Task ClearTableAsync(SituationContext context, long matchId);
+        Task ClearTableAsync(long matchId);
+
+        Task<List<ISituation>> LoadSituations(long matchId);
     }
 
     /// <summary>
@@ -37,6 +39,13 @@ namespace SituationOperator.SituationManagers
     /// <typeparam name="TSituation">The type of Situation</typeparam>
     public abstract class SituationManager<TSituation> : ISituationManager where TSituation : class, ISituation
     {
+        private readonly SituationContext _context;
+
+        public SituationManager(SituationContext context)
+        {
+            _context = context;
+        }
+
         /// <summary>
         /// Identifies the type of situation.
         /// </summary>
@@ -50,23 +59,31 @@ namespace SituationOperator.SituationManagers
         /// <summary>
         /// Extracts situations from the data and uploads it to the database.
         /// </summary>
-        public async Task AnalyzeAndUploadAsync(SituationContext context, MatchDataSet matchData)
+        public async Task AnalyzeAndUploadAsync(MatchDataSet matchData)
         {
             var situations = await ExtractSituationsAsync(matchData);
-            var table = TableSelector(context);
+            var table = TableSelector(_context);
             table.AddRange(situations);
-            await context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
         /// <summary>
         /// Clears the table of the SituationDatabase in which occurences of TSituation are stored.
         /// </summary>
-        public async Task ClearTableAsync(SituationContext context, long matchId)
+        public async Task ClearTableAsync(long matchId)
         {
-            var table = TableSelector(context);
+            var table = TableSelector(_context);
             var existingEntries = table.Where(x => x.MatchId == matchId);
             table.RemoveRange(existingEntries);
-            await context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<ISituation>> LoadSituations(long matchId)
+        {
+            var table = TableSelector(_context);
+            var existingEntries = table.Where(x => x.MatchId == matchId);
+            var res = await existingEntries.Select(x => x as ISituation).ToListAsync();
+            return res;
         }
 
         /// <summary>

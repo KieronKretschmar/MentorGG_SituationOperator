@@ -53,10 +53,10 @@ namespace SituationOperator
                 try
                 {
                     // Ensure no situations of this match from previous runs are in the table
-                    await situationManager.ClearTableAsync(_context, matchData.MatchId);
+                    await situationManager.ClearTableAsync(matchData.MatchId);
 
                     // Add situations to context
-                    await situationManager.AnalyzeAndUploadAsync(_context, matchData);
+                    await situationManager.AnalyzeAndUploadAsync(matchData);
                 }
                 catch (Exception e)
                 {

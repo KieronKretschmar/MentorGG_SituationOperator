@@ -22,8 +22,7 @@ namespace SituationOperator.SituationManagers.GoodPlays
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="detector">Detector for this Situation</param>
-        public EffectiveHeGrenadeManager(IServiceProvider sp, ILogger<EffectiveHeGrenadeManager> logger)
+        public EffectiveHeGrenadeManager(IServiceProvider sp, ILogger<EffectiveHeGrenadeManager> logger, SituationContext context) : base(context)
         {
             _sp = sp;
             _logger = logger;

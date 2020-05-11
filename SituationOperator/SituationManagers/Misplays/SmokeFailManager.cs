@@ -24,8 +24,7 @@ namespace SituationOperator.SituationManagers.Misplays
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="detector">Detector for this Situation</param>
-        public SmokeFailManager(IServiceProvider sp, ILogger<SmokeFailManager> logger)
+        public SmokeFailManager(IServiceProvider sp, ILogger<SmokeFailManager> logger, SituationContext context) : base(context)
         {
             _sp = sp;
             _logger = logger;
