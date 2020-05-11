@@ -57,9 +57,6 @@ namespace SituationOperator
 
                     // Add situations to context
                     await situationManager.AnalyzeAndUploadAsync(_context, matchData);
-
-                    // Save changes to database
-                    await _context.SaveChangesAsync();
                 }
                 catch (Exception e)
                 {
