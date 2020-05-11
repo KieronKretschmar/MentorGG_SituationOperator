@@ -19,5 +19,16 @@ namespace SituationOperator.Helpers
         {
             return matchData.RoundStatsList.Single(x => x.Round == entity.Round);
         }
+
+        /// <summary>
+        /// Gets the Damage entities dealt by a HE grenade.
+        /// </summary>
+        /// <param name="matchData"></param>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public static List<Damage> DamagesByHe(this MatchDataSet matchData, He entity)
+        {
+            return matchData.DamageList.Where(x => x.HeGrenadeId == entity.GrenadeId).ToList();
+        }
     }
 }
