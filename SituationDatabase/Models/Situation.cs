@@ -10,6 +10,17 @@ namespace SituationDatabase.Models
     /// </summary>
     public abstract class Situation : ISituation
     {
+        /// <summary>
+        /// Parameterless constructor required by EF Core.
+        /// </summary>
+        public Situation()
+        {
+
+        }
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public Situation(long matchId, short round, int startTime)
         {
             MatchId = matchId;

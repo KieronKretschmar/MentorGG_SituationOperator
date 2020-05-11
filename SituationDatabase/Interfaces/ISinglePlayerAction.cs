@@ -10,7 +10,7 @@ namespace SituationDatabase
     public interface ISinglePlayerSituation : ISituation
     {
         /// <summary>
-        /// SteamId of the player who carried out the action.
+        /// SteamId of the acting player.
         /// </summary>
         public long SteamId { get; set; }
     }

@@ -8,6 +8,17 @@ namespace SituationDatabase.Models
 {
     public class EffectiveHeGrenade : SinglePlayerSituation, ISinglePlayerSituation
     {
+        /// <summary>
+        /// Parameterless constructor required by EF Core.
+        /// </summary>
+        public EffectiveHeGrenade()
+        {
+
+        }
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public EffectiveHeGrenade(He he, List<Damage> damages) : base(he.MatchId, he.Round, TrajectoryHelper.GetThrowTime(he), he.PlayerId)
         {
             EnemiesHit = damages.Where(x => !x.TeamAttack).Count();
@@ -15,7 +26,6 @@ namespace SituationDatabase.Models
             TotalTeamDamage = damages.Where(x => x.TeamAttack).Select(x => x.AmountHealth).Sum();
         }
 
-        public long SteamId { get; set; }
         public int EnemiesHit { get; set; }
         public int TotalEnemyDamage { get; set; }
         public int TotalTeamDamage { get; set; }
