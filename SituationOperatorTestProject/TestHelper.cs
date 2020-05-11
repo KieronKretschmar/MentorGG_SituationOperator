@@ -8,6 +8,7 @@ using SituationDatabase;
 using SituationOperator;
 using SituationOperator.Communications;
 using SituationOperator.SituationManagers;
+using SituationOperator.SituationManagers.GoodPlays;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -62,27 +63,47 @@ namespace SituationOperatorTestProject
             }
         }
 
-        public static SituationContext GetTestContext()
+        public static SituationContext GetInMemoryContext()
         {
             var context = new SituationContext(TestDbContextOptions);
             return context;
         }
 
+        /// <summary>
+        /// Provides a context for a mysql database, using the connectionstring in TestData/ConnectionString.txt.
+        /// </summary>
+        /// <returns></returns>
+        public static SituationContext GetRealContext()
+        {
+            var connStringPath = GetTestFilePath("ConnectionString.txt");
+            var connString = File.ReadAllText(connStringPath);
+            var options = new DbContextOptionsBuilder<SituationContext>()
+                .UseMySql(connString)
+                .Options;
+            var context = new SituationContext(options);
+            return context;
+        }
+
+
         #endregion
 
         #region Services
-        public static IEnumerable<ISituationManager> GetSituationManagers()
+        public static IEnumerable<ISituationManager> GetSituationManagers(SituationContext context)
         {
             return new List<ISituationManager>()
             {
+                new EffectiveHeGrenadeManager(
+                    new Mock<IServiceProvider>().Object,
+                    GetMockLogger<EffectiveHeGrenadeManager>(),
+                    context)
             };
         }
 
-        public static ISituationManagerProvider GetRealProvider()
+        public static ISituationManagerProvider GetRealProvider(SituationContext context)
         {
             return new SituationManagerProvider(
                 GetMockLogger<SituationManagerProvider>(),
-                GetSituationManagers()
+                GetSituationManagers(context)
                 );
         }
 
