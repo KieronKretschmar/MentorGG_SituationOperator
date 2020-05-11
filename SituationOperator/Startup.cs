@@ -29,11 +29,14 @@ using SituationOperator.SituationManagers;
 using SituationOperator.SituationManagers.Misplays;
 using SituationDatabase.Models;
 using SituationOperator.SituationManagers.GoodPlays;
+using Moq;
 
 namespace SituationOperator
 {
     public class Startup
     {
+        private bool IsDevelopment => Configuration.GetValue<string>("ASPNETCORE_ENVIRONMENT") == Environments.Development;
+        
         private const ushort AMQP_PREFETCH_COUNT_DEFAULT = 0;
 
         /// <summary>
@@ -144,29 +147,42 @@ namespace SituationOperator
             #endregion
 
             #region Rabbit
-            // Read environment variables
-            var AMQP_URI = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_URI");
-
-            // Consumer for instructions from Fanout / DemoCentral
-            var AMQP_EXCHANGE_NAME = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_EXCHANGE_NAME");
-            var AMQP_PREFETCH_COUNT = GetOptionalEnvironmentVariable<ushort>(Configuration, "AMQP_PREFETCH_COUNT", AMQP_PREFETCH_COUNT_DEFAULT);
-            var AMQP_EXCHANGE_CONSUME_QUEUE = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_EXCHANGE_CONSUME_QUEUE");
-            var exchangeQueue = new ExchangeQueueConnection(AMQP_URI, AMQP_EXCHANGE_NAME, AMQP_EXCHANGE_CONSUME_QUEUE);
-            services.AddHostedService<RabbitConsumer>(serviceProvider =>
+            if(IsDevelopment && GetOptionalEnvironmentVariable<bool>(Configuration, "MOCK_RABBIT", false))
             {
-                return new RabbitConsumer(
-                    serviceProvider,
-                    exchangeQueue,
-                    AMQP_PREFETCH_COUNT);
-            });
-
-            // Producer for Reports to DemoCentral
-            var AMQP_CALLBACK_QUEUE = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_CALLBACK_QUEUE");
-            var callbackQueue = new QueueConnection(AMQP_URI, AMQP_CALLBACK_QUEUE);
-            services.AddTransient<IProducer<SituationOperatorResponseModel>>(sp =>
+                Console.WriteLine("Using mocked rabbit classes.");
+                // Use mocked producer
+                services.AddTransient<IProducer<SituationOperatorResponseModel>>(services =>
+                {
+                    var mockProducer = new Mock<IProducer<SituationOperatorResponseModel>>().Object;
+                    return mockProducer;
+                });
+            }
+            else
             {
-                return new Producer<SituationOperatorResponseModel>(callbackQueue);
-            });
+                // Read environment variables
+                var AMQP_URI = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_URI");
+
+                // Consumer for instructions from Fanout / DemoCentral
+                var AMQP_EXCHANGE_NAME = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_EXCHANGE_NAME");
+                var AMQP_PREFETCH_COUNT = GetOptionalEnvironmentVariable<ushort>(Configuration, "AMQP_PREFETCH_COUNT", AMQP_PREFETCH_COUNT_DEFAULT);
+                var AMQP_EXCHANGE_CONSUME_QUEUE = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_EXCHANGE_CONSUME_QUEUE");
+                var exchangeQueue = new ExchangeQueueConnection(AMQP_URI, AMQP_EXCHANGE_NAME, AMQP_EXCHANGE_CONSUME_QUEUE);
+                services.AddHostedService<RabbitConsumer>(serviceProvider =>
+                {
+                    return new RabbitConsumer(
+                        serviceProvider,
+                        exchangeQueue,
+                        AMQP_PREFETCH_COUNT);
+                });
+
+                // Producer for Reports to DemoCentral
+                var AMQP_DEMOCENTRAL_REPLY = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_DEMOCENTRAL_REPLY");
+                var callbackQueue = new QueueConnection(AMQP_URI, AMQP_DEMOCENTRAL_REPLY);
+                services.AddTransient<IProducer<SituationOperatorResponseModel>>(sp =>
+                {
+                    return new Producer<SituationOperatorResponseModel>(callbackQueue);
+                });
+            }
             #endregion
 
             #region ZoneReader
