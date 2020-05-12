@@ -21,8 +21,9 @@ namespace SituationDatabase
         }
         #region MetaData
         public virtual DbSet<MatchEntity> Match { get; set; }
-        public virtual DbSet<PlayerMatchEntity> PlayerMatch { get; set; }
         public virtual DbSet<RoundEntity> Round { get; set; }
+        public virtual DbSet<PlayerMatchEntity> PlayerMatch { get; set; }
+        public virtual DbSet<PlayerRoundEntity> PlayerRound { get; set; }
         #endregion
 
         #region Misplays - Singleplayer
@@ -85,8 +86,14 @@ namespace SituationDatabase
 
                 entity.HasIndex(e => e.MatchId);
             });
-            #endregion
 
+            modelBuilder.Entity<PlayerRoundEntity>(entity =>
+            {
+                entity.HasKey(e => new { e.MatchId, e.Round, e.SteamId });
+
+                entity.HasIndex(e => e.MatchId);
+            });
+            #endregion
 
             #region Misplays - SinglePlayer
             modelBuilder.AddSinglePlayerSituation<SmokeFail>();
