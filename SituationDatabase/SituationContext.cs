@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SituationDatabase.Models;
+using SituationDatabase.Models.Highlights;
+using SituationDatabase.Models.Misplays;
 using System;
 using System.Collections.Generic;
 using System.Text;

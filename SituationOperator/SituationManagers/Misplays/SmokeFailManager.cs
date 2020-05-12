@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using SituationDatabase;
 using SituationDatabase.Enums;
 using SituationDatabase.Models;
+using SituationDatabase.Models.Misplays;
 using System;
 using System.Collections.Generic;
 using System.Linq;

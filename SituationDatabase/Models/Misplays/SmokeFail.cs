@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace SituationDatabase.Models
+namespace SituationDatabase.Models.Misplays
 {
     public class SmokeFail : SinglePlayerSituation, ISinglePlayerSituation
     {

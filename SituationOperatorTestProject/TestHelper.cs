@@ -8,7 +8,7 @@ using SituationDatabase;
 using SituationOperator;
 using SituationOperator.Communications;
 using SituationOperator.SituationManagers;
-using SituationOperator.SituationManagers.GoodPlays;
+using SituationOperator.SituationManagers.Highlights;
 using System;
 using System.Collections.Generic;
 using System.IO;
