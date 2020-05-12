@@ -15,8 +15,9 @@ namespace SituationOperator.Models
         public List<List<ISituation>> Misplays { get; set; }
         public List<List<ISituation>> Highlights { get; set; }
 
-        public MatchSituationsModel()
+        public MatchSituationsModel(long matchId)
         {
+            MatchId = matchId;
             Misplays = new List<List<ISituation>>();
             Highlights = new List<List<ISituation>>();
         }

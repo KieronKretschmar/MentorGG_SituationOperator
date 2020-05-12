@@ -36,7 +36,7 @@ namespace SituationOperator.Controllers
                 return NotFound();
             }
 
-            var model = new MatchSituationsModel();
+            var model = new MatchSituationsModel(matchId);
 
             var managers = _managerProvider.GetManagers(Enums.SituationTypeCollection.ProductionAccessDefault);
 
