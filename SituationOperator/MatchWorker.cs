@@ -1,6 +1,7 @@
 ﻿using MatchEntities;
 using Microsoft.Extensions.Logging;
 using SituationDatabase;
+using SituationDatabase.Models;
 using SituationOperator.SituationManagers;
 using System;
 using System.Collections.Generic;
@@ -47,14 +48,14 @@ namespace SituationOperator
             var managers = _managerProvider.GetManagers(Enums.SituationTypeCollection.ProductionExtractionDefault);
             var res = new ExtractionResult(managers);
 
+            await RemoveMatchFromDatabaseAsync(matchData.MatchId);
+            await UploadMetaDataAsync(matchData);
+
             // Iterate through all situationManagers to extract and upload to their respective tables
             foreach (var situationManager in managers)
             {
                 try
                 {
-                    // Ensure no situations of this match from previous runs are in the table
-                    await situationManager.ClearTableAsync(matchData.MatchId);
-
                     // Add situations to context
                     await situationManager.AnalyzeAndUploadAsync(matchData);
                 }
@@ -66,6 +67,44 @@ namespace SituationOperator
             }
 
             return res;
+        }
+
+        /// <summary>
+        /// Uploads data from matches
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        private async Task UploadMetaDataAsync(MatchDataSet data)
+        {
+            var match = new MatchEntity(data.MatchStats);
+            _context.Match.Add(match);
+
+            var rounds = data.RoundStatsList.Select(x => new RoundEntity(x));
+            _context.Round.AddRange(rounds);
+
+            var playerMatches = data.PlayerMatchStatsList.Select(x => new PlayerMatchEntity(x));
+            _context.PlayerMatch.AddRange(playerMatches);
+
+            var playerRounds = data.PlayerRoundStatsList.Select(x => new PlayerRoundEntity(x));
+            _context.PlayerRound.AddRange(playerRounds);
+
+            await _context.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Removes all data from the given match.
+        /// </summary>
+        /// <param name="matchId"></param>
+        /// <returns></returns>
+        public async Task RemoveMatchFromDatabaseAsync(long matchId)
+        {
+            var match = _context.Match.SingleOrDefault(x=>x.MatchId == matchId);
+            if(match != null)
+            {
+                // Remove Match entry, thereby removing all other entities through cascading ForeignKeys
+                _context.Match.Remove(match);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 
