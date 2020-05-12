@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SituationDatabase;
 using SituationOperator.Models;
 
 namespace SituationOperator.Controllers
@@ -13,10 +14,12 @@ namespace SituationOperator.Controllers
     [ApiController]
     public class MatchController : ControllerBase
     {
+        private readonly SituationContext _context;
         private readonly ISituationManagerProvider _managerProvider;
 
-        public MatchController(ISituationManagerProvider managerProvider)
+        public MatchController(SituationContext context, ISituationManagerProvider managerProvider)
         {
+            _context = context;
             _managerProvider = managerProvider;
         }
 
@@ -28,6 +31,11 @@ namespace SituationOperator.Controllers
         [HttpGet("{matchId}/situations")]
         public async Task<ActionResult<MatchSituationsModel>> MatchSituationsAsync(long matchId)
         {
+            if(!_context.Match.Any(x=>x.MatchId == matchId))
+            {
+                return NotFound();
+            }
+
             var model = new MatchSituationsModel();
 
             var managers = _managerProvider.GetManagers(Enums.SituationTypeCollection.ProductionAccessDefault);
