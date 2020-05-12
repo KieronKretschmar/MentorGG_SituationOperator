@@ -102,12 +102,12 @@ namespace SituationOperatorTestProject
                 );
 
             // RUN
-            // analyze match
+            // Analyze match
             var firstResult = await matchWorker.ExtractAndUploadSituationsAsync(matchDataSet);
 
             var effectiveHesAfterFirstRun = context.EffectiveHeGrenade.ToList();
 
-            // analyze match again
+            // Analyze match again
             var secondResult = await matchWorker.ExtractAndUploadSituationsAsync(matchDataSet);
             var effectiveHesAfterSecondRun = context.EffectiveHeGrenade.ToList();
 
@@ -128,6 +128,55 @@ namespace SituationOperatorTestProject
                     && first.Round == second.Round
                     && first.TotalEnemyDamage == second.TotalEnemyDamage;
             }
+        }
+
+        /// <summary>
+        /// Runs MatchWorker on match and calls RemoveMatchAsync, and asserts that metadata as well as a sample of Situations were removed from database.
+        /// 
+        /// Notes:
+        /// Assertions are made on one EffectiveHeGrenades only.
+        /// </summary>
+        /// <param name="jsonMatchDataPath"></param>
+        /// <param name="connectionString">If provided, uses real database.</param>
+        /// <returns></returns>
+        [DataRow("TestDemo_Valve4.json")]
+        [DataRow("TestDemo_Valve3.json")]
+        [DataRow("TestDemo_Valve2.json")]
+        [DataRow("TestDemo_Valve1.json")]
+        [DataTestMethod]
+        public async Task RemoveMatchTest(string jsonMatchDataPath)
+        {
+            // ARRANGE
+            var matchDataSet = TestHelper.GetTestMatchData(jsonMatchDataPath);
+
+            // use Real or InMemory SituationContext
+            SituationContext context = TestHelper.GetInMemoryContext();
+
+            // Get managerProvider with some SituationManagers
+            var managerProvider = TestHelper.GetRealProvider(context);
+
+            var matchWorker = new MatchWorker(
+                TestHelper.GetMockLogger<MatchWorker>(),
+                context,
+                managerProvider
+                );
+
+            // RUN
+            // Analyze match
+            await matchWorker.ExtractAndUploadSituationsAsync(matchDataSet);
+
+            // Remove match
+            await matchWorker.RemoveMatchFromDatabaseAsync(matchDataSet.MatchId);
+
+            // ASSERT
+            // Assert that no metadata is still in database
+            Assert.IsFalse(context.Match.Any());
+            Assert.IsFalse(context.Round.Any());
+            Assert.IsFalse(context.PlayerMatch.Any());
+            Assert.IsFalse(context.PlayerRound.Any());
+
+            // Assert that no Situation is still in database, using effectiveHeGrenades as sample
+            Assert.IsFalse(context.EffectiveHeGrenade.Any());
         }
     }
 }
