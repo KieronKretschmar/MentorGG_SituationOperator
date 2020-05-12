@@ -52,7 +52,7 @@ namespace SituationOperator.Helpers
             context.Response.StatusCode = (int)code;
 
             // Determine the message to be returned
-            var msg = "Error in MatchRetriever";
+            var msg = "Error in SituationOperator";
             context.Response.ContentType = "text/plain";
             await context.Response.WriteAsync(msg);
         }
