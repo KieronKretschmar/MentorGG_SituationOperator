@@ -1,5 +1,6 @@
 ﻿using MatchEntities;
 using MatchEntities.Enums;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -142,8 +143,13 @@ namespace SituationDatabase.Models
         public float? AvgRank { get; set; }
 
         #region Navigational Properties
+        [JsonIgnore]
         public virtual ICollection<RoundEntity> Round { get; set; }
+
+        [JsonIgnore]
         public virtual ICollection<PlayerMatchEntity> PlayerMatch { get; set; }
+
+        [JsonIgnore]
         public virtual ICollection<PlayerRoundEntity> PlayerRound { get; set; }
         #endregion
     }

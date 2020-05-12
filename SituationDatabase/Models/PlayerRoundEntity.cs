@@ -1,5 +1,6 @@
 ﻿using MatchEntities;
 using MatchEntities.Enums;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -46,8 +47,13 @@ namespace SituationDatabase.Models
 
 
         #region Navigational Properties
+        [JsonIgnore]
         public virtual MatchEntity Match { get; set; }
+
+        [JsonIgnore]
         public virtual PlayerMatchEntity PlayerMatch { get; set; }
+
+        [JsonIgnore]
         public virtual RoundEntity RoundEntity { get; set; }
         #endregion
     }

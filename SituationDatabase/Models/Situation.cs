@@ -1,4 +1,5 @@
 ﻿using MatchEntities;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -51,11 +52,13 @@ namespace SituationDatabase.Models
         /// <summary>
         /// Navigational Property.
         /// </summary>
+        [JsonIgnore]
         public virtual MatchEntity Match { get; set; }
 
         /// <summary>
         /// Navigational Property.
         /// </summary>
+        [JsonIgnore]
         public virtual RoundEntity RoundEntity { get; set; }
     }
 }

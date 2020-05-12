@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -28,11 +29,13 @@ namespace SituationDatabase.Models
         /// <summary>
         /// Navigational Property.
         /// </summary>
+        [JsonIgnore]
         public virtual PlayerMatchEntity PlayerMatch { get; set; }
 
         /// <summary>
         /// Navigational Property.
         /// </summary>
+        [JsonIgnore]
         public virtual PlayerRoundEntity PlayerRound { get; set; }
     }
 }
