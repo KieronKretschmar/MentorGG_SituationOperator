@@ -29,10 +29,10 @@ namespace SituationOperatorTestProject
         /// <param name="jsonMatchDataPath"></param>
         /// <param name="connectionString">If provided, uses real database.</param>
         /// <returns></returns>
-        [DataRow("TestDemo_Valve4.json", true)]
-        [DataRow("TestDemo_Valve3.json", true)]
-        [DataRow("TestDemo_Valve2.json", true)]
-        [DataRow("TestDemo_Valve1.json", true)]
+        [DataRow("TestDemo_Valve4.json", false)]
+        [DataRow("TestDemo_Valve3.json", false)]
+        [DataRow("TestDemo_Valve2.json", false)]
+        [DataRow("TestDemo_Valve1.json", false)]
         [DataTestMethod]
         public async Task AnalysisTest(string jsonMatchDataPath, bool useRealDatabase = false)
         {
@@ -60,9 +60,14 @@ namespace SituationOperatorTestProject
             Assert.IsTrue(result.AttemptedManagers > 0);
             Assert.IsTrue(result.FailedManagers < result.AttemptedManagers);
 
-            // Assert that at least some data was inserted to database
-            var effectiveHes = context.EffectiveHeGrenade.ToList();
-            Assert.IsTrue(effectiveHes.Count > 0);
+            // Assert that meta data was inserted into database
+            Assert.IsTrue(context.Match.Count() == 1);
+            Assert.IsTrue(context.Round.Count() > 0);
+            Assert.IsTrue(context.PlayerMatch.Count() > 0);
+            Assert.IsTrue(context.PlayerRound.Count() > 0);
+
+            // Assert that at least some situation data was inserted to database
+            Assert.IsTrue(context.EffectiveHeGrenade.Count() > 0);
         }
 
         /// <summary>
