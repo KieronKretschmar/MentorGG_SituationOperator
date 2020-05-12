@@ -32,4 +32,26 @@ namespace SituationDatabase.Models
         public int TotalEnemyDamage { get; set; }
         public int TotalTeamDamage { get; set; }
     }
+
+    #region Partial definitions of metadata tables for navigational properties
+    public partial class MatchEntity
+    {
+        public virtual ICollection<EffectiveHeGrenade> EffectiveHeGrenade { get; set; }
+    }
+
+    public partial class RoundEntity
+    {
+        public virtual ICollection<EffectiveHeGrenade> EffectiveHeGrenade { get; set; }
+    }
+
+    public partial class PlayerMatchEntity
+    {
+        public virtual ICollection<EffectiveHeGrenade> EffectiveHeGrenade { get; set; }
+    }
+
+    public partial class PlayerRoundEntity
+    {
+        public virtual ICollection<EffectiveHeGrenade> EffectiveHeGrenade { get; set; }
+    }
+    #endregion
 }

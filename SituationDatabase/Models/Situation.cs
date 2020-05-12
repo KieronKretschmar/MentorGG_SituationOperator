@@ -47,5 +47,15 @@ namespace SituationDatabase.Models
         /// Time in which the situation started, referencing the entire matches timeline.
         /// </summary>
         public int StartTime { get; set; }
+
+        /// <summary>
+        /// Navigational Property.
+        /// </summary>
+        public virtual MatchEntity Match { get; set; }
+
+        /// <summary>
+        /// Navigational Property.
+        /// </summary>
+        public virtual RoundEntity RoundEntity { get; set; }
     }
 }

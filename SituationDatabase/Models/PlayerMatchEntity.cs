@@ -11,7 +11,7 @@ namespace SituationDatabase.Models
     /// 
     /// Tightly coupled to MatchEntities.PlayerMatchStats, so be aware of redundancy to MatchDb.
     /// </summary>
-    public class PlayerMatchEntity
+    public partial class PlayerMatchEntity
     {
         /// <summary>
         /// Parameterless constructor required by EF Core.

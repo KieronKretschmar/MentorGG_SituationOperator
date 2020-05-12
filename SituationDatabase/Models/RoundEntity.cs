@@ -11,7 +11,7 @@ namespace SituationDatabase.Models
     /// 
     /// Tightly coupled to MatchEntities.RoundStats, so be aware of redundancy to MatchDb.
     /// </summary>
-    public class RoundEntity
+    public partial class RoundEntity
     {
         /// <summary>
         /// Parameterless constructor required by EF Core.

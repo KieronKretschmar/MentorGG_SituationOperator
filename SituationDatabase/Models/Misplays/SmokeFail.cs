@@ -29,4 +29,28 @@ namespace SituationDatabase.Models
         public int LineupId { get; set; }
         public string LineupName { get; set; }
     }
+
+
+    #region Partial definitions of metadata tables for navigational properties
+    public partial class MatchEntity
+    {
+        public virtual ICollection<SmokeFail> SmokeFail { get; set; }
+    }
+
+    public partial class RoundEntity
+    {
+        public virtual ICollection<SmokeFail> SmokeFail { get; set; }
+    }
+
+    public partial class PlayerMatchEntity
+    {
+        public virtual ICollection<SmokeFail> SmokeFail { get; set; }
+    }
+
+    public partial class PlayerRoundEntity
+    {
+        public virtual ICollection<SmokeFail> SmokeFail { get; set; }
+    }
+    #endregion
 }
+

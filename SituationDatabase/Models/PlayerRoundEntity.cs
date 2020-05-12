@@ -11,7 +11,7 @@ namespace SituationDatabase.Models
     /// 
     /// Tightly coupled to MatchEntities.PlayerMatchStats, so be aware of redundancy to MatchDb.
     /// </summary>
-    public class PlayerRoundEntity
+    public partial class PlayerRoundEntity
     {
         /// <summary>
         /// Parameterless constructor required by EF Core.
@@ -28,7 +28,7 @@ namespace SituationDatabase.Models
         public PlayerRoundEntity(PlayerRoundStats playerRoundStats)
         {
             MatchId = playerRoundStats.MatchId;
-            RoundNumber = playerRoundStats.Round;
+            Round = playerRoundStats.Round;
             SteamId = playerRoundStats.PlayerId;
             PlayedEquipmentValue = playerRoundStats.PlayedEquipmentValue;
             MoneyInitial = playerRoundStats.MoneyInitial;
@@ -37,11 +37,7 @@ namespace SituationDatabase.Models
         }
 
         public long MatchId { get; set; }
-
-        /// <summary>
-        /// Unconventional naming of this property because property named Round already exists.
-        /// </summary>
-        public short RoundNumber { get; set; }
+        public short Round { get; set; }
         public long SteamId { get; set; }
         public int PlayedEquipmentValue { get; set; }
         public int MoneyInitial { get; set; }
@@ -52,7 +48,7 @@ namespace SituationDatabase.Models
         #region Navigational Properties
         public virtual MatchEntity Match { get; set; }
         public virtual PlayerMatchEntity PlayerMatch { get; set; }
-        public virtual RoundEntity Round { get; set; }
+        public virtual RoundEntity RoundEntity { get; set; }
         #endregion
     }
 }

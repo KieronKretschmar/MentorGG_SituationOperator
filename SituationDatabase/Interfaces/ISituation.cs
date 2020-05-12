@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SituationDatabase.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -28,5 +29,15 @@ namespace SituationDatabase
         /// Time in which the situation started, referencing the entire matches timeline.
         /// </summary>
         public int StartTime { get; set; }
+
+        /// <summary>
+        /// Navigational Property.
+        /// </summary>
+        public MatchEntity Match { get; set; }
+
+        /// <summary>
+        /// Navigational Property.
+        /// </summary>
+        public RoundEntity RoundEntity { get; set; }
     }
 }

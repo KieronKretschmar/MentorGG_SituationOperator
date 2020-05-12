@@ -97,7 +97,7 @@ namespace SituationDatabase
 
             modelBuilder.Entity<PlayerRoundEntity>(entity =>
             {
-                entity.HasKey(x => new { x.MatchId, x.RoundNumber, x.SteamId });
+                entity.HasKey(x => new { x.MatchId, x.Round, x.SteamId });
 
                 entity.HasIndex(x => x.MatchId);
 
@@ -106,9 +106,9 @@ namespace SituationDatabase
                     .HasForeignKey(x => x.MatchId)
                     .IsRequired();
 
-                entity.HasOne(x => x.Round)
+                entity.HasOne(x => x.RoundEntity)
                     .WithMany(x => x.PlayerRound)
-                    .HasForeignKey(x => new { x.MatchId, x.RoundNumber })
+                    .HasForeignKey(x => new { x.MatchId, x.Round })
                     .IsRequired();
 
                 entity.HasOne(x => x.PlayerMatch)
@@ -120,18 +120,27 @@ namespace SituationDatabase
             #endregion
 
             #region Misplays - SinglePlayer
-            modelBuilder.AddSinglePlayerSituation<SmokeFail>();
+            modelBuilder.AddSinglePlayerSituation<SmokeFail>("SmokeFail");
             #endregion
 
             #region Goodplays - SinglePlayer
-            modelBuilder.AddSinglePlayerSituation<EffectiveHeGrenade>();
+            modelBuilder.AddSinglePlayerSituation<EffectiveHeGrenade>("EffectiveHeGrenade");
             #endregion
         }
     }
 
     public static class ModelBuilderExtensions
     {
-        public static void AddSituation<TSituation>(this ModelBuilder modelBuilder)
+        /// <summary>
+        /// Configures the modelBuilder for the given Situation, including PrimaryKeys, Indexes and ForeignKeys.
+        /// </summary>
+        /// <typeparam name="TSituation">Type of the Situation</typeparam>
+        /// <param name="modelBuilder">ModelBuilder used in OnModelCreating</param>
+        /// <param name="matchPropertySelector">Selects the navigational property from MatchEntity to this Situations table</param>
+        public static void AddSituation<TSituation>(
+            this ModelBuilder modelBuilder, 
+            string tableName
+            )
             where TSituation : class, ISituation
         {
             modelBuilder.Entity<TSituation>(entity =>
@@ -141,21 +150,40 @@ namespace SituationDatabase
                 entity.HasIndex(e => e.MatchId);
 
                 entity.Property(x => x.Id).ValueGeneratedOnAdd();
+
+                entity.HasOne(x => x.Match)
+                    .WithMany(tableName)
+                    .HasForeignKey(x => x.MatchId)
+                    .IsRequired();
+
+                entity.HasOne(x => x.RoundEntity)
+                    .WithMany(tableName)
+                    .HasForeignKey(x => new { x.MatchId, x.Round })
+                    .IsRequired();
             });
         }
 
-        public static void AddSinglePlayerSituation<TSituation>(this ModelBuilder modelBuilder)
+        public static void AddSinglePlayerSituation<TSituation>(
+            this ModelBuilder modelBuilder,
+            string tableName
+            )
             where TSituation : class, ISinglePlayerSituation
         {
+            AddSituation<TSituation>(modelBuilder, tableName);
+
             modelBuilder.Entity<TSituation>(entity =>
             {
-                entity.HasKey(e => new { e.MatchId, e.Id });
-
-                entity.Property(x => x.Id).ValueGeneratedOnAdd();
-
-                entity.HasIndex(e => e.MatchId);
-
                 entity.HasIndex(e => e.SteamId);
+
+                entity.HasOne(x => x.PlayerMatch)
+                    .WithMany(tableName)
+                    .HasForeignKey(x => new { x.MatchId, x.SteamId })
+                    .IsRequired();
+
+                entity.HasOne(x => x.PlayerRound)
+                    .WithMany(tableName)
+                    .HasForeignKey(x => new { x.MatchId, x.Round, x.SteamId })
+                    .IsRequired();
             });
         }
     }

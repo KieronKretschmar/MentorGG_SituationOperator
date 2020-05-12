@@ -24,5 +24,15 @@ namespace SituationDatabase.Models
 
         /// <inheritdoc/>
         public long SteamId { get; set; }
+
+        /// <summary>
+        /// Navigational Property.
+        /// </summary>
+        public virtual PlayerMatchEntity PlayerMatch { get; set; }
+
+        /// <summary>
+        /// Navigational Property.
+        /// </summary>
+        public virtual PlayerRoundEntity PlayerRound { get; set; }
     }
 }

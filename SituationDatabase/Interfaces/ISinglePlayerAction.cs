@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SituationDatabase.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -13,5 +14,15 @@ namespace SituationDatabase
         /// SteamId of the acting player.
         /// </summary>
         public long SteamId { get; set; }
+
+        /// <summary>
+        /// Navigational Property.
+        /// </summary>
+        public PlayerMatchEntity PlayerMatch { get; set; }
+
+        /// <summary>
+        /// Navigational Property.
+        /// </summary>
+        public PlayerRoundEntity PlayerRound { get; set; }
     }
 }
