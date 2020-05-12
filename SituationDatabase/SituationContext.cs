@@ -17,13 +17,77 @@ namespace SituationDatabase
 
         public SituationContext(DbContextOptions<SituationContext> options) : base(options)
         {
-            
+
         }
+        #region MetaData
+        public virtual DbSet<MatchEntity> Match { get; set; }
+        public virtual DbSet<PlayerMatchEntity> PlayerMatch { get; set; }
+        public virtual DbSet<RoundEntity> Round { get; set; }
+        #endregion
+
+        #region Misplays - Singleplayer
         public virtual DbSet<SmokeFail> SmokeFail { get; set; }
+        #endregion
+
+        #region Goodplays - SinglePlayer
         public virtual DbSet<EffectiveHeGrenade> EffectiveHeGrenade { get; set; }
+        #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            #region MetaData
+            modelBuilder.Entity<MatchEntity>(entity =>
+            {
+                entity.HasKey(e => e.MatchId);
+
+                entity.HasIndex(e => e.MatchId);
+
+                #region TeamStats
+
+                entity.Ignore(x => x.TeamStats);
+
+                // TerroristStarter
+                entity.Property("Score1");
+                entity.Property("RealScore1");
+                entity.Property("NumRoundsT1");
+                entity.Property("NumRoundsCt1");
+                entity.Property("BombPlants1");
+                entity.Property("BombExplodes1");
+                entity.Property("BombDefuses1");
+                entity.Property("MoneyEarned1");
+                entity.Property("MoneySpent1");
+
+                // CtStarter
+                entity.Property("Score2");
+                entity.Property("RealScore2");
+                entity.Property("NumRoundsT2");
+                entity.Property("NumRoundsCt2");
+                entity.Property("BombPlants2");
+                entity.Property("BombExplodes2");
+                entity.Property("BombDefuses2");
+                entity.Property("MoneyEarned2");
+                entity.Property("MoneySpent2");
+
+                #endregion
+
+            });
+
+            modelBuilder.Entity<RoundEntity>(entity =>
+            {
+                entity.HasKey(e => new { e.MatchId, e.Round });
+
+                entity.HasIndex(e => e.MatchId);
+            });
+
+            modelBuilder.Entity<PlayerMatchEntity>(entity =>
+            {
+                entity.HasKey(e => new { e.MatchId, e.SteamId });
+
+                entity.HasIndex(e => e.MatchId);
+            });
+            #endregion
+
+
             #region Misplays - SinglePlayer
             modelBuilder.AddSinglePlayerSituation<SmokeFail>();
             #endregion
