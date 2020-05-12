@@ -30,7 +30,12 @@ namespace SituationOperator.SituationManagers
         /// </summary>
         Task ClearTableAsync(long matchId);
 
-        Task<List<ISituation>> LoadSituations(long matchId);
+        /// <summary>
+        /// Loads all Situations managed by this manager of the given match.
+        /// </summary>
+        /// <param name="matchId"></param>
+        /// <returns></returns>
+        Task<List<ISituation>> LoadSituationsAsync(long matchId);
     }
 
     /// <summary>
@@ -78,7 +83,12 @@ namespace SituationOperator.SituationManagers
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<ISituation>> LoadSituations(long matchId)
+        /// <summary>
+        /// Loads all Situations managed by this manager of the given match.
+        /// </summary>
+        /// <param name="matchId"></param>
+        /// <returns></returns>
+        public async Task<List<ISituation>> LoadSituationsAsync(long matchId)
         {
             var table = TableSelector(_context);
             var existingEntries = table.Where(x => x.MatchId == matchId);
