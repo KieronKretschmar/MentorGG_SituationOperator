@@ -1,7 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SituationDatabase;
 using SituationDatabase.Models;
-using SituationDatabase.Models.Highlights;
 using SituationOperator;
 using SituationOperator.Communications;
 using System.Linq;

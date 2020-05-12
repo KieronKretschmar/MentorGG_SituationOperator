@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace SituationDatabase.Models.Highlights
+namespace SituationDatabase.Models
 {
     public class EffectiveHeGrenade : SinglePlayerSituation, ISinglePlayerSituation
     {

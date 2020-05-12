@@ -26,9 +26,7 @@ using ZoneReader;
 using EquipmentLib;
 using SituationOperator.Communications;
 using SituationOperator.SituationManagers;
-using SituationOperator.SituationManagers.Misplays;
 using SituationDatabase.Models;
-using SituationOperator.SituationManagers.Highlights;
 using StackExchange.Redis;
 using Moq;
 

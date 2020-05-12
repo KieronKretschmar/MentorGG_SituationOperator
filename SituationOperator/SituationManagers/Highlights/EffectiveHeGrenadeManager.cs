@@ -3,14 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SituationDatabase;
 using SituationDatabase.Enums;
-using SituationDatabase.Models.Highlights;
+using SituationDatabase.Models;
 using SituationOperator.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SituationOperator.SituationManagers.Highlights
+namespace SituationOperator.SituationManagers
 {
     /// <summary>
     /// Manager for HE grenades that dealt a lot of damage.
