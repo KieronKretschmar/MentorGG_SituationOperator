@@ -21,6 +21,9 @@ namespace SituationDatabase.Models
 
         }
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public MatchEntity(MatchStats matchStats)
         {
             MatchId = matchStats.MatchId;
@@ -137,5 +140,11 @@ namespace SituationDatabase.Models
         public Source Source { get; set; }
         public GameType GameType { get; set; }
         public float? AvgRank { get; set; }
+
+        #region Navigational Properties
+        public virtual ICollection<RoundEntity> Round { get; set; }
+        public virtual ICollection<PlayerMatchEntity> PlayerMatch { get; set; }
+        public virtual ICollection<PlayerRoundEntity> PlayerRound { get; set; }
+        #endregion
     }
 }

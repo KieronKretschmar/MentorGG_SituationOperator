@@ -21,6 +21,9 @@ namespace SituationDatabase.Models
 
         }
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public RoundEntity(RoundStats roundStats)
         {
             MatchId = roundStats.MatchId;
@@ -45,5 +48,12 @@ namespace SituationDatabase.Models
         public int StartTime { get; set; }
         public int EndTime { get; set; }
         public int RealEndTime { get; set; }
+
+        #region Navigational Properties
+        public virtual MatchEntity Match { get; set; }
+        public virtual PlayerMatchEntity PlayerMatch { get; set; }
+        public virtual ICollection<PlayerRoundEntity> PlayerRound { get; set; }
+        #endregion
     }
 }
+

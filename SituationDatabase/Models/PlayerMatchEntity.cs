@@ -21,6 +21,9 @@ namespace SituationDatabase.Models
 
         }
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public PlayerMatchEntity(PlayerMatchStats playerMatchStats)
         {
             MatchId = playerMatchStats.MatchId;
@@ -41,5 +44,11 @@ namespace SituationDatabase.Models
         public short DeathCount { get; set; }
         public short Score { get; set; }
         public short Mvps { get; set; }
+
+        #region Navigational Properties
+        public virtual MatchEntity Match { get; set; }
+        public virtual ICollection<RoundEntity> Round { get; set; }
+        public virtual ICollection<PlayerRoundEntity> PlayerRound { get; set; }
+        #endregion
     }
 }

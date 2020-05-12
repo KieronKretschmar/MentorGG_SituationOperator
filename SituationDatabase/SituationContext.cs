@@ -39,9 +39,9 @@ namespace SituationDatabase
             #region MetaData
             modelBuilder.Entity<MatchEntity>(entity =>
             {
-                entity.HasKey(e => e.MatchId);
+                entity.HasKey(x => x.MatchId);
 
-                entity.HasIndex(e => e.MatchId);
+                entity.HasIndex(x => x.MatchId);
 
                 #region TeamStats
 
@@ -75,23 +75,49 @@ namespace SituationDatabase
 
             modelBuilder.Entity<RoundEntity>(entity =>
             {
-                entity.HasKey(e => new { e.MatchId, e.Round });
+                entity.HasKey(x => new { x.MatchId, x.Round });
 
-                entity.HasIndex(e => e.MatchId);
+                entity.HasIndex(x => x.MatchId);
+
+                entity.HasOne(x => x.Match)
+                    .WithMany(x => x.Round)
+                    .HasForeignKey(x => x.MatchId)
+                    .IsRequired();
             });
 
             modelBuilder.Entity<PlayerMatchEntity>(entity =>
             {
-                entity.HasKey(e => new { e.MatchId, e.SteamId });
+                entity.HasKey(x => new { x.MatchId, x.SteamId });
 
-                entity.HasIndex(e => e.MatchId);
+                entity.HasIndex(x => x.MatchId);
+
+                entity.HasOne(x => x.Match)
+                    .WithMany(x => x.PlayerMatch)
+                    .HasForeignKey(x => x.MatchId)
+                    .IsRequired();
             });
 
             modelBuilder.Entity<PlayerRoundEntity>(entity =>
             {
-                entity.HasKey(e => new { e.MatchId, e.Round, e.SteamId });
+                entity.HasKey(x => new { x.MatchId, x.RoundNumber, x.SteamId });
 
-                entity.HasIndex(e => e.MatchId);
+                entity.HasIndex(x => x.MatchId);
+
+                entity.HasOne(x => x.Match)
+                    .WithMany(x => x.PlayerRound)
+                    .HasForeignKey(x => x.MatchId)
+                    .IsRequired();
+
+                entity.HasOne(x => x.Round)
+                    .WithMany(x => x.PlayerRound)
+                    .HasForeignKey(x => new { x.MatchId, x.RoundNumber })
+                    .IsRequired();
+
+                entity.HasOne(x => x.PlayerMatch)
+                    .WithMany(x => x.PlayerRound)
+                    .HasForeignKey(x => new { x.MatchId, x.SteamId })
+                    .IsRequired();
+
             });
             #endregion
 
@@ -127,11 +153,11 @@ namespace SituationDatabase
             {
                 entity.HasKey(e => new { e.MatchId, e.Id });
 
+                entity.Property(x => x.Id).ValueGeneratedOnAdd();
+
                 entity.HasIndex(e => e.MatchId);
 
                 entity.HasIndex(e => e.SteamId);
-
-                entity.Property(x => x.Id).ValueGeneratedOnAdd();
             });
         }
     }

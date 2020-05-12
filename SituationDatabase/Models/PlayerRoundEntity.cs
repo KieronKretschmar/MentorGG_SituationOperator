@@ -28,7 +28,7 @@ namespace SituationDatabase.Models
         public PlayerRoundEntity(PlayerRoundStats playerRoundStats)
         {
             MatchId = playerRoundStats.MatchId;
-            Round = playerRoundStats.Round;
+            RoundNumber = playerRoundStats.Round;
             SteamId = playerRoundStats.PlayerId;
             PlayedEquipmentValue = playerRoundStats.PlayedEquipmentValue;
             MoneyInitial = playerRoundStats.MoneyInitial;
@@ -37,11 +37,22 @@ namespace SituationDatabase.Models
         }
 
         public long MatchId { get; set; }
-        public short Round { get; set; }
+
+        /// <summary>
+        /// Unconventional naming of this property because property named Round already exists.
+        /// </summary>
+        public short RoundNumber { get; set; }
         public long SteamId { get; set; }
         public int PlayedEquipmentValue { get; set; }
         public int MoneyInitial { get; set; }
         public bool IsCt { get; set; }
         public ArmorType ArmorType { get; set; }
+
+
+        #region Navigational Properties
+        public virtual MatchEntity Match { get; set; }
+        public virtual PlayerMatchEntity PlayerMatch { get; set; }
+        public virtual RoundEntity Round { get; set; }
+        #endregion
     }
 }
