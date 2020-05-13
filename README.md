@@ -1,6 +1,6 @@
 # SituationOperator
 
-Accesses a MatchDb to compute, store and serve Situations.
+Computes, stores and serves Situations.
 
 ## Environment Variables
 
@@ -23,8 +23,23 @@ Accesses a MatchDb to compute, store and serve Situations.
 **FileSystem**
 - `EQUIPMENT_CSV_DIRECTORY` : Relative path to the directory containing the equipment .csv files. Defaults to `/app/data/equipment`.
 - `ZONE_RESOURCES_DIRECTORY` : Relative path to the directory containing the zone resources files. Defaults to `/app/data/zones`.
+
 [\*] *Required*
 
+## Situations - Discussion
+For each implemented or planned Situation, an issue will be created in GitLab. This issue serves as a place for discussion and collection of feedback regarding the issue.
+
+## Analysis - Workflow
+
+Messages with instructions to analyze matches are consumed from a rabbit queue, and roughly the following steps are exectued:
+- A `MatchDataSet` is fetched from redis.
+- All implemented types of Situations are extracted by looking for patterns in the `MatchDataSet`.
+- These situations as well as some metadata about the match are stored in the SituationDatabase.
+- A Report is sent to DemoCentral.
+
+## Accessing Data
+
+Endpoints serve data from the SituationDatabase.
 
 ## Monitoring / Prometheus
 
