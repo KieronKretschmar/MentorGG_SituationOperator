@@ -40,7 +40,7 @@ namespace SituationOperator.Helpers
         }
 
         /// <summary>
-        /// Determines whether the player was alive up to at least the given time, including the exact moment.
+        /// Determines whether the player was alive at the specified moment, including the exact moment.
         /// </summary>
         /// <param name="data"></param>
         /// <param name="steamId"></param>
@@ -50,9 +50,9 @@ namespace SituationOperator.Helpers
         {
             var round = data.GetRoundByTime(time);
 
-            var prs = data.KillList.SingleOrDefault(x => x.VictimId == steamId && x.Round == round.Round);
+            var kill = data.KillList.SingleOrDefault(x => x.VictimId == steamId && x.Round == round.Round);
 
-            if (prs == null || prs.Time > time)
+            if (kill == null || kill.Time > time)
             {
                 return false;
             }
