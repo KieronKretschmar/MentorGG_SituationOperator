@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using SituationDatabase;
 using SituationDatabase.Enums;
 using SituationDatabase.Models;
+using SituationOperator.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,9 @@ namespace SituationOperator.SituationManagers
 
         /// <inheritdoc/>
         public override SituationCategory SituationCategory => SituationCategory.Misplay;
+
+        /// <inheritdoc/>
+        public override SituationType SituationType => SituationType.SmokeFail;
 
 
         /// <inheritdoc/>

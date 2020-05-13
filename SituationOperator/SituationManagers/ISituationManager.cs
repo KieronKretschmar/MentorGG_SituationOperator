@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SituationDatabase;
 using SituationDatabase.Enums;
+using SituationOperator.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +17,14 @@ namespace SituationOperator.SituationManagers
     public interface ISituationManager
     {
         /// <summary>
-        /// Identifies the type of situation.
+        /// Identifies the SituationCategory the managed situation belongs to.
         /// </summary>
         SituationCategory SituationCategory { get; }
+
+        /// <summary>
+        /// Identifies the type of situation.
+        /// </summary>
+        SituationType SituationType { get; }
 
         /// <summary>
         /// Extracts situations from the data and uploads it to the database.
@@ -52,9 +58,14 @@ namespace SituationOperator.SituationManagers
         }
 
         /// <summary>
-        /// Identifies the type of situation.
+        /// Identifies the SituationCategory the managed situation belongs to.
         /// </summary>
         public abstract SituationCategory SituationCategory { get; }
+
+        /// <summary>
+        /// Identifies the type of situation.
+        /// </summary>
+        public abstract SituationType SituationType { get; }
 
         /// <summary>
         /// Selects the table of the SituationDatabase in which occurences of TSituation are stored.

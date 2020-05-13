@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SituationDatabase;
 using SituationOperator.Models;
+using static SituationOperator.Models.MatchSituationsModel;
 
 namespace SituationOperator.Controllers
 {
@@ -43,14 +44,15 @@ namespace SituationOperator.Controllers
             foreach (var manager in managers)
             {
                 var situations = await manager.LoadSituationsAsync(matchId);
+                var situationCollection = new SituationCollection(manager.SituationType, situations);
 
                 switch (manager.SituationCategory)
                 {
                     case SituationDatabase.Enums.SituationCategory.Misplay:
-                        model.Misplays.Add(situations);
+                        model.Misplays.Add(situationCollection);
                         break;
                     case SituationDatabase.Enums.SituationCategory.Goodplay:
-                        model.Highlights.Add(situations);
+                        model.Highlights.Add(situationCollection);
                         break;
                     default:
                         break;

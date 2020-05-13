@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SituationDatabase;
 using SituationDatabase.Enums;
 using SituationDatabase.Models;
+using SituationOperator.Enums;
 using SituationOperator.Helpers;
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,8 @@ namespace SituationOperator.SituationManagers
         /// <inheritdoc/>
         public override SituationCategory SituationCategory => SituationCategory.Goodplay;
 
+        /// <inheritdoc/>
+        public override SituationType SituationType => SituationType.EffectiveHeGrenade;
 
         /// <inheritdoc/>
         protected override Func<SituationContext, DbSet<EffectiveHeGrenade>> TableSelector => context => context.EffectiveHeGrenade;
