@@ -245,7 +245,7 @@ namespace SituationOperator
             app.UseSwaggerUI(options =>
             {
                 options.RoutePrefix = "swagger";
-                options.SwaggerEndpoint("/swagger/v1/swagger.json", "[SERVICE NAME]");
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Situation Operator");
             });
             #endregion
 
