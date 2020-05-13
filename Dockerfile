@@ -9,12 +9,8 @@ WORKDIR /app/RabbitCommunicationLib
 COPY ./RabbitCommunicationLib/*.csproj ./
 RUN dotnet restore
 
-WORKDIR /app/matchdb/MatchEntities/MatchEntities
-COPY ./matchdb/MatchEntities/MatchEntities/*.csproj ./
-RUN dotnet restore
-
-WORKDIR /app/matchdb/Database
-COPY ./matchdb/Database/*.csproj ./
+WORKDIR /app/matchentities/MatchEntities
+COPY ./matchentities/MatchEntities/*.csproj ./
 RUN dotnet restore
 
 WORKDIR /app/EquipmentLib/EquipmentLib
@@ -36,8 +32,7 @@ RUN dotnet restore
 # Copy everything else and build
 WORKDIR /app
 COPY ./RabbitCommunicationLib ./RabbitCommunicationLib
-COPY ./matchdb/Database ./matchdb/Database
-COPY ./matchdb/MatchEntities ./matchdb/MatchEntities
+COPY ./matchentities ./matchentities
 COPY ./SituationDatabase ./SituationDatabase
 COPY ./SituationOperator/ ./SituationOperator
 COPY ./EquipmentLib/EquipmentLib ./EquipmentLib/EquipmentLib

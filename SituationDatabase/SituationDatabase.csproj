@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\matchdb\MatchEntities\MatchEntities\MatchEntities.csproj" />
+    <ProjectReference Include="..\matchentities\MatchEntities\MatchEntities.csproj" />
   </ItemGroup>
 
 </Project>

@@ -26,9 +26,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EquipmentLib\EquipmentLib\EquipmentLib.csproj" />
-    <ProjectReference Include="..\matchdb\Database\Database.csproj" />
-    <ProjectReference Include="..\SituationDatabase\SituationDatabase.csproj" />
     <ProjectReference Include="..\RabbitCommunicationLib\RabbitCommunicationLib.csproj" />
+    <ProjectReference Include="..\SituationDatabase\SituationDatabase.csproj" />
     <ProjectReference Include="..\zonereader\ZoneReader\ZoneReader.csproj" />
   </ItemGroup>
 
