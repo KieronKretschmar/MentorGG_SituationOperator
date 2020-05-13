@@ -27,9 +27,10 @@ Computes, stores and serves Situations.
 [\*] *Required*
 
 ## Situations - Discussion
+
 For each implemented or planned Situation, an issue will be created in GitLab. This issue serves as a place for discussion and collection of feedback regarding the issue.
 
-## Analysis - Workflow
+## Analysis - Flow
 
 Messages with instructions to analyze matches are consumed from a rabbit queue, and roughly the following steps are exectued:
 - A `MatchDataSet` is fetched from redis.
