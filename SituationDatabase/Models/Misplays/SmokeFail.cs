@@ -6,6 +6,11 @@ using System.Text;
 
 namespace SituationDatabase.Models
 {
+    /// <summary>
+    /// A Situation. 
+    /// 
+    /// For more details see the corresponding ISituationManager in SituationOperator.
+    /// </summary>
     public class SmokeFail : SinglePlayerSituation, ISinglePlayerSituation
     {
         /// <summary>
