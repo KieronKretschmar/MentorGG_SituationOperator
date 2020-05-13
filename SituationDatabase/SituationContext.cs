@@ -26,6 +26,7 @@ namespace SituationDatabase
 
         #region Misplays - Singleplayer
         public virtual DbSet<SmokeFail> SmokeFail { get; set; }
+        public virtual DbSet<DeathInducedBombDrop> DeathInducedBombDrop { get; set; }
         #endregion
 
         #region Goodplays - SinglePlayer
@@ -121,6 +122,7 @@ namespace SituationDatabase
 
             #region Misplays - SinglePlayer
             modelBuilder.AddSinglePlayerSituation<SmokeFail>("SmokeFail");
+            modelBuilder.AddSinglePlayerSituation<DeathInducedBombDrop>("DeathInducedBombDrop");
             #endregion
 
             #region Goodplays - SinglePlayer

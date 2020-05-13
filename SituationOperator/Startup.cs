@@ -230,6 +230,7 @@ namespace SituationOperator
             #region SituationManagers
             services.AddTransient<ISituationManager, SmokeFailManager>();
             services.AddTransient<ISituationManager, EffectiveHeGrenadeManager>();
+            services.AddTransient<ISituationManager, DeathInducedBombDropManager>();
             #endregion
 
             #region Other worker services
