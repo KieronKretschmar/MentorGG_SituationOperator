@@ -12,7 +12,7 @@ Computes, stores and serves Situations.
 - `AMQP_PREFETCH_COUNT` : Amount of messages to fetch before acknowledging the in-progress messages. Defaults to `1`.
 - `AMQP_DEMOCENTRAL_REPLY` : Rabbit queue's name for producing messages to DemoCentral. [\*]
 
-**Mysql - SituationDb**
+**MySQL - SituationDb**
 - `MYSQL_CONNECTION_STRING` : Connection string for the SituationDatabase. Defaults to InMemoryDatabase if unspecified
 - `IS_MIGRATING` : Warning: Do not use in production. If this is set to true, migrations to SituationDatabase will be applied but nothing else. Only works if `MYSQL_CONNECTION_STRING` is also provided.
 
