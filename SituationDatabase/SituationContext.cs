@@ -28,6 +28,7 @@ namespace SituationDatabase
         public virtual DbSet<SmokeFail> SmokeFail { get; set; }
         public virtual DbSet<DeathInducedBombDrop> DeathInducedBombDrop { get; set; }
         public virtual DbSet<SelfFlash> SelfFlash { get; set; }
+        public virtual DbSet<TeamFlash> TeamFlash { get; set; }
         #endregion
 
         #region Highlights - SinglePlayer
@@ -125,6 +126,7 @@ namespace SituationDatabase
             modelBuilder.AddSinglePlayerSituation<SmokeFail>("SmokeFail");
             modelBuilder.AddSinglePlayerSituation<DeathInducedBombDrop>("DeathInducedBombDrop");
             modelBuilder.AddSinglePlayerSituation<SelfFlash>("SelfFlash");
+            modelBuilder.AddSinglePlayerSituation<TeamFlash>("TeamFlash");
             #endregion
 
             #region Goodplays - SinglePlayer

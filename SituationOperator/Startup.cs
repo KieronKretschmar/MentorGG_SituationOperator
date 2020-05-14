@@ -212,6 +212,7 @@ namespace SituationOperator
             services.AddTransient<ISituationManager, SmokeFailManager>();
             services.AddTransient<ISituationManager, DeathInducedBombDropManager>();
             services.AddTransient<ISituationManager, SelfFlashManager>();
+            services.AddTransient<ISituationManager, TeamFlashManager>();
             #endregion
 
             #region Highlights - Singleplayer
