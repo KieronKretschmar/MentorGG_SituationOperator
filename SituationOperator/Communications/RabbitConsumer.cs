@@ -43,7 +43,7 @@ namespace SituationOperator.Communications
             }
             catch (Exception e)
             {
-                _logger.LogCritical(e, $"Failed to handle message from DemoDownloaderReport queue. [ {model} ]");
+                _logger.LogCritical(e, $"Failed to handle message. [ {model} ]");
                 return ConsumedMessageHandling.Done;
             }
         }
