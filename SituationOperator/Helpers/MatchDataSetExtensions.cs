@@ -101,6 +101,67 @@ namespace SituationOperator.Helpers
 
         #endregion
 
+        #region Weapon related
+        /// <summary>
+        /// Indicates whether the player dealt or took damage in the indicated timeframe.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="steamId"></param>
+        /// <param name="round"></param>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <returns></returns>
+        public static bool PlayerDealtOrTookDamage(this MatchDataSet data, long steamId, short? round = null, int? startTime = null, int? endTime = null)
+        {
+            var firstDamageDealt = data.FirstDamageDealt(steamId, round, startTime, endTime);
+            var firstDamageTaken = data.FirstDamageDealt(steamId, round, startTime, endTime);
+
+            return firstDamageDealt == null && firstDamageTaken == null;
+        }
+
+        /// <summary>
+        /// Returns the first Damage the player dealt in the specified timeframe.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="steamId"></param>
+        /// <param name="round"></param>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <returns></returns>
+        public static Damage FirstDamageDealt(this MatchDataSet data, long steamId, short? round = null, int? startTime = null, int? endTime = null)
+        {
+            return data.DamageList
+                .Where(x => x.PlayerId == steamId
+                && startTime <= x.Time
+                && (round == null || x.Round == round)
+                && (startTime == null || x.Time <= startTime)
+                && (endTime == null || x.Time <= endTime))
+                .OrderBy(x => x.Time)
+                .FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Returns the first Damage the player took in the specified timeframe.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="steamId"></param>
+        /// <param name="round"></param>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <returns></returns>
+        public static Damage FirstDamageTaken(this MatchDataSet data, long steamId, short? round = null, int? startTime = null, int? endTime = null)
+        {
+            return data.DamageList
+                .Where(x => x.VictimId == steamId 
+                && startTime <= x.Time 
+                && (round == null || x.Round == round)
+                && (startTime == null || x.Time <= startTime)
+                && (endTime == null || x.Time <= endTime))
+                .OrderBy(x => x.Time)
+                .FirstOrDefault();
+        }
+        #endregion
+
         #region Grenade related
         /// <summary>
         /// Gets the Damage entities dealt by a HE grenade.
