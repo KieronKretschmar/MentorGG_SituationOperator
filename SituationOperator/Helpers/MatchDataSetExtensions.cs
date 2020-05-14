@@ -10,6 +10,7 @@ namespace SituationOperator.Helpers
 {
     public static class MatchDataSetExtensions
     {
+        #region General / Meta data
         /// <summary>
         /// Gets the RoundStats object referenced by the given entity.
         /// </summary>
@@ -19,17 +20,6 @@ namespace SituationOperator.Helpers
         public static RoundStats RoundStats(this MatchDataSet matchData, IRoundEntity entity)
         {
             return matchData.RoundStatsList.Single(x => x.Round == entity.Round);
-        }
-
-        /// <summary>
-        /// Gets the Damage entities dealt by a HE grenade.
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="entity"></param>
-        /// <returns></returns>
-        public static List<Damage> DamagesByHe(this MatchDataSet data, He entity)
-        {
-            return data.DamageList.Where(x => x.HeGrenadeId == entity.GrenadeId).ToList();
         }
 
         public static RoundStats GetRoundByTime(this MatchDataSet data, int time)
@@ -59,6 +49,22 @@ namespace SituationOperator.Helpers
 
             return true;
         }
+
+        /// <summary>
+        /// Determines the Kill in which the player died in the specified round, or null if he survived.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="steamId"></param>
+        /// <returns></returns>
+        public static Kill Death(this MatchDataSet data, long steamId, int round)
+        {
+            var death = data.KillList.SingleOrDefault(x => x.VictimId == steamId && x.Round == round);
+            return death;
+        }
+
+        #endregion
+
+        #region Position related
 
         /// <summary>
         /// Returns the last known position of the given player
@@ -92,5 +98,26 @@ namespace SituationOperator.Helpers
 
             return dist;
         }
+
+        #endregion
+
+        #region Grenade related
+        /// <summary>
+        /// Gets the Damage entities dealt by a HE grenade.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public static List<Damage> DamagesByHe(this MatchDataSet data, He entity)
+        {
+            return data.DamageList.Where(x => x.HeGrenadeId == entity.GrenadeId).ToList();
+        }
+
+        public static List<Flashed> FlashedsByFlash(this MatchDataSet data, Flash entity)
+        {
+            return data.FlashedList.Where(x => x.GrenadeId == entity.GrenadeId).ToList();
+        }
+
+        #endregion
     }
 }
