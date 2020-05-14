@@ -24,6 +24,7 @@ namespace SituationOperator.Enums
         DeathInducedBombDrop = 510002,
         SelfFlash = 510003,
         TeamFlash = 510004,
+        RifleFiredWhileMoving = 510005,
 
         // 52XXXX For Team - Misplays
 
