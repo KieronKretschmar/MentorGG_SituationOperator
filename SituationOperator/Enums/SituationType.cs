@@ -22,6 +22,7 @@ namespace SituationOperator.Enums
         // 51XXXX For SinglePlayer - Misplays
         SmokeFail = 510001,
         DeathInducedBombDrop = 510002,
+        SelfFlash = 510003,
 
         // 52XXXX For Team - Misplays
 

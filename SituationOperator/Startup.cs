@@ -207,9 +207,17 @@ namespace SituationOperator
             #endregion
 
             #region SituationManagers
+
+            #region Misplays - Singleplayer
             services.AddTransient<ISituationManager, SmokeFailManager>();
-            services.AddTransient<ISituationManager, EffectiveHeGrenadeManager>();
             services.AddTransient<ISituationManager, DeathInducedBombDropManager>();
+            services.AddTransient<ISituationManager, SelfFlashManager>();
+            #endregion
+
+            #region Highlights - Singleplayer
+            services.AddTransient<ISituationManager, EffectiveHeGrenadeManager>();
+            #endregion
+
             #endregion
 
             #region Other worker services
