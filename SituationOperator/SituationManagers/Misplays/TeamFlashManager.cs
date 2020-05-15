@@ -22,7 +22,7 @@ namespace SituationOperator.SituationManagers
     public class TeamFlashManager : SituationManager<TeamFlash>
     {
         /// <summary>
-        /// Teammates flashed for a shorter duratoin than this value will be ignored for analysis.
+        /// Teammates flashed for a shorter duration than this value will be ignored for analysis.
         /// </summary>
         private const int MAX_TIME_FLASHED_TO_IGNORE_TEAMMATE = 400;
 
