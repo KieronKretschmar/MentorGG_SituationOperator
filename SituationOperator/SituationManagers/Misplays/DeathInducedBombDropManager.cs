@@ -17,7 +17,8 @@ using ZoneReader;
 namespace SituationOperator.SituationManagers
 {
     /// <summary>
-    /// Manager for deaths of players carrying the bomb that caused a disadvantage.
+    /// A SituationManager. 
+    /// See <see cref="ExtractSituationsAsync(MatchDataSet)"/> for more info regarding Situation specific logic.
     /// </summary>
     public class DeathInducedBombDropManager : SituationManager<DeathInducedBombDrop>
     {
@@ -53,7 +54,7 @@ namespace SituationOperator.SituationManagers
         protected override Func<SituationContext, DbSet<DeathInducedBombDrop>> TableSelector => context => context.DeathInducedBombDrop;
 
         /// <summary>
-        /// Returns all DeathInducedBombDrops.
+        /// Extracts deaths of players who held the C4 and by dropping it caused a tactical disadvantageous.
         /// </summary>
         /// <param name="data">Data of the match in which to look for situations for all players.</param>
         /// <returns></returns>

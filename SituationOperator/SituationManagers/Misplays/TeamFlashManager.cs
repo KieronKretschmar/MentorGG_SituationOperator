@@ -16,7 +16,8 @@ using ZoneReader;
 namespace SituationOperator.SituationManagers
 {
     /// <summary>
-    /// Manager for bad team-flashes.
+    /// A SituationManager. 
+    /// See <see cref="ExtractSituationsAsync(MatchDataSet)"/> for more info regarding Situation specific logic.
     /// </summary>
     public class TeamFlashManager : SituationManager<TeamFlash>
     {
@@ -68,7 +69,7 @@ namespace SituationOperator.SituationManagers
         protected override Func<SituationContext, DbSet<TeamFlash>> TableSelector => context => context.TeamFlash;
 
         /// <summary>
-        /// Returns flashes that blinded the thrower and caused disadvantage.
+        /// Returns flashes that blinded the thrower and caused a disadvantage.
         /// </summary>
         /// <param name="data">Data of the match in which to look for situations for all players.</param>
         /// <returns></returns>

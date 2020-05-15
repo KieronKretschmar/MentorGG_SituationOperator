@@ -18,7 +18,8 @@ using ZoneReader;
 namespace SituationOperator.SituationManagers
 {
     /// <summary>
-    /// Manager for players shooting a burst with a rifle inaccurately because they were moving.
+    /// A SituationManager. 
+    /// See <see cref="ExtractSituationsAsync(MatchDataSet)"/> for more info regarding Situation specific logic.
     /// </summary>
     public class RifleFiredWhileMovingManager : SituationManager<RifleFiredWhileMoving>
     {
@@ -81,7 +82,7 @@ namespace SituationOperator.SituationManagers
         protected override Func<SituationContext, DbSet<RifleFiredWhileMoving>> TableSelector => context => context.RifleFiredWhileMoving;
 
         /// <summary>
-        /// Returns all RifleFiredWhileMovings.
+        /// Looks for bursts of shots with rifles while the shooter was moving, causing many of the bullets being inaccurate.
         /// </summary>
         /// <param name="data">Data of the match in which to look for situations for all players.</param>
         /// <returns></returns>

@@ -45,7 +45,7 @@ namespace SituationOperator.SituationManagers
     }
 
     /// <summary>
-    /// Abstract base for all SituationManagers
+    /// Abstract base for all SituationManagers.
     /// </summary>
     /// <typeparam name="TSituation">The type of Situation</typeparam>
     public abstract class SituationManager<TSituation> : ISituationManager where TSituation : class, ISituation

@@ -14,7 +14,8 @@ using System.Threading.Tasks;
 namespace SituationOperator.SituationManagers
 {
     /// <summary>
-    /// Manager for HE grenades that dealt a lot of damage.
+    /// A SituationManager. 
+    /// See <see cref="ExtractSituationsAsync(MatchDataSet)"/> for more info regarding Situation specific logic.
     /// </summary>
     public class EffectiveHeGrenadeManager : SituationManager<EffectiveHeGrenade>
     {
@@ -42,7 +43,7 @@ namespace SituationOperator.SituationManagers
         protected override Func<SituationContext, DbSet<EffectiveHeGrenade>> TableSelector => context => context.EffectiveHeGrenade;
 
         /// <summary>
-        /// Finds all HE grenades that were effective against enemies.
+        /// Finds all HE grenades that were effective against enemies, by dealing either a lot of damage or killing an enemy.
         /// </summary>
         /// <param name="data">Data of the match in which to look for situations for all players.</param>
         /// <returns></returns>
