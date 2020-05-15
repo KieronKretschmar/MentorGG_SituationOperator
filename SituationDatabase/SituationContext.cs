@@ -27,9 +27,13 @@ namespace SituationDatabase
         #region Misplays - Singleplayer
         public virtual DbSet<SmokeFail> SmokeFail { get; set; }
         public virtual DbSet<DeathInducedBombDrop> DeathInducedBombDrop { get; set; }
+        public virtual DbSet<SelfFlash> SelfFlash { get; set; }
+        public virtual DbSet<TeamFlash> TeamFlash { get; set; }
+        public virtual DbSet<RifleFiredWhileMoving> RifleFiredWhileMoving { get; set; }
+        public virtual DbSet<UnnecessaryReload> UnnecessaryReload { get; set; }
         #endregion
 
-        #region Goodplays - SinglePlayer
+        #region Highlights - SinglePlayer
         public virtual DbSet<EffectiveHeGrenade> EffectiveHeGrenade { get; set; }
         #endregion
 
@@ -123,6 +127,10 @@ namespace SituationDatabase
             #region Misplays - SinglePlayer
             modelBuilder.AddSinglePlayerSituation<SmokeFail>("SmokeFail");
             modelBuilder.AddSinglePlayerSituation<DeathInducedBombDrop>("DeathInducedBombDrop");
+            modelBuilder.AddSinglePlayerSituation<SelfFlash>("SelfFlash");
+            modelBuilder.AddSinglePlayerSituation<TeamFlash>("TeamFlash");
+            modelBuilder.AddSinglePlayerSituation<RifleFiredWhileMoving>("RifleFiredWhileMoving");
+            modelBuilder.AddSinglePlayerSituation<UnnecessaryReload>("UnnecessaryReload");
             #endregion
 
             #region Goodplays - SinglePlayer

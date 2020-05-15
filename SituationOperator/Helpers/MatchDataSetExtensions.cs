@@ -10,6 +10,7 @@ namespace SituationOperator.Helpers
 {
     public static class MatchDataSetExtensions
     {
+        #region General / Meta data
         /// <summary>
         /// Gets the RoundStats object referenced by the given entity.
         /// </summary>
@@ -19,17 +20,6 @@ namespace SituationOperator.Helpers
         public static RoundStats RoundStats(this MatchDataSet matchData, IRoundEntity entity)
         {
             return matchData.RoundStatsList.Single(x => x.Round == entity.Round);
-        }
-
-        /// <summary>
-        /// Gets the Damage entities dealt by a HE grenade.
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="entity"></param>
-        /// <returns></returns>
-        public static List<Damage> DamagesByHe(this MatchDataSet data, He entity)
-        {
-            return data.DamageList.Where(x => x.HeGrenadeId == entity.GrenadeId).ToList();
         }
 
         public static RoundStats GetRoundByTime(this MatchDataSet data, int time)
@@ -59,6 +49,22 @@ namespace SituationOperator.Helpers
 
             return true;
         }
+
+        /// <summary>
+        /// Determines the Kill in which the player died in the specified round, or null if he survived.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="steamId"></param>
+        /// <returns></returns>
+        public static Kill Death(this MatchDataSet data, long steamId, int round)
+        {
+            var death = data.KillList.SingleOrDefault(x => x.VictimId == steamId && x.Round == round);
+            return death;
+        }
+
+        #endregion
+
+        #region Position related
 
         /// <summary>
         /// Returns the last known position of the given player
@@ -92,5 +98,136 @@ namespace SituationOperator.Helpers
 
             return dist;
         }
+
+        #endregion
+
+        #region Weapon related
+        /// <summary>
+        /// Indicates whether the player dealt or took damage in the indicated timeframe.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="steamId"></param>
+        /// <param name="round"></param>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <returns></returns>
+        public static bool PlayerDealtOrTookDamage(this MatchDataSet data, long steamId, short? round = null, int? startTime = null, int? endTime = null)
+        {
+            var firstDamageDealt = data.FirstDamageDealt(steamId, round, startTime, endTime);
+            var firstDamageTaken = data.FirstDamageDealt(steamId, round, startTime, endTime);
+
+            return firstDamageDealt == null && firstDamageTaken == null;
+        }
+
+        /// <summary>
+        /// Returns the first Damage the player dealt in the specified timeframe.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="steamId"></param>
+        /// <param name="round"></param>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <returns></returns>
+        public static Damage FirstDamageDealt(this MatchDataSet data, long steamId, short? round = null, int? startTime = null, int? endTime = null)
+        {
+            return data.DamageList
+                .Where(x => x.PlayerId == steamId
+                && startTime <= x.Time
+                && (round == null || x.Round == round)
+                && (startTime == null || x.Time <= startTime)
+                && (endTime == null || x.Time <= endTime))
+                .OrderBy(x => x.Time)
+                .FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Returns the first Damage the player took in the specified timeframe.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="steamId"></param>
+        /// <param name="round"></param>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <returns></returns>
+        public static Damage FirstDamageTaken(this MatchDataSet data, long steamId, short? round = null, int? startTime = null, int? endTime = null)
+        {
+            return data.DamageList
+                .Where(x => x.VictimId == steamId 
+                && startTime <= x.Time 
+                && (round == null || x.Round == round)
+                && (startTime == null || x.Time <= startTime)
+                && (endTime == null || x.Time <= endTime))
+                .OrderBy(x => x.Time)
+                .FirstOrDefault();
+        }
+        #endregion
+
+        #region Grenade related
+        /// <summary>
+        /// Gets the Damage entities dealt by a HE grenade.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public static List<Damage> DamagesByHe(this MatchDataSet data, He entity)
+        {
+            return data.DamageList.Where(x => x.HeGrenadeId == entity.GrenadeId).ToList();
+        }
+
+        /// <summary>
+        /// Returns all Flashed event caused by the given flash.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public static List<Flashed> FlashedsByFlash(this MatchDataSet data, Flash entity)
+        {
+            return data.FlashedList.Where(x => x.GrenadeId == entity.GrenadeId).ToList();
+        }
+
+        /// <summary>
+        /// Returns the Flash that caused the given Flashed event.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public static Flash FlashFromFlashed(this MatchDataSet data, Flashed entity)
+        {
+            return data.FlashList.Where(x => x.GrenadeId == entity.GrenadeId).Single();
+        }
+
+        /// <summary>
+        /// Returns all the Flashed events affecting the player at the specified round timespan.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="steamId"></param>
+        /// <param name="round">If possible, specify for increased performance when looking for particular timeframe.</param>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <returns></returns>
+        public static List<Flashed> GetFlasheds(this MatchDataSet data, long steamId, short? round, int? startTime = null, int? endTime = null)
+        {
+            var flasheds = new List<Flashed>();
+
+            foreach (var flashed in data.FlashedList.Where(x => x.VictimId == steamId))
+            {
+                if (round != null && flashed.Round != round)
+                    continue;
+
+                var flash = data.FlashFromFlashed(flashed);
+
+                if (startTime != null && flash.Time < startTime)
+                    continue;
+
+                if (endTime != null && flash.Time + flashed.TimeFlashed < endTime)
+                    continue;
+
+                flasheds.Add(flashed);
+            }
+
+            return flasheds;
+        }
+
+        #endregion
     }
 }

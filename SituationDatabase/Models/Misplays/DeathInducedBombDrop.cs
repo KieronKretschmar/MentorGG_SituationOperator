@@ -24,7 +24,12 @@ namespace SituationDatabase.Models
         /// <summary>
         /// Constructor.
         /// </summary>
-        public DeathInducedBombDrop(ItemDropped bombDrop, int pickedUpAfter, int teammatesAlive, int closestTeammateDistance) : base(bombDrop.MatchId, bombDrop.Round, bombDrop.Time, bombDrop.PlayerId)
+        public DeathInducedBombDrop(
+            ItemDropped bombDrop, 
+            int pickedUpAfter, 
+            int teammatesAlive, 
+            int closestTeammateDistance
+            ) : base(bombDrop.MatchId, bombDrop.Round, bombDrop.Time, bombDrop.PlayerId)
         {
             PickedUpAfter = pickedUpAfter;
             TeammatesAlive = teammatesAlive;

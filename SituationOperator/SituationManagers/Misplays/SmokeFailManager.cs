@@ -15,7 +15,8 @@ using ZoneReader;
 namespace SituationOperator.SituationManagers
 {
     /// <summary>
-    /// Manager for failed smoke lineups.
+    /// A SituationManager. 
+    /// See <see cref="ExtractSituationsAsync(MatchDataSet)"/> for more info regarding Situation specific logic.
     /// </summary>
     public class SmokeFailManager : SituationManager<SmokeFail>
     {
@@ -37,13 +38,12 @@ namespace SituationOperator.SituationManagers
         /// <inheritdoc/>
         public override SituationType SituationType => SituationType.SmokeFail;
 
-
         /// <inheritdoc/>
         protected override Func<SituationContext, DbSet<SmokeFail>> TableSelector => context => context.SmokeFail;
 
 
         /// <summary>
-        /// Returns all failed smoke attempts of known lineups.
+        /// Looks for all failed smoke attempts of known lineups.
         /// </summary>
         /// <param name="data">Data of the match in which to look for situations for all players.</param>
         /// <returns></returns>

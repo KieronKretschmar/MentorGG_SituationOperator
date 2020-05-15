@@ -155,6 +155,7 @@ namespace SituationOperator
                 services.AddHostedService<RabbitConsumer>(serviceProvider =>
                 {
                     return new RabbitConsumer(
+                        serviceProvider.GetRequiredService<ILogger<RabbitConsumer>>(),
                         serviceProvider,
                         exchangeQueue,
                         AMQP_PREFETCH_COUNT);
@@ -195,21 +196,34 @@ namespace SituationOperator
             #endregion
 
             #region EquipmentLib
+            // Wrap EquipmentProvider inside EquipmentHelper to simplify usage.
             var EQUIPMENT_CSV_DIRECTORY = GetRequiredEnvironmentVariable<string>(Configuration, "EQUIPMENT_CSV_DIRECTORY");
             var EQUIPMENT_ENDPOINT = GetOptionalEnvironmentVariable<string>(Configuration, "EQUIPMENT_ENDPOINT", null);
-            services.AddSingleton<IEquipmentProvider, EquipmentProvider>(x =>
+            services.AddSingleton<IEquipmentHelper, EquipmentHelper>(x =>
             {
-                return new EquipmentProvider(
+                var equipmentProvider = new EquipmentProvider(
                     x.GetService<ILogger<EquipmentProvider>>(),
                     EQUIPMENT_CSV_DIRECTORY,
                     EQUIPMENT_ENDPOINT);
+
+                return new EquipmentHelper(equipmentProvider);
             });
             #endregion
 
             #region SituationManagers
+
+            #region Misplays - Singleplayer
             services.AddTransient<ISituationManager, SmokeFailManager>();
-            services.AddTransient<ISituationManager, EffectiveHeGrenadeManager>();
             services.AddTransient<ISituationManager, DeathInducedBombDropManager>();
+            services.AddTransient<ISituationManager, SelfFlashManager>();
+            services.AddTransient<ISituationManager, TeamFlashManager>();
+            services.AddTransient<ISituationManager, RifleFiredWhileMovingManager>();
+            #endregion
+
+            #region Highlights - Singleplayer
+            services.AddTransient<ISituationManager, EffectiveHeGrenadeManager>();
+            #endregion
+
             #endregion
 
             #region Other worker services
