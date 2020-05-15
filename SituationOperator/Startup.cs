@@ -155,6 +155,7 @@ namespace SituationOperator
                 services.AddHostedService<RabbitConsumer>(serviceProvider =>
                 {
                     return new RabbitConsumer(
+                        serviceProvider.GetRequiredService<ILogger<RabbitConsumer>>(),
                         serviceProvider,
                         exchangeQueue,
                         AMQP_PREFETCH_COUNT);

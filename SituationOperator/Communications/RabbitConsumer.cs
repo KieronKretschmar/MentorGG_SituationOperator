@@ -20,12 +20,13 @@ namespace SituationOperator.Communications
         private const string _versionString = "1";
 
         public RabbitConsumer(
+            ILogger<RabbitConsumer> logger,
             IServiceProvider serviceProvider,
             IExchangeQueueConnection exchangeQueueConnection,
             ushort prefetchCount) : base(exchangeQueueConnection, prefetchCount)
         {
             _serviceProvider = serviceProvider;
-            _logger = serviceProvider.GetRequiredService<ILogger<RabbitConsumer>>();
+            _logger = logger;
         }
 
         public override async Task<ConsumedMessageHandling> HandleMessageAsync(BasicDeliverEventArgs ea, RedisLocalizationInstruction model)
@@ -36,7 +37,7 @@ namespace SituationOperator.Communications
             {
                 using (var scope = _serviceProvider.CreateScope())
                 {
-                    var processor = scope.ServiceProvider.GetRequiredService<MessageProcessor>();
+                    var processor = scope.ServiceProvider.GetRequiredService<IMessageProcessor>();
                     await processor.ProcessMessage(model);
                     return ConsumedMessageHandling.Done;
                 }

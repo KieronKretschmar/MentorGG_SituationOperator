@@ -30,10 +30,10 @@ namespace SituationOperatorTestProject
         {
             // ARRANGE
             // Setup mocked MessageProcessor
-            var mockMessageProcessor = new Mock<MessageProcessor>();
+            var mockMessageProcessor = new Mock<IMessageProcessor>();
             // Setup mocked scoped ServiceProvider that returns mocked MessageProcessor
             var scopedServiceProvider = new Mock<IServiceProvider>();
-            scopedServiceProvider.Setup(x => x.GetRequiredService<MessageProcessor>())
+            scopedServiceProvider.Setup(x => x.GetRequiredService<IMessageProcessor>())
                 .Returns(mockMessageProcessor.Object);
             // mock scope that returns scopedServiceProvider
             var mockScope = new Mock<IServiceScope>();
@@ -44,7 +44,7 @@ namespace SituationOperatorTestProject
 
             var mockExchangeQueueConnection = new Mock<IExchangeQueueConnection>();
 
-            var consumer = new RabbitConsumer(mockServiceProvider.Object, mockExchangeQueueConnection.Object, 0);
+            var consumer = new RabbitConsumer(TestHelper.GetMockLogger<RabbitConsumer>(), mockServiceProvider.Object, mockExchangeQueueConnection.Object, 0);
 
             // Setup message
             var matchId = 2;
