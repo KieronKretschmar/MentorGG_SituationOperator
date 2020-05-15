@@ -16,35 +16,23 @@ namespace SituationOperatorTestProject
     public class RabbitConsumerTest
     {
         /// <summary>
-        /// Tests whether RabbitConsumer calls the right methods and services are disposed.
-        /// 
-        /// Non working because it's impossible to mock IServiceProvider.GetRequiredService<>(), as Moq throws this error:
-        /// Extension methods (here: ServiceProviderServiceExtensions.GetRequiredService) may not be used in setup / verification expressions.
-        /// 
-        /// Test is ignored but left here for reference.
+        /// Tests whether RabbitConsumer calls the right methods and scoped dependencies are disposed.
         /// </summary>
         /// <returns></returns>
-        [Ignore]
         [TestMethod]
         public async Task ConsumeMessageTest()
         {
             // ARRANGE
             // Setup mocked MessageProcessor
             var mockMessageProcessor = new Mock<IMessageProcessor>();
-            // Setup mocked scoped ServiceProvider that returns mocked MessageProcessor
-            var scopedServiceProvider = new Mock<IServiceProvider>();
-            scopedServiceProvider.Setup(x => x.GetRequiredService<IMessageProcessor>())
-                .Returns(mockMessageProcessor.Object);
-            // mock scope that returns scopedServiceProvider
-            var mockScope = new Mock<IServiceScope>();
-            mockScope.Setup(x => x.ServiceProvider)
-                .Returns(scopedServiceProvider.Object);
-            // Setup serviceprovider that returns the mocked scope
-            var mockServiceProvider = new Mock<IServiceProvider>();
 
+            // Setup MockServiceProviderHelper to return mockMessageProcessor
+            var serviceProviderHelper = new MockServiceProviderHelper();
+            serviceProviderHelper.AddMockedService<IMessageProcessor>(mockMessageProcessor);
+
+            // Create consumer
             var mockExchangeQueueConnection = new Mock<IExchangeQueueConnection>();
-
-            var consumer = new RabbitConsumer(TestHelper.GetMockLogger<RabbitConsumer>(), mockServiceProvider.Object, mockExchangeQueueConnection.Object, 0);
+            var consumer = new RabbitConsumer(TestHelper.GetMockLogger<RabbitConsumer>(), serviceProviderHelper.ServiceProviderMock.Object, mockExchangeQueueConnection.Object, 0);
 
             // Setup message
             var matchId = 2;
@@ -65,7 +53,7 @@ namespace SituationOperatorTestProject
             // Assert that MessageProcessor.ProcessMessage was called with the given model
             mockMessageProcessor.Verify(x => x.ProcessMessage(It.Is<RedisLocalizationInstruction>(x => x.ToJson() == model.ToJson())), Times.Once);
             // Verify that the scope was disposed
-            mockScope.Verify(x => x.Dispose(), Times.Once);
+            serviceProviderHelper.ServiceScopeMock.Verify(x => x.Dispose(), Times.Once);
 
         }
     }
