@@ -77,7 +77,6 @@ namespace SituationOperator.SituationManagers
         /// <inheritdoc/>
         public override SituationType SituationType => SituationType.RifleFiredWhileMoving;
 
-
         /// <inheritdoc/>
         protected override Func<SituationContext, DbSet<RifleFiredWhileMoving>> TableSelector => context => context.RifleFiredWhileMoving;
 
@@ -133,7 +132,6 @@ namespace SituationOperator.SituationManagers
                 return misplays;
             }
         }
-
 
         private List<Burst> DivideIntoBursts(IEnumerable<WeaponFired> weaponFireds, int minShots, EquipmentInfo equipmentInfo)
         {

@@ -53,10 +53,8 @@ namespace SituationOperator.SituationManagers
         /// <inheritdoc/>
         public override SituationType SituationType => SituationType.UnnecessaryReload;
 
-
         /// <inheritdoc/>
         protected override Func<SituationContext, DbSet<UnnecessaryReload>> TableSelector => context => context.UnnecessaryReload;
-
 
         /// <summary>
         /// Returns flashes that blinded the thrower and caused disadvantage.

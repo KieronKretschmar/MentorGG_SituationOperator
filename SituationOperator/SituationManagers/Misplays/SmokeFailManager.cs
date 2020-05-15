@@ -37,7 +37,6 @@ namespace SituationOperator.SituationManagers
         /// <inheritdoc/>
         public override SituationType SituationType => SituationType.SmokeFail;
 
-
         /// <inheritdoc/>
         protected override Func<SituationContext, DbSet<SmokeFail>> TableSelector => context => context.SmokeFail;
 

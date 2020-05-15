@@ -58,10 +58,8 @@ namespace SituationOperator.SituationManagers
         /// <inheritdoc/>
         public override SituationType SituationType => SituationType.SelfFlash;
 
-
         /// <inheritdoc/>
         protected override Func<SituationContext, DbSet<SelfFlash>> TableSelector => context => context.SelfFlash;
-
 
         /// <summary>
         /// Returns flashes that blinded the thrower and caused disadvantage.

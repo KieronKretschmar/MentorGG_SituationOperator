@@ -64,10 +64,8 @@ namespace SituationOperator.SituationManagers
         /// <inheritdoc/>
         public override SituationType SituationType => SituationType.TeamFlash;
 
-
         /// <inheritdoc/>
         protected override Func<SituationContext, DbSet<TeamFlash>> TableSelector => context => context.TeamFlash;
-
 
         /// <summary>
         /// Returns flashes that blinded the thrower and caused disadvantage.

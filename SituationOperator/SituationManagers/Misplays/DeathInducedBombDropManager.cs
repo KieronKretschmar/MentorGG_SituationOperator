@@ -49,10 +49,8 @@ namespace SituationOperator.SituationManagers
         /// <inheritdoc/>
         public override SituationType SituationType => SituationType.DeathInducedBombDrop;
 
-
         /// <inheritdoc/>
         protected override Func<SituationContext, DbSet<DeathInducedBombDrop>> TableSelector => context => context.DeathInducedBombDrop;
-
 
         /// <summary>
         /// Returns all DeathInducedBombDrops.
