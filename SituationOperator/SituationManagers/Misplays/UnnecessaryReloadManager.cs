@@ -1,4 +1,5 @@
-﻿using MatchEntities;
+﻿using EquipmentLib;
+using MatchEntities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -21,9 +22,9 @@ namespace SituationOperator.SituationManagers
     public class UnnecessaryReloadManager : SituationManager<UnnecessaryReload>
     {
         /// <summary>
-        /// Minimum required time the player must have taken damage after starting the reload to count as a misplay.
+        /// Minimum required fraction of bullets left in the magazine when reloading to count as a misplay.
         /// </summary>
-        private const int MIN_BULLETS_LEFT = 5;
+        private const double MIN_BULLETS_LEFT_FRACTION = 0.18;
 
         /// <summary>
         /// Maximum required time the player must have taken damage after starting the reload to count as a misplay.
@@ -37,13 +38,15 @@ namespace SituationOperator.SituationManagers
         /// </summary>
         private const int MAX_TIME_FLASHED_AFTER = 800;
 
+        private readonly IServiceProvider _sp;
         private readonly ILogger<UnnecessaryReloadManager> _logger;
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        public UnnecessaryReloadManager(ILogger<UnnecessaryReloadManager> logger, SituationContext context) : base(context)
+        public UnnecessaryReloadManager(IServiceProvider sp, ILogger<UnnecessaryReloadManager> logger, SituationContext context) : base(context)
         {
+            _sp = sp;
             _logger = logger;
         }
 
@@ -63,29 +66,35 @@ namespace SituationOperator.SituationManagers
         /// <returns></returns>
         protected override async Task<IEnumerable<UnnecessaryReload>> ExtractSituationsAsync(MatchDataSet data)
         {
-            var misplays = new List<UnnecessaryReload>();
-
-            foreach (var reload in data.WeaponReloadList)
+            using (var scope = _sp.CreateScope())
             {
-                if (reload.AmmoBefore > MIN_BULLETS_LEFT)
-                    continue;
+                var equipmentHelper = _sp.GetRequiredService<IEquipmentHelper>();
 
-                var damageTakenAfter = data.FirstDamageTaken(reload.PlayerId, startTime: reload.Time, endTime: reload.Time + MAX_TIME_DAMAGE_TAKEN_AFTER_RELOAD);
-                if(damageTakenAfter == null)
-                    continue;
-
-                if(MAX_TIME_FLASHED_AFTER != -1)
+                var misplays = new List<UnnecessaryReload>();
+                foreach (var reload in data.WeaponReloadList)
                 {
-                    // Continue if the player suffered from a flash from the moment he started the reload for at least MAX_TIME_FLASHED_AFTER
-                    var flasheds = data.GetFlasheds(reload.PlayerId, reload.Round, startTime: reload.Time);
-                    if (flasheds.Any(x => data.FlashFromFlashed(x).Time + x.TimeFlashed <= reload.Time + MAX_TIME_FLASHED_AFTER))
+                    var weaponInfo = equipmentHelper.GetEquipmentInfo(reload.Weapon, data.MatchStats.Source, data.MatchStats.MatchDate);
+                    if ((double)reload.AmmoBefore / weaponInfo.ClipSize > MIN_BULLETS_LEFT_FRACTION)
                         continue;
+
+                    var damageTakenAfter = data.FirstDamageTaken(reload.PlayerId, startTime: reload.Time, endTime: reload.Time + MAX_TIME_DAMAGE_TAKEN_AFTER_RELOAD);
+                    if (damageTakenAfter == null)
+                        continue;
+
+                    if (MAX_TIME_FLASHED_AFTER != -1)
+                    {
+                        // Continue if the player suffered from a flash from the moment he started the reload for at least MAX_TIME_FLASHED_AFTER
+                        var flasheds = data.GetFlasheds(reload.PlayerId, reload.Round, startTime: reload.Time);
+                        if (flasheds.Any(x => data.FlashFromFlashed(x).Time + x.TimeFlashed <= reload.Time + MAX_TIME_FLASHED_AFTER))
+                            continue;
+                    }
+
+                    misplays.Add(new UnnecessaryReload(reload));
                 }
 
-                misplays.Add(new UnnecessaryReload(reload));
-            }
+                return misplays;
 
-            return misplays;
+            }
         }
     }
 }
