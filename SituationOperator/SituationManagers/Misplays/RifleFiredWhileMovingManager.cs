@@ -89,8 +89,7 @@ namespace SituationOperator.SituationManagers
         {
             using (var scope = _sp.CreateScope())
             {
-                var equipmentProvider = _sp.GetRequiredService<IEquipmentProvider>();
-                var equipmentSet = equipmentProvider.GetEquipmentSet((EquipmentLib.Enums.Source)data.MatchStats.Source, data.MatchStats.MatchDate);
+                var equipmentHelper = _sp.GetRequiredService<IEquipmentHelper>();
 
                 // compute bursts from all weapons that were fired in the match
                 var bursts = new List<Burst>();
@@ -101,7 +100,7 @@ namespace SituationOperator.SituationManagers
                     .Where(x => AnalyzedWeapons.Contains(x.Key.Weapon));
                 foreach (var weaponFiredGroup in weaponFiredGroups)
                 {
-                    var equipmentInfo = equipmentSet.EquipmentDict[(short)weaponFiredGroup.Key.Weapon];
+                    var equipmentInfo = equipmentHelper.GetEquipmentInfo(weaponFiredGroup.Key.Weapon, data.MatchStats.Source, data.MatchStats.MatchDate);
                     bursts.AddRange(DivideIntoBursts(weaponFiredGroup, MIN_SHOTS, equipmentInfo));
                 }
 
