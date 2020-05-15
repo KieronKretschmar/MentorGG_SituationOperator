@@ -174,9 +174,58 @@ namespace SituationOperator.Helpers
             return data.DamageList.Where(x => x.HeGrenadeId == entity.GrenadeId).ToList();
         }
 
+        /// <summary>
+        /// Returns all Flashed event caused by the given flash.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         public static List<Flashed> FlashedsByFlash(this MatchDataSet data, Flash entity)
         {
             return data.FlashedList.Where(x => x.GrenadeId == entity.GrenadeId).ToList();
+        }
+
+        /// <summary>
+        /// Returns the Flash that caused the given Flashed event.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public static Flash FlashFromFlashed(this MatchDataSet data, Flashed entity)
+        {
+            return data.FlashList.Where(x => x.GrenadeId == entity.GrenadeId).Single();
+        }
+
+        /// <summary>
+        /// Returns all the Flashed events affecting the player at the specified round timespan.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="steamId"></param>
+        /// <param name="round">If possible, specify for increased performance when looking for particular timeframe.</param>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <returns></returns>
+        public static List<Flashed> GetFlasheds(this MatchDataSet data, long steamId, short? round, int? startTime = null, int? endTime = null)
+        {
+            var flasheds = new List<Flashed>();
+
+            foreach (var flashed in data.FlashedList.Where(x => x.VictimId == steamId))
+            {
+                if (round != null && flashed.Round != round)
+                    continue;
+
+                var flash = data.FlashFromFlashed(flashed);
+
+                if (startTime != null && flash.Time < startTime)
+                    continue;
+
+                if (endTime != null && flash.Time + flashed.TimeFlashed < endTime)
+                    continue;
+
+                flasheds.Add(flashed);
+            }
+
+            return flasheds;
         }
 
         #endregion
