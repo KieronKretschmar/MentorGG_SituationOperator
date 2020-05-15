@@ -25,6 +25,7 @@ namespace SituationOperator.Enums
         SelfFlash = 510003,
         TeamFlash = 510004,
         RifleFiredWhileMoving = 510005,
+        UnnecessaryReload = 510006,
 
         // 52XXXX For Team - Misplays
 

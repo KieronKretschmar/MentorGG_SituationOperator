@@ -30,6 +30,7 @@ namespace SituationDatabase
         public virtual DbSet<SelfFlash> SelfFlash { get; set; }
         public virtual DbSet<TeamFlash> TeamFlash { get; set; }
         public virtual DbSet<RifleFiredWhileMoving> RifleFiredWhileMoving { get; set; }
+        public virtual DbSet<UnnecessaryReload> UnnecessaryReload { get; set; }
         #endregion
 
         #region Highlights - SinglePlayer
@@ -129,6 +130,7 @@ namespace SituationDatabase
             modelBuilder.AddSinglePlayerSituation<SelfFlash>("SelfFlash");
             modelBuilder.AddSinglePlayerSituation<TeamFlash>("TeamFlash");
             modelBuilder.AddSinglePlayerSituation<RifleFiredWhileMoving>("RifleFiredWhileMoving");
+            modelBuilder.AddSinglePlayerSituation<UnnecessaryReload>("UnnecessaryReload");
             #endregion
 
             #region Goodplays - SinglePlayer
