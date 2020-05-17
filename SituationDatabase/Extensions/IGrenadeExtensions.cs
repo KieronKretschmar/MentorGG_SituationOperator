@@ -5,10 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace SituationDatabase
+namespace SituationDatabase.Extensions
 {
     /// <summary>
     /// Extensions for IGrenadeThrow interface.
+    /// 
+    /// Could be moved into MatchEntities once required.
     /// </summary>
     public static class IGrenadeThrowExtensions
     {
