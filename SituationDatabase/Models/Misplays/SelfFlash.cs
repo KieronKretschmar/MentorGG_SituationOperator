@@ -30,7 +30,7 @@ namespace SituationDatabase.Models
             int? deathTimeSelf,
             int timeFlashedEnemies,
             int angleToCrosshairSelf
-            ) : base(flash.MatchId, flash.Round, TrajectoryHelper.GetThrowTime(flash), flash.PlayerId)
+            ) : base(flash.MatchId, flash.Round, flash.GetThrowTime(), flash.PlayerId)
         {
             TimeFlashedSelf = timeFlashedSelf;
             DeathTimeSelf = deathTimeSelf;

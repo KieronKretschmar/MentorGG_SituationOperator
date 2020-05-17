@@ -3,36 +3,35 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
 namespace SituationDatabase
 {
     /// <summary>
-    /// Helper for dealing with trajectories encoded as strings.
+    /// Extensions for IGrenadeThrow interface.
     /// </summary>
-    public static class TrajectoryHelper
+    public static class IGrenadeThrowExtensions
     {
-
         /// <summary>
         /// Returns the time the grenade was thrown.
         /// </summary>
-        /// <param name="trajectoryString"></param>
+        /// <param name="grenade"></param>
         /// <returns></returns>
-        public static int GetDetonationTime(IGrenadeThrow grenade)
-        {
-            var trajectory = JsonConvert.DeserializeObject<List<TrajectoryPoint>>(grenade.Trajectory);
-            return trajectory.Last().Time;
-        }
-
-        /// <summary>
-        /// Returns the time the grenade was thrown.
-        /// </summary>
-        /// <param name="trajectoryString"></param>
-        /// <returns></returns>
-        public static int GetThrowTime(IGrenadeThrow grenade)
+        public static int GetThrowTime(this IGrenadeThrow grenade)
         {
             var trajectory = JsonConvert.DeserializeObject<List<TrajectoryPoint>>(grenade.Trajectory);
             return trajectory.First().Time;
+        }
+
+        /// <summary>
+        /// Returns the time the grenade detonated.
+        /// </summary>
+        /// <param name="grenade"></param>
+        /// <returns></returns>
+        public static int GetDetonationTime(this IGrenadeThrow grenade)
+        {
+            var trajectory = JsonConvert.DeserializeObject<List<TrajectoryPoint>>(grenade.Trajectory);
+            return trajectory.Last().Time;
         }
 
         /// <summary>

@@ -30,7 +30,7 @@ namespace SituationDatabase.Models
             int timeFlashedTeammates,
             int flashedTeammatesDeaths,
             int timeFlashedEnemies
-            ) : base(flash.MatchId, flash.Round, TrajectoryHelper.GetThrowTime(flash), flash.PlayerId)
+            ) : base(flash.MatchId, flash.Round, flash.GetThrowTime(), flash.PlayerId)
         {
             FlashedTeammates = flashedTeammates;
             FimeFlashedTeammates = timeFlashedTeammates;
