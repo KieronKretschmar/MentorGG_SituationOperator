@@ -101,7 +101,7 @@ namespace SituationOperator.SituationManagers
                     .Where(x => AnalyzedWeapons.Contains(x.Key.Weapon));
                 foreach (var weaponFiredGroup in weaponFiredGroups)
                 {
-                    var equipmentInfo = equipmentHelper.GetEquipmentInfo(weaponFiredGroup.Key.Weapon, data.MatchStats.Source, data.MatchStats.MatchDate);
+                    var equipmentInfo = equipmentHelper.GetEquipmentInfo(weaponFiredGroup.Key.Weapon, data);
                     bursts.AddRange(DivideIntoBursts(weaponFiredGroup, MIN_SHOTS, equipmentInfo));
                 }
 

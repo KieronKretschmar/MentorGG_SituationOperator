@@ -1,4 +1,5 @@
 ﻿using EquipmentLib;
+using MatchEntities;
 using MatchEntities.Enums;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace SituationOperator.Helpers
     /// </summary>
     public interface IEquipmentHelper
     {
-        EquipmentInfo GetEquipmentInfo(EquipmentElement equipmentElement, Source source, DateTime matchDate);
+        EquipmentInfo GetEquipmentInfo(EquipmentElement equipmentElement, MatchDataSet data);
     }
 
     /// <summary>
@@ -32,14 +33,13 @@ namespace SituationOperator.Helpers
         /// Get EquipmentInfo of a given element. For more info see EquipmentLib.
         /// </summary>
         /// <param name="equipmentElement"></param>
-        /// <param name="source"></param>
-        /// <param name="matchDate"></param>
+        /// <param name="data">Used for resolving Source and MatchDate</param>
         /// <returns></returns>
-        public EquipmentInfo GetEquipmentInfo(MatchEntities.Enums.EquipmentElement equipmentElement, MatchEntities.Enums.Source source, DateTime matchDate)
+        public EquipmentInfo GetEquipmentInfo(MatchEntities.Enums.EquipmentElement equipmentElement, MatchDataSet data)
         {
-            var equipmentLibSource = (EquipmentLib.Enums.Source)source;
+            var equipmentLibSource = (EquipmentLib.Enums.Source)data.MatchStats.Source;
             // casts EquipmentElement enum and
-            return _equipmentProvider.GetEquipmentDict(equipmentLibSource, matchDate)[(short)equipmentElement];
+            return _equipmentProvider.GetEquipmentDict(equipmentLibSource, data.MatchStats.MatchDate)[(short)equipmentElement];
         }
     }
 }

@@ -74,7 +74,7 @@ namespace SituationOperator.SituationManagers
                 var misplays = new List<UnnecessaryReload>();
                 foreach (var reload in data.WeaponReloadList)
                 {
-                    var weaponInfo = equipmentHelper.GetEquipmentInfo(reload.Weapon, data.MatchStats.Source, data.MatchStats.MatchDate);
+                    var weaponInfo = equipmentHelper.GetEquipmentInfo(reload.Weapon, data);
                     if ((double)reload.AmmoBefore / weaponInfo.ClipSize > MIN_BULLETS_LEFT_FRACTION)
                         continue;
 
