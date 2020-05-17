@@ -57,22 +57,22 @@ namespace SituationDatabase.Models
     #region Partial definitions of metadata tables for navigational properties
     public partial class MatchEntity
     {
-        public virtual ICollection<DeathInducedBombDrop> BadBombDrop { get; set; }
+        public virtual ICollection<DeathInducedBombDrop> DeathInducedBombDrop { get; set; }
     }
 
     public partial class RoundEntity
     {
-        public virtual ICollection<DeathInducedBombDrop> BadBombDrop { get; set; }
+        public virtual ICollection<DeathInducedBombDrop> DeathInducedBombDrop { get; set; }
     }
 
     public partial class PlayerMatchEntity
     {
-        public virtual ICollection<DeathInducedBombDrop> BadBombDrop { get; set; }
+        public virtual ICollection<DeathInducedBombDrop> DeathInducedBombDrop { get; set; }
     }
 
     public partial class PlayerRoundEntity
     {
-        public virtual ICollection<DeathInducedBombDrop> BadBombDrop { get; set; }
+        public virtual ICollection<DeathInducedBombDrop> DeathInducedBombDrop { get; set; }
     }
     #endregion
 }
