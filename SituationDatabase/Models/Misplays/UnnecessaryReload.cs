@@ -29,8 +29,10 @@ namespace SituationDatabase.Models
             WeaponReload weaponReload
             ) : base(weaponReload.MatchId, weaponReload.Round, weaponReload.Time, weaponReload.PlayerId)
         {
+            Weapon = weaponReload.Weapon;
             AmmoBefore = weaponReload.AmmoBefore;
         }
+        public EquipmentElement Weapon { get; set; }
         public int AmmoBefore { get; set; }
     }
 
