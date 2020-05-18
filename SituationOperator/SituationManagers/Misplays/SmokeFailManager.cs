@@ -41,12 +41,7 @@ namespace SituationOperator.SituationManagers
         /// <inheritdoc/>
         protected override Func<SituationContext, DbSet<SmokeFail>> TableSelector => context => context.SmokeFail;
 
-
-        /// <summary>
-        /// Looks for all failed smoke attempts of known lineups.
-        /// </summary>
-        /// <param name="data">Data of the match in which to look for situations for all players.</param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         protected override async Task<IEnumerable<SmokeFail>> ExtractSituationsAsync(MatchDataSet data)
         {
             using (var scope = _sp.CreateScope())

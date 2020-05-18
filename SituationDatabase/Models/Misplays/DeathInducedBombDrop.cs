@@ -9,7 +9,7 @@ namespace SituationDatabase.Models
     /// <summary>
     /// A Situation. 
     /// 
-    /// For more details see the corresponding ISituationManager in SituationOperator.
+    /// For more details see https://gitlab.com/mentorgg/csgo/situationdiscussion/-/issues/1.
     /// </summary>
     public class DeathInducedBombDrop : SinglePlayerSituation, ISinglePlayerSituation
     {

@@ -62,12 +62,7 @@ namespace SituationOperator.SituationManagers
         /// <inheritdoc/>
         protected override Func<SituationContext, DbSet<PushBeforeSmokeDetonated>> TableSelector => context => context.PushBeforeSmokeDetonated;
 
-        /// <summary>
-        /// Looks for situations in which a player exposed themselves to an enemy too early and thereby took damage, 
-        /// where the shooter's vision would have been obstructed by a smoke that detonated shortly after.
-        /// </summary>
-        /// <param name="data">Data of the match in which to look for situations for all players.</param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         protected override async Task<IEnumerable<PushBeforeSmokeDetonated>> ExtractSituationsAsync(MatchDataSet data)
         {
             using (var scope = _sp.CreateScope())

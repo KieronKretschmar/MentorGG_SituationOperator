@@ -60,11 +60,7 @@ namespace SituationOperator.SituationManagers
         /// <inheritdoc/>
         protected override Func<SituationContext, DbSet<UnnecessaryReload>> TableSelector => context => context.UnnecessaryReload;
 
-        /// <summary>
-        /// Looks for unnecessary reloads that potentially caused danger.
-        /// </summary>
-        /// <param name="data">Data of the match in which to look for situations for all players.</param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         protected override async Task<IEnumerable<UnnecessaryReload>> ExtractSituationsAsync(MatchDataSet data)
         {
             using (var scope = _sp.CreateScope())

@@ -10,7 +10,7 @@ namespace SituationDatabase.Models
     /// <summary>
     /// A Situation. 
     /// 
-    /// For more details see the corresponding ISituationManager in SituationOperator.
+    /// For more details see https://gitlab.com/mentorgg/csgo/situationdiscussion/-/issues/8.
     /// </summary>
     public class EffectiveHeGrenade : SinglePlayerSituation, ISinglePlayerSituation
     {

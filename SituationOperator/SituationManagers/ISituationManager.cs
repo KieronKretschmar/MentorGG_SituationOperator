@@ -109,6 +109,8 @@ namespace SituationOperator.SituationManagers
 
         /// <summary>
         /// Returns situations that implement the specific pattern.
+        /// 
+        /// For more info see the issue linked in the XML comment of the TSituation.
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>

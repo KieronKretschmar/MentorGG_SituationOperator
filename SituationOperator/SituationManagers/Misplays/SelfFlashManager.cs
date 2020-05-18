@@ -62,11 +62,7 @@ namespace SituationOperator.SituationManagers
         /// <inheritdoc/>
         protected override Func<SituationContext, DbSet<SelfFlash>> TableSelector => context => context.SelfFlash;
 
-        /// <summary>
-        /// Returns flashes that blinded the thrower and caused a disadvantage.
-        /// </summary>
-        /// <param name="data">Data of the match in which to look for situations for all players.</param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         protected override async Task<IEnumerable<SelfFlash>> ExtractSituationsAsync(MatchDataSet data)
         {
             var misplays = new List<SelfFlash>();
