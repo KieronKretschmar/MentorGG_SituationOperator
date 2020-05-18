@@ -25,7 +25,7 @@ namespace SituationDatabase.Models
         /// <summary>
         /// Constructor.
         /// </summary>
-        public SmokeFail(Smoke smoke) : base(smoke.MatchId, smoke.Round, smoke.GetThrowTime(), smoke.PlayerId)
+        public SmokeFail(Smoke smoke) : base(smoke)
         {
             LineupId = smoke.LineUp;
 

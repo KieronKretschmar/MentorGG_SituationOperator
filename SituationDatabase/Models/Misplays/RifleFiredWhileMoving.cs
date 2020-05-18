@@ -29,7 +29,7 @@ namespace SituationDatabase.Models
             WeaponFired firstWeaponFired, 
             int bullets, 
             int inaccurateBullets
-            ) : base(firstWeaponFired.MatchId, firstWeaponFired.Round, firstWeaponFired.Time, firstWeaponFired.PlayerId)
+            ) : base(firstWeaponFired)
         {
             Weapon = firstWeaponFired.Weapon;
             Bullets = bullets;

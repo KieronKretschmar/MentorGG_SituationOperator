@@ -19,7 +19,7 @@ namespace SituationDatabase.Extensions
         /// </summary>
         /// <param name="grenade"></param>
         /// <returns></returns>
-        public static int GetThrowTime(this IGrenadeThrow grenade)
+        public static int GetThrowTime(this IGrenadeEvent grenade)
         {
             var trajectory = JsonConvert.DeserializeObject<List<TrajectoryPoint>>(grenade.Trajectory);
             return trajectory.First().Time;
@@ -30,7 +30,7 @@ namespace SituationDatabase.Extensions
         /// </summary>
         /// <param name="grenade"></param>
         /// <returns></returns>
-        public static int GetDetonationTime(this IGrenadeThrow grenade)
+        public static int GetDetonationTime(this IGrenadeEvent grenade)
         {
             var trajectory = JsonConvert.DeserializeObject<List<TrajectoryPoint>>(grenade.Trajectory);
             return trajectory.Last().Time;

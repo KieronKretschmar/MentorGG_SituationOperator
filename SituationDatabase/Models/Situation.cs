@@ -1,4 +1,5 @@
 ﻿using MatchEntities;
+using MatchEntities.Interfaces;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,16 @@ namespace SituationDatabase.Models
             MatchId = matchId;
             Round = round;
             StartTime = startTime;
+        }
+
+        /// <summary>
+        /// Constructor using data from an IIngameEvent.
+        /// </summary>
+        public Situation(IIngameEvent ingameEvent)
+        {
+            MatchId = ingameEvent.MatchId;
+            Round = ingameEvent.Round;
+            StartTime = ingameEvent.Time;
         }
 
         /// <summary>

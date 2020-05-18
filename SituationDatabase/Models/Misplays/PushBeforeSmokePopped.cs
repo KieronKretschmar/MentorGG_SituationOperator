@@ -27,7 +27,7 @@ namespace SituationDatabase.Models
         public PushBeforeSmokeDetonated(
             Damage damageTaken, 
             int smokeDetonationTime
-            ) : base(damageTaken.MatchId, damageTaken.Round, damageTaken.Time, damageTaken.PlayerId)
+            ) : base(damageTaken)
         {
             SmokeDetonationTime = smokeDetonationTime;
         }

@@ -25,7 +25,7 @@ namespace SituationDatabase.Models
         /// <summary>
         /// Constructor.
         /// </summary>
-        public KillWithOwnFlashAssist(Flash flash, int timeBetweenDetonationAndKill, int timeFlashedAfterDeath) : base(flash.MatchId, flash.Round, flash.GetThrowTime(), flash.PlayerId)
+        public KillWithOwnFlashAssist(Flash flash, int timeBetweenDetonationAndKill, int timeFlashedAfterDeath) : base(flash)
         {
             TimeFlashedAfterDeath = timeFlashedAfterDeath;
             TimeBetweenDetonationAndKill = timeBetweenDetonationAndKill;

@@ -27,7 +27,7 @@ namespace SituationDatabase.Models
         /// </summary>
         public UnnecessaryReload(
             WeaponReload weaponReload
-            ) : base(weaponReload.MatchId, weaponReload.Round, weaponReload.Time, weaponReload.PlayerId)
+            ) : base(weaponReload)
         {
             Weapon = weaponReload.Weapon;
             AmmoBefore = weaponReload.AmmoBefore;

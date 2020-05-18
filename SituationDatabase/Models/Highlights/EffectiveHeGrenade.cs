@@ -25,7 +25,7 @@ namespace SituationDatabase.Models
         /// <summary>
         /// Constructor.
         /// </summary>
-        public EffectiveHeGrenade(He he, List<Damage> damages) : base(he.MatchId, he.Round, he.GetThrowTime(), he.PlayerId)
+        public EffectiveHeGrenade(He he, List<Damage> damages) : base(he)
         {
             EnemiesHit = damages.Where(x => !x.TeamAttack).Count();
             EnemiesKilled = damages.Where(x => !x.TeamAttack && x.Fatal).Count();
