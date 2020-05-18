@@ -15,6 +15,7 @@ namespace SituationOperator.Enums
 
         // 21XXXX For SinglePlayer - Highlights
         EffectiveHeGrenade = 210001,
+        KillWithOwnFlashAssist = 210002,
 
         // 22XXXX For Team - Highlights
 
