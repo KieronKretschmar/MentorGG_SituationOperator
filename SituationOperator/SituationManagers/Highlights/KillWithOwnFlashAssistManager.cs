@@ -51,21 +51,45 @@ namespace SituationOperator.SituationManagers
         {
             var situations = new List<KillWithOwnFlashAssist>();
 
-            foreach (var kill in data.KillList)
+            foreach (var flash in data.FlashList)
             {
-                var victimFlasheds = data.GetFlasheds(kill.PlayerId, kill.Round, kill.Time - FlashExtensions.MAX_FLASH_TIME, kill.Time);
+                var flashAssistedKillCount = 0;
+                Kill firstKill = null;
+                var victimFlasheds = data.FlashedsByFlash(flash);
                 foreach (var flashed in victimFlasheds)
                 {
-                    var flash = data.FlashFromFlashed(flashed);
-                    if (flash.PlayerId != kill.PlayerId)
+                    if (flashed.TeamAttack)
+                        continue;
+
+                    var victimsDeath = data.Death(flashed.VictimId, flashed.Round);
+                    if (victimsDeath == null)
+                        continue;
+
+                    // safety check because sometimes dead people appear flashed.
+                    // See https://gitlab.com/mentorgg/csgo/demofileworker/-/issues/13 for more info.
+                    if (victimsDeath.Time < flash.Time)
+                        continue;
+
+                    // If the killer was not the player throwing the flash, continue
+                    if (victimsDeath.PlayerId != flash.PlayerId)
                         continue;
 
                     var flashEndTime = flash.GetDetonationTime() + flashed.TimeFlashed;
-                    var timeFlashedAfterDeath = kill.Time + MIN_FLASHED_TIME_AFTER_DEATH;
-                    if (flashEndTime < timeFlashedAfterDeath)
+                    var overkillFlashedTime = flashEndTime - victimsDeath.Time;
+                    if (overkillFlashedTime < MIN_FLASHED_TIME_AFTER_DEATH)
                         continue;
 
-                    situations.Add(new KillWithOwnFlashAssist(flash, kill.Time - flash.GetDetonationTime(), timeFlashedAfterDeath));                                    
+
+                    flashAssistedKillCount++;
+                    if(firstKill == null || victimsDeath.Time < firstKill.Time)
+                    {
+                        firstKill = victimsDeath;
+                    }
+                }
+
+                if(flashAssistedKillCount >= 1)
+                {
+                    situations.Add(new KillWithOwnFlashAssist(flash, firstKill.Time - flash.GetDetonationTime(), flashAssistedKillCount));
                 }
             }
 

@@ -25,14 +25,31 @@ namespace SituationDatabase.Models
         /// <summary>
         /// Constructor.
         /// </summary>
-        public KillWithOwnFlashAssist(Flash flash, int timeBetweenDetonationAndKill, int timeFlashedAfterDeath) : base(flash)
+        public KillWithOwnFlashAssist(
+            Flash flash, 
+            int timeBetweenDetonationAndFirstKill,
+            int assistedKills
+            ) : base(flash)
         {
-            TimeFlashedAfterDeath = timeFlashedAfterDeath;
-            TimeBetweenDetonationAndKill = timeBetweenDetonationAndKill;
+            GrenadeId = flash.GrenadeId;
+            TimeBetweenDetonationAndFirstKill = timeBetweenDetonationAndFirstKill;
+            AssistedKills = assistedKills;
         }
 
-        public int TimeFlashedAfterDeath { get; set; }
-        public int TimeBetweenDetonationAndKill { get; set; }
+        /// <summary>
+        /// Id of the Grenade this Situation is based on.
+        /// </summary>
+        public long GrenadeId { get; set; }
+
+        /// <summary>
+        /// Time passed between the flash detonating and the first blinded enemy dying in ms.
+        /// </summary>
+        public int TimeBetweenDetonationAndFirstKill { get; set; }
+
+        /// <summary>
+        /// Number of enemies the player killed that were blinded by this flash.
+        /// </summary>
+        public int AssistedKills { get; set; }
     }
 
     #region Partial definitions of metadata tables for navigational properties
