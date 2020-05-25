@@ -218,10 +218,13 @@ namespace SituationOperator
             services.AddTransient<ISituationManager, SelfFlashManager>();
             services.AddTransient<ISituationManager, TeamFlashManager>();
             services.AddTransient<ISituationManager, RifleFiredWhileMovingManager>();
+            services.AddTransient<ISituationManager, UnnecessaryReloadManager>();
+            services.AddTransient<ISituationManager, PushBeforeSmokeDetonatedManager>();
             #endregion
 
             #region Highlights - Singleplayer
             services.AddTransient<ISituationManager, EffectiveHeGrenadeManager>();
+            services.AddTransient<ISituationManager, KillWithOwnFlashAssistManager>();
             #endregion
 
             #endregion
