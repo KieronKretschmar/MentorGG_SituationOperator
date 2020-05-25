@@ -1,8 +1,12 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using EquipmentLib;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using SituationOperator.Helpers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using ZoneReader;
 
 namespace SituationOperatorTestProject
 {
@@ -58,6 +62,30 @@ namespace SituationOperatorTestProject
         }
 
         /// <summary>
+        /// Adds Helper services to this ServiceProvider.
+        /// Services added: EquipmentProvider, FileReader
+        /// </summary>
+        public void AddHelperServices()
+        {
+            // Add EquipmentProvider
+            var equipmentProvider = new EquipmentProvider(
+                TestHelper.GetMockLogger<EquipmentProvider>(),
+                Path.Combine(TestHelper.GetTestDataFolderPath(), "EquipmentData"),
+                "");
+            AddService<IEquipmentProvider>(equipmentProvider);
+
+            // Add EquipmentHelper
+            var equipmentHelper = new EquipmentHelper(equipmentProvider);
+            AddService<IEquipmentHelper>(equipmentHelper);
+
+            // Add FileReader
+            var fileReader = new FileReader(
+                TestHelper.GetMockLogger<FileReader>(),
+                Path.Combine(TestHelper.GetTestDataFolderPath(), "ZoneReaderResources"));
+            AddService<IZoneReader>(fileReader);
+        }
+
+        /// <summary>
         /// Adds a mocked service to the IServiceProvider as well as scopes derived from it.
         /// </summary>
         /// <typeparam name="TService"></typeparam>
@@ -68,6 +96,19 @@ namespace SituationOperatorTestProject
             // Add mocked service to the mocked IServiceProvider
             ServiceProviderMock.Setup(x => x.GetService(typeof(TService)))
                 .Returns(mock.Object);
+        }
+
+        /// <summary>
+        /// Adds a service to the IServiceProvider as well as scopes derived from it.
+        /// </summary>
+        /// <typeparam name="TService"></typeparam>
+        /// <param name="mock"></param>
+        public void AddService<TService>(TService service)
+            where TService : class
+        {
+            // Add mocked service to the mocked IServiceProvider
+            ServiceProviderMock.Setup(x => x.GetService(typeof(TService)))
+                .Returns(service);
         }
     }
 }

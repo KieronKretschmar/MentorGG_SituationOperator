@@ -1,0 +1,255 @@
+<?xml version="1.0" ?>
+<root>
+	<map>
+		<mapname>de_dust2</mapname>
+	</map>
+	<map>
+		<mapname>de_mirage</mapname>
+		<category>
+			<name>to Window</name>
+			<centroid>
+				<PlayerPosX>1394.32202148</PlayerPosX>
+				<PlayerPosY>27.6912384033</PlayerPosY>
+				<PlayerPosZ>-167.96875</PlayerPosZ>
+				<PlayerViewX>193.359390259</PlayerViewX>
+				<PlayerViewY>116.015625</PlayerViewY>
+				<GrenadePosX>-1147.51245117</GrenadePosX>
+				<GrenadePosY>-639.329650879</GrenadePosY>
+				<GrenadePosZ>-165.96875</GrenadePosZ>
+			</centroid>
+			<release_boundaries>
+			</release_boundaries>
+				<GrenadePosX>
+					<lower>723.124177</lower>
+					<upper>736.397850</upper>
+				</GrenadePosX>
+				<GrenadePosY>
+					<lower>247.404195</lower>
+					<upper>256.569477</upper>
+				</GrenadePosY>
+			<target_boundaries>
+			</target_boundaries>
+		</category>
+		<category>
+			<name>to Window</name>
+			<centroid>
+				<PlayerPosX>341.835327148</PlayerPosX>
+				<PlayerPosY>-620.154052734</PlayerPosY>
+				<PlayerPosZ>-163.345031738</PlayerPosZ>
+				<PlayerViewX>180.3515625</PlayerViewX>
+				<PlayerViewY>130.78125</PlayerViewY>
+				<GrenadePosX>-1189.24682617</GrenadePosX>
+				<GrenadePosY>-633.65612793</GrenadePosY>
+				<GrenadePosZ>-165.96875</GrenadePosZ>
+			</centroid>
+			<release_boundaries>
+			</release_boundaries>
+				<GrenadePosX>
+					<lower>723.124177</lower>
+					<upper>736.397850</upper>
+				</GrenadePosX>
+				<GrenadePosY>
+					<lower>247.404195</lower>
+					<upper>256.569477</upper>
+				</GrenadePosY>
+			<target_boundaries>
+			</target_boundaries>
+		</category>
+		<category>
+			<name>to Window</name>
+			<centroid>
+				<PlayerPosX>1425.08581543</PlayerPosX>
+				<PlayerPosY>-154.870452881</PlayerPosY>
+				<PlayerPosZ>-147.96875</PlayerPosZ>
+				<PlayerViewX>189.843734741</PlayerViewX>
+				<PlayerViewY>111.796875</PlayerViewY>
+				<GrenadePosX>-1136.36486816</GrenadePosX>
+				<GrenadePosY>-637.987854004</GrenadePosY>
+				<GrenadePosZ>-165.96875</GrenadePosZ>
+			</centroid>
+			<release_boundaries>
+			</release_boundaries>
+				<GrenadePosX>
+					<lower>723.124177</lower>
+					<upper>736.397850</upper>
+				</GrenadePosX>
+				<GrenadePosY>
+					<lower>247.404195</lower>
+					<upper>256.569477</upper>
+				</GrenadePosY>
+			<target_boundaries>
+			</target_boundaries>
+		</category>
+		<category>
+			<name>to Window</name>
+			<centroid>
+				<PlayerPosX>440.150878906</PlayerPosX>
+				<PlayerPosY>-629.958862305</PlayerPosY>
+				<PlayerPosZ>-160.017303467</PlayerPosZ>
+				<PlayerViewX>179.6484375</PlayerViewX>
+				<PlayerViewY>104.4140625</PlayerViewY>
+				<GrenadePosX>-1132.35870361</GrenadePosX>
+				<GrenadePosY>-620.564941406</GrenadePosY>
+				<GrenadePosZ>-165.96875</GrenadePosZ>
+			</centroid>
+			<release_boundaries>
+			</release_boundaries>
+			<target_boundaries>
+				<GrenadePosX>
+					<lower>723.124177</lower>
+					<upper>736.397850</upper>
+				</GrenadePosX>
+				<GrenadePosY>
+					<lower>247.404195</lower>
+					<upper>256.569477</upper>
+				</GrenadePosY>
+			</target_boundaries>
+		</category>
+		<category>
+			<name>to Window</name>
+			<centroid>
+				<PlayerPosX>1404.73950195</PlayerPosX>
+				<PlayerPosY>-250.715393066</PlayerPosY>
+				<PlayerPosZ>-167.96875</PlayerPosZ>
+				<PlayerViewX>188.085922241</PlayerViewX>
+				<PlayerViewY>119.53125</PlayerViewY>
+				<GrenadePosX>-1156.69055176</GrenadePosX>
+				<GrenadePosY>-641.264099121</GrenadePosY>
+				<GrenadePosZ>-165.96875</GrenadePosZ>
+			</centroid>
+			<release_boundaries>
+			</release_boundaries>
+			<target_boundaries>
+				<GrenadePosX>
+					<lower>723.124177</lower>
+					<upper>736.397850</upper>
+				</GrenadePosX>
+				<GrenadePosY>
+					<lower>247.404195</lower>
+					<upper>256.569477</upper>
+				</GrenadePosY>
+			</target_boundaries>
+		</category>
+		<category>
+			<name>to Window</name>
+			<centroid>
+				<PlayerPosX>1325.77490234</PlayerPosX>
+				<PlayerPosY>-1000.92337036</PlayerPosY>
+				<PlayerPosZ>-167.96875</PlayerPosZ>
+				<PlayerViewX>171.9140625</PlayerViewX>
+				<PlayerViewY>139.04296875</PlayerViewY>
+				<GrenadePosX>-1126.39239502</GrenadePosX>
+				<GrenadePosY>-611.734832764</GrenadePosY>
+				<GrenadePosZ>-165.96875</GrenadePosZ>
+			</centroid>
+			<release_boundaries>
+			</release_boundaries>
+			<target_boundaries>
+				<GrenadePosX>
+					<lower>723.124177</lower>
+					<upper>736.397850</upper>
+				</GrenadePosX>
+				<GrenadePosY>
+					<lower>247.404195</lower>
+					<upper>256.569477</upper>
+				</GrenadePosY>
+			</target_boundaries>
+		</category>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		<category>
+			<name>to Stairs</name>
+			<centroid>
+				<PlayerPosX>1148.43273926</PlayerPosX>
+				<PlayerPosY>-1183.98950195</PlayerPosY>
+				<PlayerPosZ>-205.57170105</PlayerPosZ>
+				<PlayerViewX>194.765625</PlayerViewX>
+				<PlayerViewY>132.5390625</PlayerViewY>
+				<GrenadePosX>-452.966644287</GrenadePosX>
+				<GrenadePosY>-1606.17645264</GrenadePosY>
+				<GrenadePosZ>-37.96875</GrenadePosZ>
+			</centroid>
+			<release_boundaries>
+			</release_boundaries>
+			<target_boundaries>
+			<target_boundaries>
+				<GrenadePosX>
+					<lower>751.481569</lower>
+					<upper>772.799892</upper>
+				</GrenadePosX>
+				<GrenadePosY>
+					<lower>207.953636</lower>
+					<upper>228.675142</upper>
+				</GrenadePosY>
+			</target_boundaries>
+			</target_boundaries>
+		</category>
+
+
+
+
+
+
+
+
+
+		<category>
+			<name>to Appartements</name>
+			<centroid>
+			</centroid>
+			<release_boundaries>
+			</release_boundaries>
+			<target_boundaries>
+			</target_boundaries>
+		</category>
+		<category>
+			<name></name>
+			<centroid>
+			</centroid>
+			<release_boundaries>
+			</release_boundaries>
+			<target_boundaries>
+			</target_boundaries>
+		</category>
+		<category>
+			<name></name>
+			<centroid>
+			</centroid>
+			<release_boundaries>
+			</release_boundaries>
+			<target_boundaries>
+			</target_boundaries>
+		</category>
+	</map>
+	<map>
+		<mapname>de_nuke</mapname>
+	</map>
+	<map>
+		<mapname>de_inferno</mapname>
+	</map>
+	<map>
+		<mapname>de_cache</mapname>
+	</map>
+	<map>
+		<mapname>de_overpass</mapname>
+	</map>
+	<map>
+		<mapname>de_cbble</mapname>
+	</map>
+	<map>
+		<mapname>de_train</mapname>
+	</map>
+</root>
