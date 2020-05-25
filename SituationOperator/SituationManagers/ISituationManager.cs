@@ -42,6 +42,13 @@ namespace SituationOperator.SituationManagers
         /// <param name="matchId"></param>
         /// <returns></returns>
         Task<List<ISituation>> LoadSituationsAsync(long matchId);
+
+        /// <summary>
+        /// Loads all Situations managed by this manager of the given matches.
+        /// </summary>
+        /// <param name="matchId"></param>
+        /// <returns></returns>
+        Task<List<ISituation>> LoadSituationsAsync(List<long> matchIds);
     }
 
     /// <summary>
@@ -103,6 +110,19 @@ namespace SituationOperator.SituationManagers
         {
             var table = TableSelector(_context);
             var existingEntries = table.Where(x => x.MatchId == matchId);
+            var res = await existingEntries.Select(x => x as ISituation).ToListAsync();
+            return res;
+        }
+
+        /// <summary>
+        /// Loads all Situations managed by this manager of the given match.
+        /// </summary>
+        /// <param name="matchId"></param>
+        /// <returns></returns>
+        public async Task<List<ISituation>> LoadSituationsAsync(List<long> matchIds)
+        {
+            var table = TableSelector(_context);
+            var existingEntries = table.Where(x => matchIds.Contains(x.MatchId));
             var res = await existingEntries.Select(x => x as ISituation).ToListAsync();
             return res;
         }
