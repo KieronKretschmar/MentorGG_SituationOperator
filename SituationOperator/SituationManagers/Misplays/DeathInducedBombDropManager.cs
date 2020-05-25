@@ -84,22 +84,22 @@ namespace SituationOperator.SituationManagers
                         continue;
                     }
 
-                    var closestTeammateDistance = teamMateDistances.Select(x => (int?)x).Min() ?? -1; // -1 if none alive
+                    var closestTeammateDistance = teamMateDistances.Min() ?? null; // -1 if none alive
 
-                    if(closestTeammateDistance < MAX_TEAMMATE_DISTANCE)
+                    if(closestTeammateDistance == null || closestTeammateDistance < MAX_TEAMMATE_DISTANCE)
                     {
                         continue;
                     }
 
                     var pickedUpAfter = data.ItemPickedUpList
                         .FirstOrDefault(x =>
-                        x.Equipment == EquipmentElement.Bomb
-                        && x.MatchId == bombDrop.MatchId
-                        && x.Round == bombDrop.Round
-                        && x.Time > bombDrop.Time)
-                        ?.Time - bombDrop.Time ?? -1;
+                            x.Equipment == EquipmentElement.Bomb
+                            && x.MatchId == bombDrop.MatchId
+                            && x.Round == bombDrop.Round
+                            && x.Time > bombDrop.Time
+                        )?.Time - bombDrop.Time ?? -1;
 
-                    var misplay = new DeathInducedBombDrop(bombDrop, pickedUpAfter, teammatesAlive, closestTeammateDistance);
+                    var misplay = new DeathInducedBombDrop(bombDrop, pickedUpAfter, teammatesAlive, (float) closestTeammateDistance);
 
                     misplays.Add(misplay);
 

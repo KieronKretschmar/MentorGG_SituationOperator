@@ -28,7 +28,7 @@ namespace SituationDatabase.Models
             ItemDropped bombDrop, 
             int pickedUpAfter, 
             int teammatesAlive, 
-            int closestTeammateDistance
+            float closestTeammateDistance
             ) : base(bombDrop.MatchId, bombDrop.Round, bombDrop.Time, bombDrop.PlayerId)
         {
             PickedUpAfter = pickedUpAfter;
@@ -50,7 +50,7 @@ namespace SituationDatabase.Models
         /// <summary>
         /// Distance to the closes teammate
         /// </summary>
-        public int ClosestTeammateDistance { get; set; }
+        public float ClosestTeammateDistance { get; set; }
     }
 
 
