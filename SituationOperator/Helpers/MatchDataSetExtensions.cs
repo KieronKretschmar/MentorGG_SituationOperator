@@ -77,10 +77,12 @@ namespace SituationOperator.Helpers
         /// <returns></returns>
         public static PlayerPosition LastPlayerPos(this MatchDataSet data, long steamId, int time)
         {
-            return data.PlayerPositionList
+            var pos = data.PlayerPositionList
                 .Where(x => x.PlayerId == steamId)
                 .OrderByDescending(x => x.Time)
-                .First(x => x.Time < time);
+                .FirstOrDefault(x => x.Time < time);
+
+            return pos;
         }
 
         /// <summary>
@@ -91,13 +93,15 @@ namespace SituationOperator.Helpers
         /// <param name="steamIdSecond"></param>
         /// <param name="time"></param>
         /// <returns></returns>
-        public static float LastPositionDistance(this MatchDataSet data, long steamIdFirst, long steamIdSecond, int time)
+        public static float? LastPositionDistance(this MatchDataSet data, long steamIdFirst, long steamIdSecond, int time)
         {
-            var firstPos = data.LastPlayerPos(steamIdFirst, time).PlayerPos;
-            var secondPos = data.LastPlayerPos(steamIdSecond, time).PlayerPos;
+            var firstPos = data.LastPlayerPos(steamIdFirst, time);
+            var secondPos = data.LastPlayerPos(steamIdSecond, time);
 
-            var dist = Vector3.Distance(firstPos, secondPos);
+            if (firstPos == null || secondPos == null)
+                return null;
 
+            var dist = Vector3.Distance(firstPos.PlayerPos, secondPos.PlayerPos);
             return dist;
         }
 
