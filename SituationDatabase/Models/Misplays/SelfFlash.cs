@@ -33,12 +33,17 @@ namespace SituationDatabase.Models
             int angleToCrosshairSelf
             ) : base(flash)
         {
+            GrenadeId = flash.GrenadeId;
             TimeFlashedSelf = timeFlashedSelf;
             DeathTimeSelf = deathTimeSelf;
             TimeFlashedEnemies = timeFlashedEnemies;
             AngleToCrosshairSelf = angleToCrosshairSelf; 
         }
 
+        /// <summary>
+        /// Id of the Grenade this Situation is based on.
+        /// </summary>
+        public long GrenadeId { get; set; }
         public int TimeFlashedSelf { get; set; }
         public int TimeFlashedEnemies { get; set; }
         public int AngleToCrosshairSelf { get; set; }

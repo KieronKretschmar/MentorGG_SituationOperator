@@ -105,7 +105,7 @@ namespace SituationOperator.SituationManagers
                             continue;
                         }
 
-                        misplays.Add(new PushBeforeSmokeDetonated(damage, smoke.GetDetonationTime()));
+                        misplays.Add(new PushBeforeSmokeDetonated(smoke, damage));
                     }
                 }
 

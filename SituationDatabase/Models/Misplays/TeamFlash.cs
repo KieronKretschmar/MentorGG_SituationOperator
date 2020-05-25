@@ -33,14 +33,19 @@ namespace SituationDatabase.Models
             int timeFlashedEnemies
             ) : base(flash)
         {
+            GrenadeId = flash.GrenadeId;
             FlashedTeammates = flashedTeammates;
-            FimeFlashedTeammates = timeFlashedTeammates;
+            TimeFlashedTeammates = timeFlashedTeammates;
             FlashedTeammatesDeaths = flashedTeammatesDeaths;
             TimeFlashedEnemies = timeFlashedEnemies; 
         }
 
+        /// <summary>
+        /// Id of the Grenade this Situation is based on.
+        /// </summary>
+        public long GrenadeId { get; set; }
         public int FlashedTeammates { get; set; }
-        public int FimeFlashedTeammates { get; set; }
+        public int TimeFlashedTeammates { get; set; }
         public int FlashedTeammatesDeaths { get; set; }
         public int TimeFlashedEnemies { get; set; }
     }

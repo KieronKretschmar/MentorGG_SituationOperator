@@ -1,4 +1,5 @@
 ﻿using MatchEntities;
+using SituationDatabase.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,12 +26,18 @@ namespace SituationDatabase.Models
         /// Constructor.
         /// </summary>
         public PushBeforeSmokeDetonated(
-            Damage damageTaken, 
-            int smokeDetonationTime
+            Smoke smoke,
+            Damage damageTaken 
             ) : base(damageTaken)
         {
-            SmokeDetonationTime = smokeDetonationTime;
+            GrenadeId = smoke.GrenadeId;
+            SmokeDetonationTime = smoke.GetDetonationTime();
         }
+
+        /// <summary>
+        /// Id of the Grenade this Situation is based on.
+        /// </summary>
+        public long GrenadeId { get; set; }
 
         /// <summary>
         /// Time at which the smoke detonated.

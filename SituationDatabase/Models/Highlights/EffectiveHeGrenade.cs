@@ -27,12 +27,17 @@ namespace SituationDatabase.Models
         /// </summary>
         public EffectiveHeGrenade(He he, List<Damage> damages) : base(he)
         {
+            GrenadeId = he.GrenadeId;
             EnemiesHit = damages.Where(x => !x.TeamAttack).Count();
             EnemiesKilled = damages.Where(x => !x.TeamAttack && x.Fatal).Count();
             TotalEnemyDamage = damages.Where(x => !x.TeamAttack).Select(x => x.AmountHealth).Sum();
             TotalTeamDamage = damages.Where(x => x.TeamAttack).Select(x => x.AmountHealth).Sum();
         }
 
+        /// <summary>
+        /// Id of the Grenade this Situation is based on.
+        /// </summary>
+        public long GrenadeId { get; set; }
         public int EnemiesHit { get; set; }
         public int EnemiesKilled { get; set; }
         public int TotalEnemyDamage { get; set; }

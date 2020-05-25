@@ -27,11 +27,16 @@ namespace SituationDatabase.Models
         /// </summary>
         public SmokeFail(Smoke smoke) : base(smoke)
         {
+            GrenadeId = smoke.GrenadeId;
             LineupId = smoke.LineUp;
 
             //TODO: Set LineupName, e.g. in SituationManager.EnrichData()
         }
 
+        /// <summary>
+        /// Id of the Grenade this Situation is based on.
+        /// </summary>
+        public long GrenadeId { get; set; }
         public int LineupId { get; set; }
         public string LineupName { get; set; }
     }
