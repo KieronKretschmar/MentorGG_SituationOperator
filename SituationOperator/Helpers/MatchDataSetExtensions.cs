@@ -40,14 +40,17 @@ namespace SituationOperator.Helpers
         {
             var round = data.GetRoundByTime(time);
 
-            var kill = data.KillList.SingleOrDefault(x => x.VictimId == steamId && x.Round == round.Round);
+            // Use FirstOrDefault instead of SingleOrDefault because there is a known issue where a player apparently dies more than once in a single Round
+            // Assuming the first death is the real one, and the second one is not because it might have happened after taking over a bot. 
+            // For more info on the issue see https://gitlab.com/mentorgg/csgo/demofileworker/-/issues/12
+            var kill = data.KillList.FirstOrDefault(x => x.VictimId == steamId && x.Round == round.Round);
 
             if (kill == null || kill.Time > time)
             {
-                return false;
+                return true;
             }
 
-            return true;
+            return false;
         }
 
         /// <summary>
