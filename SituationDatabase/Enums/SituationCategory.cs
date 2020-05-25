@@ -5,7 +5,7 @@ using System.Text;
 namespace SituationDatabase.Enums
 {
     /// <summary>
-    /// A type of situation.
+    /// A category of situations each SituationType belongs to.
     /// </summary>
     public enum SituationCategory : int
     {

@@ -27,7 +27,7 @@ namespace SituationOperator.SituationManagers
         SituationType SituationType { get; }
 
         /// <summary>
-        /// Extracts situations from the data and uploads it to the database.
+        /// Extracts situations from the data and uploads them to the database.
         /// </summary>
         Task AnalyzeAndUploadAsync(MatchDataSet matchData);
 
@@ -45,8 +45,9 @@ namespace SituationOperator.SituationManagers
 
         /// <summary>
         /// Loads all Situations managed by this manager of the given matches.
+        /// <returns></returns>
         /// </summary>
-        /// <param name="matchId"></param>
+        /// <param name="matchIds"></param>
         /// <returns></returns>
         Task<List<ISituation>> LoadSituationsAsync(List<long> matchIds);
     }
@@ -64,14 +65,10 @@ namespace SituationOperator.SituationManagers
             _context = context;
         }
 
-        /// <summary>
-        /// Identifies the SituationCategory the managed situation belongs to.
-        /// </summary>
+        /// <inheritdoc/>
         public abstract SituationCategory SituationCategory { get; }
 
-        /// <summary>
-        /// Identifies the type of situation.
-        /// </summary>
+        /// <inheritdoc/>
         public abstract SituationType SituationType { get; }
 
         /// <summary>
@@ -79,9 +76,7 @@ namespace SituationOperator.SituationManagers
         /// </summary>
         protected abstract Func<SituationContext, DbSet<TSituation>> TableSelector { get; }
 
-        /// <summary>
-        /// Extracts situations from the data and uploads it to the database.
-        /// </summary>
+        /// <inheritdoc/>
         public async Task AnalyzeAndUploadAsync(MatchDataSet matchData)
         {
             var situations = await ExtractSituationsAsync(matchData);
@@ -90,9 +85,7 @@ namespace SituationOperator.SituationManagers
             await _context.SaveChangesAsync();
         }
 
-        /// <summary>
-        /// Clears the table of the SituationDatabase in which occurences of TSituation are stored.
-        /// </summary>
+        /// <inheritdoc/>
         public async Task ClearTableAsync(long matchId)
         {
             var table = TableSelector(_context);
@@ -101,11 +94,7 @@ namespace SituationOperator.SituationManagers
             await _context.SaveChangesAsync();
         }
 
-        /// <summary>
-        /// Loads all Situations managed by this manager of the given match.
-        /// </summary>
-        /// <param name="matchId"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public async Task<List<ISituation>> LoadSituationsAsync(long matchId)
         {
             var table = TableSelector(_context);
@@ -114,11 +103,7 @@ namespace SituationOperator.SituationManagers
             return res;
         }
 
-        /// <summary>
-        /// Loads all Situations managed by this manager of the given match.
-        /// </summary>
-        /// <param name="matchId"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public async Task<List<ISituation>> LoadSituationsAsync(List<long> matchIds)
         {
             var table = TableSelector(_context);
