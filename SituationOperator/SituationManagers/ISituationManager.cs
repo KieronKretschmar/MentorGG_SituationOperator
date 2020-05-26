@@ -58,7 +58,7 @@ namespace SituationOperator.SituationManagers
     /// <typeparam name="TSituation">The type of Situation</typeparam>
     public abstract class SituationManager<TSituation> : ISituationManager where TSituation : class, ISituation
     {
-        private readonly SituationContext _context;
+        protected readonly SituationContext _context;
 
         public SituationManager(SituationContext context)
         {

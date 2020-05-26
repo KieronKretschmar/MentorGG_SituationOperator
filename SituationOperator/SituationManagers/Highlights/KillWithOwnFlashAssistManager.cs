@@ -18,7 +18,7 @@ namespace SituationOperator.SituationManagers
     /// A SituationManager. 
     /// See <see cref="ExtractSituationsAsync(MatchDataSet)"/> for more info regarding Situation specific logic.
     /// </summary>
-    public class KillWithOwnFlashAssistManager : SituationManager<KillWithOwnFlashAssist>
+    public class KillWithOwnFlashAssistManager : SinglePlayerSituationManager<KillWithOwnFlashAssist>
     {
         /// <summary>
         /// Minimium required time the victim would have still been affected by the flash (even if its just a minimal effect) after dying to count as a misplay.

@@ -20,7 +20,7 @@ namespace SituationOperator.SituationManagers
     /// A SituationManager. 
     /// See <see cref="ExtractSituationsAsync(MatchDataSet)"/> for more info regarding Situation specific logic.
     /// </summary>
-    public class UnnecessaryReloadManager : SituationManager<UnnecessaryReload>
+    public class UnnecessaryReloadManager : SinglePlayerSituationManager<UnnecessaryReload>
     {
         /// <summary>
         /// Minimum required fraction of bullets left in the magazine when reloading to count as a misplay.

@@ -20,7 +20,7 @@ namespace SituationOperator.SituationManagers
     /// A SituationManager. 
     /// See <see cref="ExtractSituationsAsync(MatchDataSet)"/> for more info regarding Situation specific logic.
     /// </summary>
-    public class DeathInducedBombDropManager : SituationManager<DeathInducedBombDrop>
+    public class DeathInducedBombDropManager : SinglePlayerSituationManager<DeathInducedBombDrop>
     {
         /// <summary>
         /// Minimum required teammates alive at death to count as a misplay.

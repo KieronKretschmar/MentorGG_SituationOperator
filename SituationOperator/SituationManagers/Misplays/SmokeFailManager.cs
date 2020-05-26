@@ -18,7 +18,7 @@ namespace SituationOperator.SituationManagers
     /// A SituationManager. 
     /// See <see cref="ExtractSituationsAsync(MatchDataSet)"/> for more info regarding Situation specific logic.
     /// </summary>
-    public class SmokeFailManager : SituationManager<SmokeFail>
+    public class SmokeFailManager : SinglePlayerSituationManager<SmokeFail>
     {
         private readonly IServiceProvider _sp;
         private readonly ILogger<SmokeFailManager> _logger;

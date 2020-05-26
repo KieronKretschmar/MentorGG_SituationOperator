@@ -19,7 +19,7 @@ namespace SituationOperator.SituationManagers
     /// A SituationManager. 
     /// See <see cref="ExtractSituationsAsync(MatchDataSet)"/> for more info regarding Situation specific logic.
     /// </summary>
-    public class TeamFlashManager : SituationManager<TeamFlash>
+    public class TeamFlashManager : SinglePlayerSituationManager<TeamFlash>
     {
         /// <summary>
         /// Teammates flashed for a shorter duration than this value will be ignored for analysis.

@@ -21,7 +21,7 @@ namespace SituationOperator.SituationManagers
     /// A SituationManager. 
     /// See <see cref="ExtractSituationsAsync(MatchDataSet)"/> for more info regarding Situation specific logic.
     /// </summary>
-    public class RifleFiredWhileMovingManager : SituationManager<RifleFiredWhileMoving>
+    public class RifleFiredWhileMovingManager : SinglePlayerSituationManager<RifleFiredWhileMoving>
     {
         /// <summary>
         /// Minimum fraction of inaccurate shots in the burst to count as a misplay.

@@ -19,7 +19,7 @@ namespace SituationOperator.SituationManagers
     /// A SituationManager. 
     /// See <see cref="ExtractSituationsAsync(MatchDataSet)"/> for more info regarding Situation specific logic.
     /// </summary>
-    public class SelfFlashManager : SituationManager<SelfFlash>
+    public class SelfFlashManager : SinglePlayerSituationManager<SelfFlash>
     {
         /// <summary>
         /// Minimum required time the player must have flashed themselves to count as a misplay.

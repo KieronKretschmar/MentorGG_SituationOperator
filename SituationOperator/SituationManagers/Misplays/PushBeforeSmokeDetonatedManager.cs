@@ -22,7 +22,7 @@ namespace SituationOperator.SituationManagers
     /// A SituationManager. 
     /// See <see cref="ExtractSituationsAsync(MatchDataSet)"/> for more info regarding Situation specific logic.
     /// </summary>
-    public class PushBeforeSmokeDetonatedManager : SituationManager<PushBeforeSmokeDetonated>
+    public class PushBeforeSmokeDetonatedManager : SinglePlayerSituationManager<PushBeforeSmokeDetonated>
     {
         /// <summary>
         /// Whether the player needs to die, as opposed to just taking damage, to count as a misplay.

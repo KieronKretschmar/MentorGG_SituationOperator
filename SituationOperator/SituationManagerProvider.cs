@@ -15,6 +15,7 @@ namespace SituationOperator
     public interface ISituationManagerProvider
     {
         IEnumerable<ISituationManager> GetManagers(SituationTypeCollection collection);
+        IEnumerable<ISinglePlayerSituationManager> GetSinglePlayerManagers(SituationTypeCollection collection);
     }
 
     /// <summary>
@@ -52,6 +53,27 @@ namespace SituationOperator
                 case SituationTypeCollection.ProductionExtractionDefault:
                 case SituationTypeCollection.ProductionAccessDefault:
                     return _situationManagers;
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// Returns the specified collection of ISituationManagers.
+        /// </summary>
+        /// <param name="collectionIdentifier"></param>
+        /// <returns></returns>
+        public IEnumerable<ISinglePlayerSituationManager> GetSinglePlayerManagers(SituationTypeCollection collectionIdentifier)
+        {
+            _logger.LogTrace($"GetManagers called with identifier [ {collectionIdentifier} ]");
+
+            switch (collectionIdentifier)
+            {
+                case SituationTypeCollection.ProductionExtractionDefault:
+                case SituationTypeCollection.ProductionAccessDefault:
+                    return _situationManagers
+                        .Where(x=> x is ISinglePlayerSituationManager)
+                        .Select(x=> x as ISinglePlayerSituationManager);
                 default:
                     throw new NotImplementedException();
             }
