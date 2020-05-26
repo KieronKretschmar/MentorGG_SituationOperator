@@ -29,10 +29,10 @@ namespace SituationOperatorTestProject
         /// <param name="jsonMatchDataPath"></param>
         /// <param name="connectionString">If provided, uses real database.</param>
         /// <returns></returns>
-        [DataRow("TestDemo_Valve4.json", false)]
-        [DataRow("TestDemo_Valve3.json", false)]
-        [DataRow("TestDemo_Valve2.json", false)]
-        [DataRow("TestDemo_Valve1.json", false)]
+        [DataRow("TestDemo_Valve4.json", true)]
+        [DataRow("TestDemo_Valve3.json", true)]
+        [DataRow("TestDemo_Valve2.json", true)]
+        [DataRow("TestDemo_Valve1.json", true)]
         [DataTestMethod]
         public async Task AnalysisTest(string jsonMatchDataPath, bool useRealDatabase = false)
         {
