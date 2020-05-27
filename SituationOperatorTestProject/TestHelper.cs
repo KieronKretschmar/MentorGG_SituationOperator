@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using RabbitCommunicationLib.Interfaces;
+using RabbitCommunicationLib.TransferModels;
 using SituationDatabase;
 using SituationOperator;
 using SituationOperator.Communications;
@@ -216,9 +217,9 @@ namespace SituationOperatorTestProject
             return mock.Object;
         }
 
-        public static IProducer<SituationOperatorResponseModel> GetMockProducer()
+        public static IProducer<SituationExtractionReport> GetMockProducer()
         {
-            return new Mock<IProducer<SituationOperatorResponseModel>>().Object;
+            return new Mock<IProducer<SituationExtractionReport>>().Object;
         }
 
         public static IMatchWorker GetMockMatchWorker()
