@@ -46,7 +46,7 @@ namespace SituationOperator.Controllers
                     case SituationDatabase.Enums.SituationCategory.Misplay:
                         model.Misplays[situationCollection.MetaData.SituationType] = situationCollection;
                         break;
-                    case SituationDatabase.Enums.SituationCategory.Goodplay:
+                    case SituationDatabase.Enums.SituationCategory.Highlight:
                         model.Highlights[situationCollection.MetaData.SituationType] = situationCollection;
                         break;
                     default:

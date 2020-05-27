@@ -38,7 +38,7 @@ namespace SituationOperator.SituationManagers
         }
 
         /// <inheritdoc/>
-        public override SituationCategory SituationCategory => SituationCategory.Goodplay;
+        public override SituationCategory SituationCategory => SituationCategory.Highlight;
 
         /// <inheritdoc/>
         public override SituationType SituationType => SituationType.KillWithOwnFlashAssist;
