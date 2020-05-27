@@ -1,4 +1,5 @@
 ﻿using MatchEntities;
+using SituationDatabase.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace SituationDatabase.Models
     /// <summary>
     /// A Situation. 
     /// 
-    /// For more details see the corresponding ISituationManager in SituationOperator.
+    /// For more details see https://gitlab.com/mentorgg/csgo/situationdiscussion/-/issues/8.
     /// </summary>
     public class EffectiveHeGrenade : SinglePlayerSituation, ISinglePlayerSituation
     {
@@ -24,14 +25,19 @@ namespace SituationDatabase.Models
         /// <summary>
         /// Constructor.
         /// </summary>
-        public EffectiveHeGrenade(He he, List<Damage> damages) : base(he.MatchId, he.Round, TrajectoryHelper.GetThrowTime(he), he.PlayerId)
+        public EffectiveHeGrenade(He he, List<Damage> damages) : base(he)
         {
+            GrenadeId = he.GrenadeId;
             EnemiesHit = damages.Where(x => !x.TeamAttack).Count();
             EnemiesKilled = damages.Where(x => !x.TeamAttack && x.Fatal).Count();
             TotalEnemyDamage = damages.Where(x => !x.TeamAttack).Select(x => x.AmountHealth).Sum();
             TotalTeamDamage = damages.Where(x => x.TeamAttack).Select(x => x.AmountHealth).Sum();
         }
 
+        /// <summary>
+        /// Id of the Grenade this Situation is based on.
+        /// </summary>
+        public long GrenadeId { get; set; }
         public int EnemiesHit { get; set; }
         public int EnemiesKilled { get; set; }
         public int TotalEnemyDamage { get; set; }

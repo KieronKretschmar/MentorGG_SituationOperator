@@ -1,0 +1,78 @@
+
+Window
+
+			<target_boundaries>
+				<GrenadePosX>
+					<lower>723.124177</lower>
+					<upper>736.397850</upper>
+				</GrenadePosX>
+				<GrenadePosY>
+					<lower>247.404195</lower>
+					<upper>256.569477</upper>
+				</GrenadePosY>
+			</target_boundaries>
+
+Jungle
+
+			<target_boundaries>
+				<GrenadePosX>
+					<lower>744.744174</lower>
+					<upper>775.917194</upper>
+				</GrenadePosX>
+				<GrenadePosY>
+					<lower>207.654768</lower>
+					<upper>239.633631</upper>
+				</GrenadePosY>
+			</target_boundaries>
+
+Upper Mid
+
+			<target_boundaries>
+				<GrenadePosX>
+					<lower>728.554315</lower>
+					<upper>763.347428</upper>
+				</GrenadePosX>
+				<GrenadePosY>
+					<lower>213.930994</lower>
+					<upper>252.983062</upper>
+				</GrenadePosY>
+			</target_boundaries>
+
+Palace
+
+			<target_boundaries>
+				<GrenadePosX>
+					<lower>771.995427</lower>
+					<upper>799.548355</upper>
+				</GrenadePosX>
+				<GrenadePosY>
+					<lower>180.059302</lower>
+					<upper>207.953636</upper>
+				</GrenadePosY>
+			</target_boundaries>
+
+Appartements
+
+			<target_boundaries>
+				<GrenadePosX>
+					<lower>680.085297</lower>
+					<upper>709.649387</upper>
+				</GrenadePosX>
+				<GrenadePosY>
+					<lower>268.922682</lower>
+					<upper>300.004941</upper>
+				</GrenadePosY>
+			</target_boundaries>
+
+Stairs
+
+			<target_boundaries>
+				<GrenadePosX>
+					<lower>751.481569</lower>
+					<upper>772.799892</upper>
+				</GrenadePosX>
+				<GrenadePosY>
+					<lower>207.953636</lower>
+					<upper>228.675142</upper>
+				</GrenadePosY>
+			</target_boundaries>

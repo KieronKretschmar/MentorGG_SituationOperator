@@ -19,7 +19,7 @@ namespace SituationOperator.SituationManagers
     /// A SituationManager. 
     /// See <see cref="ExtractSituationsAsync(MatchDataSet)"/> for more info regarding Situation specific logic.
     /// </summary>
-    public class SelfFlashManager : SituationManager<SelfFlash>
+    public class SelfFlashManager : SinglePlayerSituationManager<SelfFlash>
     {
         /// <summary>
         /// Minimum required time the player must have flashed themselves to count as a misplay.
@@ -62,11 +62,7 @@ namespace SituationOperator.SituationManagers
         /// <inheritdoc/>
         protected override Func<SituationContext, DbSet<SelfFlash>> TableSelector => context => context.SelfFlash;
 
-        /// <summary>
-        /// Returns flashes that blinded the thrower and caused a disadvantage.
-        /// </summary>
-        /// <param name="data">Data of the match in which to look for situations for all players.</param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         protected override async Task<IEnumerable<SelfFlash>> ExtractSituationsAsync(MatchDataSet data)
         {
             var misplays = new List<SelfFlash>();

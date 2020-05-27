@@ -5,11 +5,11 @@ using System.Text;
 namespace SituationDatabase.Enums
 {
     /// <summary>
-    /// A type of situation.
+    /// A category of situations each SituationType belongs to.
     /// </summary>
     public enum SituationCategory : int
     {
         Misplay = 1,
-        Goodplay = 2,
+        Highlight = 2,
     }
 }

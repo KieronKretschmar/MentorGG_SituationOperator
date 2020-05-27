@@ -20,7 +20,7 @@ namespace SituationOperator.SituationManagers
     /// A SituationManager. 
     /// See <see cref="ExtractSituationsAsync(MatchDataSet)"/> for more info regarding Situation specific logic.
     /// </summary>
-    public class DeathInducedBombDropManager : SituationManager<DeathInducedBombDrop>
+    public class DeathInducedBombDropManager : SinglePlayerSituationManager<DeathInducedBombDrop>
     {
         /// <summary>
         /// Minimum required teammates alive at death to count as a misplay.
@@ -53,11 +53,7 @@ namespace SituationOperator.SituationManagers
         /// <inheritdoc/>
         protected override Func<SituationContext, DbSet<DeathInducedBombDrop>> TableSelector => context => context.DeathInducedBombDrop;
 
-        /// <summary>
-        /// Extracts deaths of players who held the C4 and by dropping it caused a tactical disadvantageous.
-        /// </summary>
-        /// <param name="data">Data of the match in which to look for situations for all players.</param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         protected override async Task<IEnumerable<DeathInducedBombDrop>> ExtractSituationsAsync(MatchDataSet data)
         {
             using (var scope = _sp.CreateScope())
@@ -88,22 +84,22 @@ namespace SituationOperator.SituationManagers
                         continue;
                     }
 
-                    var closestTeammateDistance = teamMateDistances.Select(x => (int?)x).Min() ?? -1; // -1 if none alive
+                    var closestTeammateDistance = teamMateDistances.Min() ?? null; // -1 if none alive
 
-                    if(closestTeammateDistance < MAX_TEAMMATE_DISTANCE)
+                    if(closestTeammateDistance == null || closestTeammateDistance < MAX_TEAMMATE_DISTANCE)
                     {
                         continue;
                     }
 
                     var pickedUpAfter = data.ItemPickedUpList
                         .FirstOrDefault(x =>
-                        x.Equipment == EquipmentElement.Bomb
-                        && x.MatchId == bombDrop.MatchId
-                        && x.Round == bombDrop.Round
-                        && x.Time > bombDrop.Time)
-                        ?.Time - bombDrop.Time ?? -1;
+                            x.Equipment == EquipmentElement.Bomb
+                            && x.MatchId == bombDrop.MatchId
+                            && x.Round == bombDrop.Round
+                            && x.Time > bombDrop.Time
+                        )?.Time - bombDrop.Time ?? -1;
 
-                    var misplay = new DeathInducedBombDrop(bombDrop, pickedUpAfter, teammatesAlive, closestTeammateDistance);
+                    var misplay = new DeathInducedBombDrop(bombDrop, pickedUpAfter, teammatesAlive, (float) closestTeammateDistance);
 
                     misplays.Add(misplay);
 

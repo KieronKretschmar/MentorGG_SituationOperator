@@ -1,4 +1,5 @@
 ﻿using MatchEntities;
+using SituationDatabase.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace SituationDatabase.Models
     /// <summary>
     /// A Situation. 
     /// 
-    /// For more details see the corresponding ISituationManager in SituationOperator.
+    /// For more details see https://gitlab.com/mentorgg/csgo/situationdiscussion/-/issues/5.
     /// </summary>
     public class SmokeFail : SinglePlayerSituation, ISinglePlayerSituation
     {
@@ -24,13 +25,18 @@ namespace SituationDatabase.Models
         /// <summary>
         /// Constructor.
         /// </summary>
-        public SmokeFail(Smoke smoke) : base(smoke.MatchId, smoke.Round, TrajectoryHelper.GetThrowTime(smoke), smoke.PlayerId)
+        public SmokeFail(Smoke smoke) : base(smoke)
         {
+            GrenadeId = smoke.GrenadeId;
             LineupId = smoke.LineUp;
 
             //TODO: Set LineupName, e.g. in SituationManager.EnrichData()
         }
 
+        /// <summary>
+        /// Id of the Grenade this Situation is based on.
+        /// </summary>
+        public long GrenadeId { get; set; }
         public int LineupId { get; set; }
         public string LineupName { get; set; }
     }

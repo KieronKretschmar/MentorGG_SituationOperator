@@ -15,6 +15,7 @@ namespace SituationOperator.Enums
 
         // 21XXXX For SinglePlayer - Highlights
         EffectiveHeGrenade = 210001,
+        KillWithOwnFlashAssist = 210002,
 
         // 22XXXX For Team - Highlights
 
@@ -26,6 +27,7 @@ namespace SituationOperator.Enums
         TeamFlash = 510004,
         RifleFiredWhileMoving = 510005,
         UnnecessaryReload = 510006,
+        PushBeforeSmokeDetonated = 510006,
 
         // 52XXXX For Team - Misplays
 

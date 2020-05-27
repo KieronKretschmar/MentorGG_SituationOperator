@@ -17,7 +17,7 @@ namespace SituationOperator.SituationManagers
     /// A SituationManager. 
     /// See <see cref="ExtractSituationsAsync(MatchDataSet)"/> for more info regarding Situation specific logic.
     /// </summary>
-    public class EffectiveHeGrenadeManager : SituationManager<EffectiveHeGrenade>
+    public class EffectiveHeGrenadeManager : SinglePlayerSituationManager<EffectiveHeGrenade>
     {
         private const int MIN_TOTAL_DAMAGE = 50;
 
@@ -34,7 +34,7 @@ namespace SituationOperator.SituationManagers
         }
 
         /// <inheritdoc/>
-        public override SituationCategory SituationCategory => SituationCategory.Goodplay;
+        public override SituationCategory SituationCategory => SituationCategory.Highlight;
 
         /// <inheritdoc/>
         public override SituationType SituationType => SituationType.EffectiveHeGrenade;
@@ -42,11 +42,7 @@ namespace SituationOperator.SituationManagers
         /// <inheritdoc/>
         protected override Func<SituationContext, DbSet<EffectiveHeGrenade>> TableSelector => context => context.EffectiveHeGrenade;
 
-        /// <summary>
-        /// Finds all HE grenades that were effective against enemies, by dealing either a lot of damage or killing an enemy.
-        /// </summary>
-        /// <param name="data">Data of the match in which to look for situations for all players.</param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         protected override async Task<IEnumerable<EffectiveHeGrenade>> ExtractSituationsAsync(MatchDataSet data)
         {
             var hes = data.HeList

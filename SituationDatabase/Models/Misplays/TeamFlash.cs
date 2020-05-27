@@ -1,4 +1,5 @@
 ﻿using MatchEntities;
+using SituationDatabase.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace SituationDatabase.Models
     /// <summary>
     /// A Situation. 
     /// 
-    /// For more details see the corresponding ISituationManager in SituationOperator.
+    /// For more details see https://gitlab.com/mentorgg/csgo/situationdiscussion/-/issues/6.
     /// </summary>
     public class TeamFlash : SinglePlayerSituation, ISinglePlayerSituation
     {
@@ -30,16 +31,21 @@ namespace SituationDatabase.Models
             int timeFlashedTeammates,
             int flashedTeammatesDeaths,
             int timeFlashedEnemies
-            ) : base(flash.MatchId, flash.Round, TrajectoryHelper.GetThrowTime(flash), flash.PlayerId)
+            ) : base(flash)
         {
+            GrenadeId = flash.GrenadeId;
             FlashedTeammates = flashedTeammates;
-            FimeFlashedTeammates = timeFlashedTeammates;
+            TimeFlashedTeammates = timeFlashedTeammates;
             FlashedTeammatesDeaths = flashedTeammatesDeaths;
             TimeFlashedEnemies = timeFlashedEnemies; 
         }
 
+        /// <summary>
+        /// Id of the Grenade this Situation is based on.
+        /// </summary>
+        public long GrenadeId { get; set; }
         public int FlashedTeammates { get; set; }
-        public int FimeFlashedTeammates { get; set; }
+        public int TimeFlashedTeammates { get; set; }
         public int FlashedTeammatesDeaths { get; set; }
         public int TimeFlashedEnemies { get; set; }
     }

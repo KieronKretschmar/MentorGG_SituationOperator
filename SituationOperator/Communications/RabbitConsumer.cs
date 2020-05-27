@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SituationOperator.Communications
 {
-    public class RabbitConsumer : FanOutConsumer<RedisLocalizationInstruction>
+    public class RabbitConsumer : Consumer<SituationExtractionInstruction>
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<RabbitConsumer> _logger;
@@ -29,7 +29,7 @@ namespace SituationOperator.Communications
             _logger = logger;
         }
 
-        public override async Task<ConsumedMessageHandling> HandleMessageAsync(BasicDeliverEventArgs ea, RedisLocalizationInstruction model)
+        public override async Task<ConsumedMessageHandling> HandleMessageAsync(BasicDeliverEventArgs ea, SituationExtractionInstruction model)
         {
             _logger.LogInformation($"Received message for Match [ {model.MatchId} ]: [ {model.ToJson()} ]");
 

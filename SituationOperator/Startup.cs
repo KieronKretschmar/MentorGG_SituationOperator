@@ -136,9 +136,9 @@ namespace SituationOperator
             {
                 Console.WriteLine("Using mocked rabbit classes.");
                 // Use mocked producer
-                services.AddTransient<IProducer<SituationOperatorResponseModel>>(services =>
+                services.AddTransient<IProducer<SituationExtractionReport>>(services =>
                 {
-                    var mockProducer = new Mock<IProducer<SituationOperatorResponseModel>>().Object;
+                    var mockProducer = new Mock<IProducer<SituationExtractionReport>>().Object;
                     return mockProducer;
                 });
             }
@@ -164,9 +164,9 @@ namespace SituationOperator
                 // Producer for Reports to DemoCentral
                 var AMQP_DEMOCENTRAL_REPLY = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_DEMOCENTRAL_REPLY");
                 var callbackQueue = new QueueConnection(AMQP_URI, AMQP_DEMOCENTRAL_REPLY);
-                services.AddTransient<IProducer<SituationOperatorResponseModel>>(sp =>
+                services.AddTransient<IProducer<SituationExtractionReport>>(sp =>
                 {
-                    return new Producer<SituationOperatorResponseModel>(callbackQueue);
+                    return new Producer<SituationExtractionReport>(callbackQueue);
                 });
             }
             #endregion
@@ -218,10 +218,13 @@ namespace SituationOperator
             services.AddTransient<ISituationManager, SelfFlashManager>();
             services.AddTransient<ISituationManager, TeamFlashManager>();
             services.AddTransient<ISituationManager, RifleFiredWhileMovingManager>();
+            services.AddTransient<ISituationManager, UnnecessaryReloadManager>();
+            services.AddTransient<ISituationManager, PushBeforeSmokeDetonatedManager>();
             #endregion
 
             #region Highlights - Singleplayer
             services.AddTransient<ISituationManager, EffectiveHeGrenadeManager>();
+            services.AddTransient<ISituationManager, KillWithOwnFlashAssistManager>();
             #endregion
 
             #endregion

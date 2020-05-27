@@ -51,7 +51,7 @@ namespace SituationOperator.Controllers
                     case SituationDatabase.Enums.SituationCategory.Misplay:
                         model.Misplays.Add(situationCollection);
                         break;
-                    case SituationDatabase.Enums.SituationCategory.Goodplay:
+                    case SituationDatabase.Enums.SituationCategory.Highlight:
                         model.Highlights.Add(situationCollection);
                         break;
                     default:

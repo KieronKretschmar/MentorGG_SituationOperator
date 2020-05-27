@@ -10,7 +10,7 @@ namespace SituationDatabase.Models
     /// <summary>
     /// A Situation. 
     /// 
-    /// For more details see the corresponding ISituationManager in SituationOperator.
+    /// For more details see https://gitlab.com/mentorgg/csgo/situationdiscussion/-/issues/7.
     /// </summary>
     public class UnnecessaryReload : SinglePlayerSituation, ISinglePlayerSituation
     {
@@ -27,10 +27,12 @@ namespace SituationDatabase.Models
         /// </summary>
         public UnnecessaryReload(
             WeaponReload weaponReload
-            ) : base(weaponReload.MatchId, weaponReload.Round, weaponReload.Time, weaponReload.PlayerId)
+            ) : base(weaponReload)
         {
+            Weapon = weaponReload.Weapon;
             AmmoBefore = weaponReload.AmmoBefore;
         }
+        public EquipmentElement Weapon { get; set; }
         public int AmmoBefore { get; set; }
     }
 

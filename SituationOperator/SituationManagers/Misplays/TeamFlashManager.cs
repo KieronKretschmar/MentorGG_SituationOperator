@@ -19,7 +19,7 @@ namespace SituationOperator.SituationManagers
     /// A SituationManager. 
     /// See <see cref="ExtractSituationsAsync(MatchDataSet)"/> for more info regarding Situation specific logic.
     /// </summary>
-    public class TeamFlashManager : SituationManager<TeamFlash>
+    public class TeamFlashManager : SinglePlayerSituationManager<TeamFlash>
     {
         /// <summary>
         /// Teammates flashed for a shorter duration than this value will be ignored for analysis.
@@ -68,11 +68,7 @@ namespace SituationOperator.SituationManagers
         /// <inheritdoc/>
         protected override Func<SituationContext, DbSet<TeamFlash>> TableSelector => context => context.TeamFlash;
 
-        /// <summary>
-        /// Returns flashes that blinded the thrower and caused a disadvantage.
-        /// </summary>
-        /// <param name="data">Data of the match in which to look for situations for all players.</param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         protected override async Task<IEnumerable<TeamFlash>> ExtractSituationsAsync(MatchDataSet data)
         {
             var misplays = new List<TeamFlash>();

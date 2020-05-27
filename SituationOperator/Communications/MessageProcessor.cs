@@ -1,5 +1,6 @@
 ﻿using MatchEntities;
 using Microsoft.Extensions.Logging;
+using RabbitCommunicationLib.Enums;
 using RabbitCommunicationLib.Interfaces;
 using RabbitCommunicationLib.TransferModels;
 using SituationDatabase;
@@ -15,7 +16,7 @@ namespace SituationOperator.Communications
     /// </summary>
     public interface IMessageProcessor
     {
-        Task ProcessMessage(RedisLocalizationInstruction model);
+        Task ProcessMessage(SituationExtractionInstruction model);
     }
 
     /// <summary>
@@ -25,13 +26,13 @@ namespace SituationOperator.Communications
     {
         private readonly ILogger<MessageProcessor> _logger;
         private readonly IMatchDataSetProvider _matchDataProvider;
-        private readonly IProducer<SituationOperatorResponseModel> _producer;
+        private readonly IProducer<SituationExtractionReport> _producer;
         private readonly IMatchWorker _matchWorker;
 
         public MessageProcessor(
             ILogger<MessageProcessor> logger,
             IMatchDataSetProvider matchDataProvider,
-            IProducer<SituationOperatorResponseModel> producer,
+            IProducer<SituationExtractionReport> producer,
             IMatchWorker matchWorker
             )
         {
@@ -46,10 +47,9 @@ namespace SituationOperator.Communications
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async Task ProcessMessage(RedisLocalizationInstruction model)
+        public async Task ProcessMessage(SituationExtractionInstruction model)
         {
-            var response = new SituationOperatorResponseModel();
-            response.MatchId = model.MatchId;
+            var response = new SituationExtractionReport(model.MatchId);
 
             try
             {
@@ -62,7 +62,7 @@ namespace SituationOperator.Communications
                 catch (Exception e)
                 {
                     _logger.LogError(e, $"Error on accessing MatchDataSet for match [ {model.MatchId} ].");
-                    response.Status = SituationOperatorResult.RedisError;
+                    response.Block = DemoAnalysisBlock.MatchDataSetAccess;
                     _producer.PublishMessage(response);
                     return;
                 }
@@ -73,7 +73,7 @@ namespace SituationOperator.Communications
             catch (Exception e)
             {
                 _logger.LogError(e, $"Unknown exception when extracting and uploading situations for message [ {model.ToJson()} ].");
-                response.Status = SituationOperatorResult.UnknownError;
+                response.Block = DemoAnalysisBlock.UnknownSituationOperator;
             }
             finally
             {

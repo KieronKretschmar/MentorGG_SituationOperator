@@ -10,7 +10,7 @@ namespace SituationDatabase.Models
     /// <summary>
     /// A Situation. 
     /// 
-    /// For more details see the corresponding ISituationManager in SituationOperator.
+    /// For more details see https://gitlab.com/mentorgg/csgo/situationdiscussion/-/issues/3.
     /// </summary>
     public class RifleFiredWhileMoving : SinglePlayerSituation, ISinglePlayerSituation
     {
@@ -29,7 +29,7 @@ namespace SituationDatabase.Models
             WeaponFired firstWeaponFired, 
             int bullets, 
             int inaccurateBullets
-            ) : base(firstWeaponFired.MatchId, firstWeaponFired.Round, firstWeaponFired.Time, firstWeaponFired.PlayerId)
+            ) : base(firstWeaponFired)
         {
             Weapon = firstWeaponFired.Weapon;
             Bullets = bullets;

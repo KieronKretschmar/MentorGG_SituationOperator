@@ -9,7 +9,7 @@ namespace SituationDatabase.Models
     /// <summary>
     /// A Situation. 
     /// 
-    /// For more details see the corresponding ISituationManager in SituationOperator.
+    /// For more details see https://gitlab.com/mentorgg/csgo/situationdiscussion/-/issues/1.
     /// </summary>
     public class DeathInducedBombDrop : SinglePlayerSituation, ISinglePlayerSituation
     {
@@ -28,7 +28,7 @@ namespace SituationDatabase.Models
             ItemDropped bombDrop, 
             int pickedUpAfter, 
             int teammatesAlive, 
-            int closestTeammateDistance
+            float closestTeammateDistance
             ) : base(bombDrop.MatchId, bombDrop.Round, bombDrop.Time, bombDrop.PlayerId)
         {
             PickedUpAfter = pickedUpAfter;
@@ -50,29 +50,29 @@ namespace SituationDatabase.Models
         /// <summary>
         /// Distance to the closes teammate
         /// </summary>
-        public int ClosestTeammateDistance { get; set; }
+        public float ClosestTeammateDistance { get; set; }
     }
 
 
     #region Partial definitions of metadata tables for navigational properties
     public partial class MatchEntity
     {
-        public virtual ICollection<DeathInducedBombDrop> BadBombDrop { get; set; }
+        public virtual ICollection<DeathInducedBombDrop> DeathInducedBombDrop { get; set; }
     }
 
     public partial class RoundEntity
     {
-        public virtual ICollection<DeathInducedBombDrop> BadBombDrop { get; set; }
+        public virtual ICollection<DeathInducedBombDrop> DeathInducedBombDrop { get; set; }
     }
 
     public partial class PlayerMatchEntity
     {
-        public virtual ICollection<DeathInducedBombDrop> BadBombDrop { get; set; }
+        public virtual ICollection<DeathInducedBombDrop> DeathInducedBombDrop { get; set; }
     }
 
     public partial class PlayerRoundEntity
     {
-        public virtual ICollection<DeathInducedBombDrop> BadBombDrop { get; set; }
+        public virtual ICollection<DeathInducedBombDrop> DeathInducedBombDrop { get; set; }
     }
     #endregion
 }

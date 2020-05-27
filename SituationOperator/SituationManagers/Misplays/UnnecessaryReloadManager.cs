@@ -20,7 +20,7 @@ namespace SituationOperator.SituationManagers
     /// A SituationManager. 
     /// See <see cref="ExtractSituationsAsync(MatchDataSet)"/> for more info regarding Situation specific logic.
     /// </summary>
-    public class UnnecessaryReloadManager : SituationManager<UnnecessaryReload>
+    public class UnnecessaryReloadManager : SinglePlayerSituationManager<UnnecessaryReload>
     {
         /// <summary>
         /// Minimum required fraction of bullets left in the magazine when reloading to count as a misplay.
@@ -60,11 +60,7 @@ namespace SituationOperator.SituationManagers
         /// <inheritdoc/>
         protected override Func<SituationContext, DbSet<UnnecessaryReload>> TableSelector => context => context.UnnecessaryReload;
 
-        /// <summary>
-        /// Looks for unnecessary reloads that potentially caused danger.
-        /// </summary>
-        /// <param name="data">Data of the match in which to look for situations for all players.</param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         protected override async Task<IEnumerable<UnnecessaryReload>> ExtractSituationsAsync(MatchDataSet data)
         {
             using (var scope = _sp.CreateScope())
@@ -74,7 +70,7 @@ namespace SituationOperator.SituationManagers
                 var misplays = new List<UnnecessaryReload>();
                 foreach (var reload in data.WeaponReloadList)
                 {
-                    var weaponInfo = equipmentHelper.GetEquipmentInfo(reload.Weapon, data.MatchStats.Source, data.MatchStats.MatchDate);
+                    var weaponInfo = equipmentHelper.GetEquipmentInfo(reload.Weapon, data);
                     if ((double)reload.AmmoBefore / weaponInfo.ClipSize > MIN_BULLETS_LEFT_FRACTION)
                         continue;
 

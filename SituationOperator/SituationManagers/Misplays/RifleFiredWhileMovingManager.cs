@@ -21,7 +21,7 @@ namespace SituationOperator.SituationManagers
     /// A SituationManager. 
     /// See <see cref="ExtractSituationsAsync(MatchDataSet)"/> for more info regarding Situation specific logic.
     /// </summary>
-    public class RifleFiredWhileMovingManager : SituationManager<RifleFiredWhileMoving>
+    public class RifleFiredWhileMovingManager : SinglePlayerSituationManager<RifleFiredWhileMoving>
     {
         /// <summary>
         /// Minimum fraction of inaccurate shots in the burst to count as a misplay.
@@ -81,11 +81,7 @@ namespace SituationOperator.SituationManagers
         /// <inheritdoc/>
         protected override Func<SituationContext, DbSet<RifleFiredWhileMoving>> TableSelector => context => context.RifleFiredWhileMoving;
 
-        /// <summary>
-        /// Looks for bursts of shots with rifles while the shooter was moving, causing many of the bullets being inaccurate.
-        /// </summary>
-        /// <param name="data">Data of the match in which to look for situations for all players.</param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         protected override async Task<IEnumerable<RifleFiredWhileMoving>> ExtractSituationsAsync(MatchDataSet data)
         {
             using (var scope = _sp.CreateScope())
@@ -101,7 +97,7 @@ namespace SituationOperator.SituationManagers
                     .Where(x => AnalyzedWeapons.Contains(x.Key.Weapon));
                 foreach (var weaponFiredGroup in weaponFiredGroups)
                 {
-                    var equipmentInfo = equipmentHelper.GetEquipmentInfo(weaponFiredGroup.Key.Weapon, data.MatchStats.Source, data.MatchStats.MatchDate);
+                    var equipmentInfo = equipmentHelper.GetEquipmentInfo(weaponFiredGroup.Key.Weapon, data);
                     bursts.AddRange(DivideIntoBursts(weaponFiredGroup, MIN_SHOTS, equipmentInfo));
                 }
 

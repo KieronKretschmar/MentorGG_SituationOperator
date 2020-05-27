@@ -37,7 +37,7 @@ namespace SituationOperatorTestProject
             // Setup message
             var matchId = 2;
             var redisKey = "myKey";
-            var model = new RedisLocalizationInstruction
+            var model = new SituationExtractionInstruction
             {
                 MatchId = matchId,
                 ExpiryDate = DateTime.Now.AddDays(1),
@@ -51,7 +51,7 @@ namespace SituationOperatorTestProject
 
             // ASSERT
             // Assert that MessageProcessor.ProcessMessage was called with the given model
-            mockMessageProcessor.Verify(x => x.ProcessMessage(It.Is<RedisLocalizationInstruction>(x => x.ToJson() == model.ToJson())), Times.Once);
+            mockMessageProcessor.Verify(x => x.ProcessMessage(It.Is<SituationExtractionInstruction>(x => x.ToJson() == model.ToJson())), Times.Once);
             // Verify that the scope was disposed
             serviceProviderHelper.ServiceScopeMock.Verify(x => x.Dispose(), Times.Once);
 

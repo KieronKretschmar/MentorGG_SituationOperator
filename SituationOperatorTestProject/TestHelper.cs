@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using RabbitCommunicationLib.Interfaces;
+using RabbitCommunicationLib.TransferModels;
 using SituationDatabase;
 using SituationOperator;
 using SituationOperator.Communications;
@@ -25,6 +26,15 @@ namespace SituationOperatorTestProject
             .Options;
 
         #region TestData
+        public static string GetTestProjectPath()
+        {
+            string startupPath = ApplicationEnvironment.ApplicationBasePath;
+            var pathItems = startupPath.Split(Path.DirectorySeparatorChar);
+            var pos = pathItems.Reverse().ToList().FindIndex(x => string.Equals("bin", x));
+            string projectPath = String.Join(Path.DirectorySeparatorChar.ToString(), pathItems.Take(pathItems.Length - pos - 1));
+            return projectPath;
+        }
+
         public static string GetTestFilePath(string fileName)
         {
             var path = Path.Combine(GetTestDataFolderPath(), fileName);
@@ -37,10 +47,7 @@ namespace SituationOperatorTestProject
 
         public static string GetTestDataFolderPath()
         {
-            string startupPath = ApplicationEnvironment.ApplicationBasePath;
-            var pathItems = startupPath.Split(Path.DirectorySeparatorChar);
-            var pos = pathItems.Reverse().ToList().FindIndex(x => string.Equals("bin", x));
-            string projectPath = String.Join(Path.DirectorySeparatorChar.ToString(), pathItems.Take(pathItems.Length - pos - 1));
+            string projectPath = GetTestProjectPath();
             return Path.Combine(projectPath, TestDataFolderName);
         }
 
@@ -87,15 +94,97 @@ namespace SituationOperatorTestProject
         #endregion
 
         #region Services
+        /// <summary>
+        /// Returns a ServiceProvider with helper services.
+        /// </summary>
+        /// <returns></returns>
+        public static IServiceProvider GetServiceProvider()
+        {
+            // Setup MockServiceProviderHelper to return mockMessageProcessor
+            var serviceProviderHelper = new MockServiceProviderHelper();
+
+
+
+            return serviceProviderHelper.ServiceProviderMock.Object;
+        }
+
         public static IEnumerable<ISituationManager> GetSituationManagers(SituationContext context)
         {
-            return new List<ISituationManager>()
-            {
+            var serviceProviderHelper = new MockServiceProviderHelper();
+            serviceProviderHelper.AddHelperServices();
+            var serviceProvider = serviceProviderHelper.ServiceProviderMock.Object;
+
+            var managers = new List<ISituationManager>();
+
+            // Add managers
+            // Code could possibly be simplified by requiring a uniform constructor for all ISituationManagers.
+            #region Misplays - Singleplayer
+            managers.Add(
+                new SmokeFailManager(
+                    serviceProvider,
+                    GetMockLogger<SmokeFailManager>(),
+                    context)
+                );
+
+            managers.Add(
+                new DeathInducedBombDropManager(
+                    serviceProvider,
+                    GetMockLogger<DeathInducedBombDropManager>(),
+                    context)
+                );
+
+            managers.Add(
+                new SelfFlashManager(
+                    serviceProvider,
+                    GetMockLogger<SelfFlashManager>(),
+                    context)
+                );
+
+            managers.Add(
+                new TeamFlashManager(
+                    serviceProvider,
+                    GetMockLogger<TeamFlashManager>(),
+                    context)
+                );
+
+            managers.Add(
+                new RifleFiredWhileMovingManager(
+                    serviceProvider,
+                    GetMockLogger<RifleFiredWhileMovingManager>(),
+                    context)
+                );
+
+            managers.Add(
+                new UnnecessaryReloadManager(
+                    serviceProvider,
+                    GetMockLogger<UnnecessaryReloadManager>(),
+                    context)
+                );
+
+            managers.Add(
+                new PushBeforeSmokeDetonatedManager(
+                    serviceProvider,
+                    GetMockLogger<PushBeforeSmokeDetonatedManager>(),
+                    context)
+                );
+            #endregion
+
+            #region Highlights - Singleplayer
+            managers.Add(
                 new EffectiveHeGrenadeManager(
-                    new Mock<IServiceProvider>().Object,
+                    serviceProvider,
                     GetMockLogger<EffectiveHeGrenadeManager>(),
                     context)
-            };
+                );
+
+            managers.Add(
+                new KillWithOwnFlashAssistManager(
+                    GetMockLogger<KillWithOwnFlashAssistManager>(),
+                    context)
+                );
+            #endregion
+
+            return managers;
         }
 
         public static ISituationManagerProvider GetRealProvider(SituationContext context)
@@ -128,9 +217,9 @@ namespace SituationOperatorTestProject
             return mock.Object;
         }
 
-        public static IProducer<SituationOperatorResponseModel> GetMockProducer()
+        public static IProducer<SituationExtractionReport> GetMockProducer()
         {
-            return new Mock<IProducer<SituationOperatorResponseModel>>().Object;
+            return new Mock<IProducer<SituationExtractionReport>>().Object;
         }
 
         public static IMatchWorker GetMockMatchWorker()
