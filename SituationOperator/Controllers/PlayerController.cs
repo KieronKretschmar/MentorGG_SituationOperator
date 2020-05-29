@@ -29,7 +29,7 @@ namespace SituationOperator.Controllers
         /// Get all Situations from a given player and the given matches.
         /// </summary>
         /// <returns></returns>
-        [HttpGet("{steamId}/matches/{matchIds}/situations")]
+        [HttpGet("{steamId}/situations")]
         public async Task<ActionResult<PlayerSituationsModel>> PlayerSituationsAsync(long steamId, [CsvModelBinder] List<long> matchIds)
         {
             var model = new PlayerSituationsModel();
