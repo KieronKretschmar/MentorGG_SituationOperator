@@ -17,12 +17,26 @@ using Prometheus;
 using SituationOperator.Helpers;
 using SituationDatabase;
 using Microsoft.EntityFrameworkCore;
-using Database;
+using RabbitCommunicationLib.Queues;
+using RabbitCommunicationLib.Interfaces;
+using RabbitCommunicationLib.TransferModels;
+using RabbitCommunicationLib.Producer;
+using ZoneReader;
+using EquipmentLib;
+using SituationOperator.Communications;
+using SituationOperator.SituationManagers;
+using SituationDatabase.Models;
+using StackExchange.Redis;
+using Moq;
 
 namespace SituationOperator
 {
     public class Startup
     {
+        private bool IsDevelopment => Configuration.GetValue<string>("ASPNETCORE_ENVIRONMENT") == Environments.Development;
+        
+        private const ushort AMQP_PREFETCH_COUNT_DEFAULT = 0;
+
         /// <summary>
         /// Port to scrape metrics from at `/metrics`
         /// </summary>
@@ -38,7 +52,14 @@ namespace SituationOperator
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers()
+                .AddNewtonsoftJson(x =>
+                {
+                    x.UseMemberCasing();
+                    // Serialize longs (steamIds) as strings
+                    x.SerializerSettings.Converters.Add(new LongToStringConverter());
+                    x.SerializerSettings.DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Utc;
+                });
 
             services.AddApiVersioning();
 
@@ -95,26 +116,6 @@ namespace SituationOperator
             }
             #endregion
 
-            #region Match Database
-            var MATCH_DB_MYSQL_CONNECTION_STRING = GetOptionalEnvironmentVariable<string>(Configuration, "MATCH_DB_MYSQL_CONNECTION_STRING", null);
-            // if a connectionString is set use mysql, else use InMemory
-            if (MATCH_DB_MYSQL_CONNECTION_STRING != null)
-            {
-                // Add context as Transient instead of Scoped, as Scoped lead to DI error and does not have advantages under non-http conditions
-                services.AddDbContext<MatchContext>(o => { o.UseMySql(MATCH_DB_MYSQL_CONNECTION_STRING); }, ServiceLifetime.Transient, ServiceLifetime.Transient);
-            }
-            else
-            {
-                Console.WriteLine("WARNING: Using InMemoryDatabase!");
-
-                services.AddEntityFrameworkInMemoryDatabase()
-                    .AddDbContext<MatchContext>((sp, options) =>
-                    {
-                        options.UseInMemoryDatabase(databaseName: "MyInMemoryDatabase").UseInternalServiceProvider(sp);
-                    }, ServiceLifetime.Transient, ServiceLifetime.Transient);
-            }
-            #endregion
-
             #region Swagger
             services.AddSwaggerGen(options =>
             {
@@ -131,8 +132,107 @@ namespace SituationOperator
             #endregion
 
             #region Rabbit
-            // Read environment variables
-            var AMQP_URI = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_URI");
+            if(IsDevelopment && GetOptionalEnvironmentVariable<bool>(Configuration, "MOCK_RABBIT", false))
+            {
+                Console.WriteLine("Using mocked rabbit classes.");
+                // Use mocked producer
+                services.AddTransient<IProducer<SituationExtractionReport>>(services =>
+                {
+                    var mockProducer = new Mock<IProducer<SituationExtractionReport>>().Object;
+                    return mockProducer;
+                });
+            }
+            else
+            {
+                // Read environment variables
+                var AMQP_URI = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_URI");
+
+                // Consumer for instructions from Fanout / DemoCentral
+                var AMQP_EXCHANGE_NAME = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_EXCHANGE_NAME");
+                var AMQP_PREFETCH_COUNT = GetOptionalEnvironmentVariable<ushort>(Configuration, "AMQP_PREFETCH_COUNT", AMQP_PREFETCH_COUNT_DEFAULT);
+                var AMQP_EXCHANGE_CONSUME_QUEUE = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_EXCHANGE_CONSUME_QUEUE");
+                var exchangeQueue = new ExchangeQueueConnection(AMQP_URI, AMQP_EXCHANGE_NAME, AMQP_EXCHANGE_CONSUME_QUEUE);
+                services.AddHostedService<RabbitConsumer>(serviceProvider =>
+                {
+                    return new RabbitConsumer(
+                        serviceProvider.GetRequiredService<ILogger<RabbitConsumer>>(),
+                        serviceProvider,
+                        exchangeQueue,
+                        AMQP_PREFETCH_COUNT);
+                });
+
+                // Producer for Reports to DemoCentral
+                var AMQP_DEMOCENTRAL_REPLY = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_DEMOCENTRAL_REPLY");
+                var callbackQueue = new QueueConnection(AMQP_URI, AMQP_DEMOCENTRAL_REPLY);
+                services.AddTransient<IProducer<SituationExtractionReport>>(sp =>
+                {
+                    return new Producer<SituationExtractionReport>(callbackQueue);
+                });
+            }
+            #endregion
+
+            #region Redis
+            if (IsDevelopment && GetOptionalEnvironmentVariable<bool>(Configuration, "MOCK_REDIS", false))
+            {
+                services.AddTransient<IMatchDataSetProvider, MockRedis>();
+            }
+            else
+            {
+                var REDIS_CONFIGURATION_STRING = GetRequiredEnvironmentVariable<string>(Configuration, "REDIS_CONFIGURATION_STRING");
+
+                // Add ConnectionMultiplexer as singleton as it is made to be reused
+                // see https://stackexchange.github.io/StackExchange.Redis/Basics.html
+                services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(REDIS_CONFIGURATION_STRING));
+                services.AddTransient<IMatchDataSetProvider, MatchRedis>();                
+            }
+            #endregion
+
+            #region ZoneReader
+            var ZONEREADER_RESOURCE_PATH = GetRequiredEnvironmentVariable<string>(Configuration, "ZONEREADER_RESOURCE_PATH");
+            services.AddSingleton<IZoneReader, FileReader>(services =>
+            {
+                return new FileReader(services.GetService<ILogger<FileReader>>(), ZONEREADER_RESOURCE_PATH);
+            });
+            #endregion
+
+            #region EquipmentLib
+            // Wrap EquipmentProvider inside EquipmentHelper to simplify usage.
+            var EQUIPMENT_CSV_DIRECTORY = GetRequiredEnvironmentVariable<string>(Configuration, "EQUIPMENT_CSV_DIRECTORY");
+            var EQUIPMENT_ENDPOINT = GetOptionalEnvironmentVariable<string>(Configuration, "EQUIPMENT_ENDPOINT", null);
+            services.AddSingleton<IEquipmentHelper, EquipmentHelper>(x =>
+            {
+                var equipmentProvider = new EquipmentProvider(
+                    x.GetService<ILogger<EquipmentProvider>>(),
+                    EQUIPMENT_CSV_DIRECTORY,
+                    EQUIPMENT_ENDPOINT);
+
+                return new EquipmentHelper(equipmentProvider);
+            });
+            #endregion
+
+            #region SituationManagers
+
+            #region Misplays - Singleplayer
+            services.AddTransient<ISituationManager, SmokeFailManager>();
+            services.AddTransient<ISituationManager, DeathInducedBombDropManager>();
+            services.AddTransient<ISituationManager, SelfFlashManager>();
+            services.AddTransient<ISituationManager, TeamFlashManager>();
+            services.AddTransient<ISituationManager, RifleFiredWhileMovingManager>();
+            services.AddTransient<ISituationManager, UnnecessaryReloadManager>();
+            services.AddTransient<ISituationManager, PushBeforeSmokeDetonatedManager>();
+            #endregion
+
+            #region Highlights - Singleplayer
+            services.AddTransient<ISituationManager, EffectiveHeGrenadeManager>();
+            services.AddTransient<ISituationManager, KillWithOwnFlashAssistManager>();
+            #endregion
+
+            #endregion
+
+            #region Other worker services
+            services.AddTransient<IMessageProcessor, MessageProcessor>();
+            services.AddTransient<IMatchWorker, MatchWorker>();
+            services.AddTransient<ISituationManagerProvider, SituationManagerProvider>();
             #endregion
         }
 
@@ -162,7 +262,7 @@ namespace SituationOperator
             app.UseSwaggerUI(options =>
             {
                 options.RoutePrefix = "swagger";
-                options.SwaggerEndpoint("/swagger/v1/swagger.json", "[SERVICE NAME]");
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Situation Operator");
             });
             #endregion
 
@@ -172,9 +272,9 @@ namespace SituationOperator
 
             #region Run Migrations
             // migrate if this is not an inmemory database
-            if (services.GetRequiredService<MatchContext>().Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory")
+            if (services.GetRequiredService<SituationContext>().Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory")
             {
-                services.GetRequiredService<MatchContext>().Database.Migrate();
+                services.GetRequiredService<SituationContext>().Database.Migrate();
             }
             #endregion
 

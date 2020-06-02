@@ -5,7 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
+    <Compile Remove="Migrations\20200525154735_change-props.cs" />
+    <Compile Remove="Migrations\20200525154735_change-props.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,6 +17,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\matchentities\MatchEntities\MatchEntities.csproj" />
   </ItemGroup>
 
 </Project>

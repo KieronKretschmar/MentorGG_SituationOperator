@@ -1,0 +1,9 @@
+Target; ids of zones with this target; xmin; xmax; ymin; ymax
+All values in pixel coordinates
+---------------------------------
+Window;		;			397; 	427; 	463; 	473
+Jungle (Front);	18;			504.5;	512;	659.5;	678
+Upper Mid;	; 			597;	641;	424;	445
+Palace;		8,10,17,22,24,25,31;	640;	671;	777;	811
+Appartements;	1,4,9,11,16,21,27,28;	331;	440;	180;	221
+Stairs;		0;			538;	567;	644;	671

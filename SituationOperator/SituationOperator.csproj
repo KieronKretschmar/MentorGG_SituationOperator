@@ -6,20 +6,25 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.4" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.2" />
+    <PackageReference Include="Moq" Version="4.14.1" />
     <PackageReference Include="prometheus-net.AspNetCore" Version="3.5.0" />
+    <PackageReference Include="StackExchange.Redis" Version="2.1.30" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\matchdb\Database\Database.csproj" />
-    <ProjectReference Include="..\SituationDatabase\SituationDatabase.csproj" />
+    <ProjectReference Include="..\EquipmentLib\EquipmentLib\EquipmentLib.csproj" />
     <ProjectReference Include="..\RabbitCommunicationLib\RabbitCommunicationLib.csproj" />
+    <ProjectReference Include="..\SituationDatabase\SituationDatabase.csproj" />
+    <ProjectReference Include="..\zonereader\ZoneReader\ZoneReader.csproj" />
   </ItemGroup>
 
 
