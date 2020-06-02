@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace SituationOperator.Enums
 {
     /// <summary>
-    /// Each SituationType belongs to a SkillDomain, i.e. an area of expertise.
+    /// The area of expertise a SituationType belongs to.
     /// </summary>
     public enum SkillDomain : byte
     {
