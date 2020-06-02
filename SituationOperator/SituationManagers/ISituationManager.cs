@@ -22,6 +22,11 @@ namespace SituationOperator.SituationManagers
         SituationCategory SituationCategory { get; }
 
         /// <summary>
+        /// Identifies the SkillDomain of this SituationType.
+        /// </summary>
+        SkillDomain SkillDomain { get; }
+
+        /// <summary>
         /// Identifies the type of situation.
         /// </summary>
         SituationType SituationType { get; }
@@ -67,6 +72,9 @@ namespace SituationOperator.SituationManagers
 
         /// <inheritdoc/>
         public abstract SituationCategory SituationCategory { get; }
+
+        /// <inheritdoc/>
+        public abstract SkillDomain SkillDomain { get; }
 
         /// <inheritdoc/>
         public abstract SituationType SituationType { get; }
