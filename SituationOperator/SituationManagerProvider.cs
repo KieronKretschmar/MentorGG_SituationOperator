@@ -27,6 +27,18 @@ namespace SituationOperator
         /// <param name="collectionIdentifier"></param>
         /// <returns></returns>
         IEnumerable<ISinglePlayerSituationManager> GetSinglePlayerManagers(SituationTypeCollection collection);
+
+        /// <summary>
+        /// Returns the specified ISituationManager or null if not found.
+        /// </summary>
+        /// <returns></returns>
+        ISituationManager GetManager(SituationType situationType);
+
+        /// <summary>
+        /// Returns the specified ISinglePlayerSituationManager or null if not found.
+        /// </summary>
+        /// <returns></returns>
+        ISinglePlayerSituationManager GetSinglePlayerManager(SituationType situationType);
     }
 
     /// <summary>
@@ -80,6 +92,20 @@ namespace SituationOperator
                 default:
                     throw new NotImplementedException();
             }
+        }
+
+        /// <inheritdoc/>
+        public ISituationManager GetManager(SituationType situationType)
+        {
+            return _situationManagers.SingleOrDefault(x => x.SituationType == situationType);
+        }
+
+        /// <inheritdoc/>
+        public ISinglePlayerSituationManager GetSinglePlayerManager(SituationType situationType)
+        {
+            return _situationManagers
+                .SingleOrDefault(x => x.SituationType == situationType && x is ISinglePlayerSituationManager)
+                as ISinglePlayerSituationManager;
         }
     }
 }
