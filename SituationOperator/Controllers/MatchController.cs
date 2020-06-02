@@ -43,8 +43,7 @@ namespace SituationOperator.Controllers
 
             foreach (var manager in managers)
             {
-                var situations = await manager.LoadSituationsAsync(matchId);
-                var situationCollection = new SituationCollection(manager.SituationType, manager.SkillDomain, situations);
+                var situationCollection = await manager.LoadSituationCollectionAsync(matchId);
 
                 switch (manager.SituationCategory)
                 {

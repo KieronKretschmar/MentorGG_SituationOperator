@@ -39,8 +39,7 @@ namespace SituationOperator.Controllers
 
             foreach (var manager in managers)
             {
-                var situations = await manager.LoadSituationsAsync(steamId, matchIds);
-                var situationCollection = new SituationCollection(manager.SituationType, manager.SkillDomain, situations);
+                var situationCollection = await manager.GetSituationCollectionAsync(steamId, matchIds);
 
                 switch (manager.SituationCategory)
                 {
@@ -74,8 +73,7 @@ namespace SituationOperator.Controllers
                 return NotFound($"Manager for SituationType [ {situationType} ] not found.");
             }
 
-            var situations = await manager.LoadSituationsAsync(steamId, matchIds);
-            var situationCollection = new SituationCollection(manager.SituationType, manager.SkillDomain, situations);            
+            var situationCollection = await manager.GetSituationCollectionAsync(steamId, matchIds);         
 
             return situationCollection;
         }

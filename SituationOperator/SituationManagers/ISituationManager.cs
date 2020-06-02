@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SituationDatabase;
 using SituationDatabase.Enums;
 using SituationOperator.Enums;
+using SituationOperator.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,11 +43,25 @@ namespace SituationOperator.SituationManagers
         Task ClearTableAsync(long matchId);
 
         /// <summary>
+        /// Loads a SituationCollection with all Situations managed by this manager of the given match.
+        /// </summary>
+        /// <param name="matchId"></param>
+        /// <returns></returns>
+        Task<SituationCollection> LoadSituationCollectionAsync(long matchId);
+
+        /// <summary>
         /// Loads all Situations managed by this manager of the given match.
         /// </summary>
         /// <param name="matchId"></param>
         /// <returns></returns>
         Task<List<ISituation>> LoadSituationsAsync(long matchId);
+
+        /// <summary>
+        /// Loads a SituationCollection with all Situations managed by this manager of the given matches.
+        /// </summary>
+        /// <param name="matchId"></param>
+        /// <returns></returns>
+        Task<SituationCollection> LoadSituationCollectionAsync(List<long> matchIds);
 
         /// <summary>
         /// Loads all Situations managed by this manager of the given matches.
@@ -103,12 +118,28 @@ namespace SituationOperator.SituationManagers
         }
 
         /// <inheritdoc/>
+        public async Task<SituationCollection> LoadSituationCollectionAsync(long matchId)
+        {
+            var situations = await LoadSituationsAsync(matchId);
+            var situationCollection = new SituationCollection(SituationType, SkillDomain, situations);
+            return situationCollection;
+        }
+
+        /// <inheritdoc/>
         public async Task<List<ISituation>> LoadSituationsAsync(long matchId)
         {
             var table = TableSelector(_context);
             var existingEntries = table.Where(x => x.MatchId == matchId);
             var res = await existingEntries.Select(x => x as ISituation).ToListAsync();
             return res;
+        }
+
+        /// <inheritdoc/>
+        public async Task<SituationCollection> LoadSituationCollectionAsync(List<long> matchIds)
+        {
+            var situations = await LoadSituationsAsync(matchIds);
+            var situationCollection = new SituationCollection(SituationType, SkillDomain, situations);
+            return situationCollection;
         }
 
         /// <inheritdoc/>
