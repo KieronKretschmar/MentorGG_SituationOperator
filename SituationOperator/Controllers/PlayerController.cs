@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SituationDatabase;
+using SituationOperator.Enums;
 using SituationOperator.Helpers;
 using SituationOperator.Models;
 using static SituationOperator.Models.MatchSituationsModel;
@@ -55,6 +56,28 @@ namespace SituationOperator.Controllers
             }
 
             return model;
+        }
+
+        /// <summary>
+        /// Get all Situations from a given player and the given matches.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("{steamId}/situations/{situationType}")]
+        public async Task<ActionResult<SituationCollection>> SituationCollectionAsync(long steamId, SituationType situationType, [CsvModelBinder] List<long> matchIds)
+        {
+            var model = new PlayerSituationsModel();
+
+            var manager = _managerProvider.GetSinglePlayerManager(situationType);
+
+            if(manager == null)
+            {
+                return NotFound($"Manager for SituationType [ {situationType} ] not found.");
+            }
+
+            var situations = await manager.LoadSituationsAsync(steamId, matchIds);
+            var situationCollection = new SituationCollection(manager.SituationType, manager.SkillDomain, situations);            
+
+            return situationCollection;
         }
     }
 }
