@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Endpoint for situations of a specific type
 - SkillDomains
+- Replaced MatchSituationsModel.MatchId with MatchSituationsModel.MatchData
 
 ## [0.1.0] - 2020-06-02
 ### Basic implementation

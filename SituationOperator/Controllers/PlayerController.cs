@@ -34,9 +34,9 @@ namespace SituationOperator.Controllers
         public async Task<ActionResult<PlayerSituationsModel>> PlayerSituationsAsync(long steamId, [CsvModelBinder] List<long> matchIds)
         {
             var model = new PlayerSituationsModel();
+            model.Matches = _context.Match.Where(x => matchIds.Contains(x.MatchId)).ToList();
 
             var managers = _managerProvider.GetSinglePlayerManagers(Enums.SituationTypeCollection.ProductionAccessDefault);
-
             foreach (var manager in managers)
             {
                 var situationCollection = await manager.GetSituationCollectionAsync(steamId, matchIds);
@@ -73,9 +73,13 @@ namespace SituationOperator.Controllers
                 return NotFound($"Manager for SituationType [ {situationType} ] not found.");
             }
 
-            var situationCollection = await manager.GetSituationCollectionAsync(steamId, matchIds);         
+            var matches = _context.Match.Where(x => matchIds.Contains(x.MatchId)).ToList();
 
-            return situationCollection;
+            var situationCollection = await manager.GetSituationCollectionAsync(steamId, matchIds);
+
+            var model = new SituationDetailModel(matches, situationCollection);
+
+            return model;
         }
     }
 }

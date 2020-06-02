@@ -32,12 +32,13 @@ namespace SituationOperator.Controllers
         [HttpGet("{matchId}/situations")]
         public async Task<ActionResult<MatchSituationsModel>> MatchSituationsAsync(long matchId)
         {
-            if(!_context.Match.Any(x=>x.MatchId == matchId))
+            var match = _context.Match.SingleOrDefault(x => x.MatchId == matchId);
+            if (match == null)
             {
                 return NotFound();
             }
 
-            var model = new MatchSituationsModel(matchId);
+            var model = new MatchSituationsModel(match);
 
             var managers = _managerProvider.GetManagers(Enums.SituationTypeCollection.ProductionAccessDefault);
 

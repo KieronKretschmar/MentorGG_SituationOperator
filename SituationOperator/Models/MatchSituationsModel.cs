@@ -14,9 +14,9 @@ namespace SituationOperator.Models
     public class MatchSituationsModel
     {
         /// <summary>
-        /// MatchId of the requested match.
+        /// Metadata of the requested match.
         /// </summary>
-        public long MatchId { get; set; }
+        public MatchEntity Match { get; set; }
 
         /// <summary>
         /// List of SituationCollections, one for each type of misplay.
@@ -31,10 +31,10 @@ namespace SituationOperator.Models
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="matchId"></param>
-        public MatchSituationsModel(long matchId)
+        /// <param name="match"></param>
+        public MatchSituationsModel(MatchEntity match)
         {
-            MatchId = matchId;
+            Match = match;
             Misplays = new List<SituationCollection>();
             Highlights = new List<SituationCollection>();
         }        
