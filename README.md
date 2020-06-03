@@ -7,10 +7,9 @@ Computes, stores and serves Situations.
 **RabbitMQ**
 - `MOCK_RABBIT` : Whether rabbit related services should be mocked and/or skipped to simplify startup. Only usable in Development.
 - `AMQP_URI` : URI to the rabbit cluster [\*]
-- `AMQP_EXCHANGE_NAME` : Rabbits exchange name for finding MatchData-Fanout [\*]
-- `AMQP_EXCHANGE_CONSUME_QUEUE` : Rabbit queue's name for consuming messages from MatchData-Fanout 
 - `AMQP_PREFETCH_COUNT` : Amount of messages to fetch before acknowledging the in-progress messages. Defaults to `1`.
-- `AMQP_DEMOCENTRAL_REPLY` : Rabbit queue's name for producing messages to DemoCentral. [\*]
+- `AMQP_EXTRACTION_INSTRUCTIONS` : Rabbit queue's name for consuming instructions for extraction.
+- `AMQP_EXTRACTION_REPLY` : Rabbit queue's name for producing messages to DemoCentral. [\*]
 
 **MySQL - SituationDb**
 - `MYSQL_CONNECTION_STRING` : Connection string for the SituationDatabase. Defaults to InMemoryDatabase if unspecified
