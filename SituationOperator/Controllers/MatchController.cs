@@ -28,9 +28,12 @@ namespace SituationOperator.Controllers
         /// Get all Situations from a particular match.
         /// </summary>
         /// <param name="matchId"></param>
+        /// <param name="nFirstAndLastRoundsPerHalf">
+        /// The number of rounds of the beginning and end of each half for which to allow situations.
+        /// </param>
         /// <returns></returns>
         [HttpGet("{matchId}/situations")]
-        public async Task<ActionResult<MatchSituationsModel>> MatchSituationsAsync(long matchId)
+        public async Task<ActionResult<MatchSituationsModel>> MatchSituationsAsync(long matchId, int? nFirstAndLastRoundsPerHalf = null)
         {
             var match = _context.Match.SingleOrDefault(x => x.MatchId == matchId);
             if (match == null)
@@ -38,7 +41,7 @@ namespace SituationOperator.Controllers
                 return NotFound();
             }
 
-            var model = new MatchSituationsModel(match);
+            var model = new MatchSituationsModel(new MatchInfo(match, nFirstAndLastRoundsPerHalf));
 
             var managers = _managerProvider.GetManagers(Enums.SituationTypeCollection.ProductionAccessDefault);
 

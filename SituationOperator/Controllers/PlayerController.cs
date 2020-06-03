@@ -29,12 +29,18 @@ namespace SituationOperator.Controllers
         /// <summary>
         /// Get all Situations from a given player and the given matches.
         /// </summary>
+        /// <param name="nFirstAndLastRoundsPerHalf">        
+        /// The number of rounds of the beginning and end of each half for which to allow situations.
+        /// </param>
         /// <returns></returns>
         [HttpGet("{steamId}/situations")]
-        public async Task<ActionResult<PlayerSituationsModel>> PlayerSituationsAsync(long steamId, [CsvModelBinder] List<long> matchIds)
+        public async Task<ActionResult<PlayerSituationsModel>> PlayerSituationsAsync(long steamId, [CsvModelBinder] List<long> matchIds, int? nFirstAndLastRoundsPerHalf = null)
         {
             var model = new PlayerSituationsModel();
-            model.Matches = _context.Match.Where(x => matchIds.Contains(x.MatchId)).ToList();
+            model.Matches = _context.Match
+                .Where(x => matchIds.Contains(x.MatchId))
+                .Select(x=>new MatchInfo(x, nFirstAndLastRoundsPerHalf))
+                .ToList();
 
             var managers = _managerProvider.GetSinglePlayerManagers(Enums.SituationTypeCollection.ProductionAccessDefault);
             foreach (var manager in managers)
@@ -60,12 +66,17 @@ namespace SituationOperator.Controllers
         /// <summary>
         /// Get all Situations from a given player and the given matches.
         /// </summary>
+        /// <param name="steamId"></param>
+        /// <param name="situationType"></param>
+        /// <param name="matchIds"></param>
+        /// <param name="nFirstAndLastRoundsPerHalf">
+        /// The number of rounds of the beginning and end of each half for which to load situations. 
+        /// A value of 1 means that misplays from the first and last round of each half are loaded.
+        /// </param>
         /// <returns></returns>
         [HttpGet("{steamId}/situations/{situationType}")]
-        public async Task<ActionResult<SituationCollection>> SituationCollectionAsync(long steamId, SituationType situationType, [CsvModelBinder] List<long> matchIds)
+        public async Task<ActionResult<SituationDetailModel>> SituationCollectionAsync(long steamId, SituationType situationType, [CsvModelBinder] List<long> matchIds, int? nFirstAndLastRoundsPerHalf = null)
         {
-            var model = new PlayerSituationsModel();
-
             var manager = _managerProvider.GetSinglePlayerManager(situationType);
 
             if(manager == null)
@@ -73,7 +84,10 @@ namespace SituationOperator.Controllers
                 return NotFound($"Manager for SituationType [ {situationType} ] not found.");
             }
 
-            var matches = _context.Match.Where(x => matchIds.Contains(x.MatchId)).ToList();
+            var matches = _context.Match
+                .Where(x => matchIds.Contains(x.MatchId))
+                .Select(x=>new MatchInfo(x, nFirstAndLastRoundsPerHalf))
+                .ToList();
 
             var situationCollection = await manager.GetSituationCollectionAsync(steamId, matchIds);
 
