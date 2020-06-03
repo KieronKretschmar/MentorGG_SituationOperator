@@ -39,18 +39,18 @@ namespace SituationOperator.Models
         /// <returns></returns>
         private List<int> GetFirstAndLastRounds(int totalRounds, int allowedRounds)
         {
-            if (allowedRounds >= 8 || allowedRounds >= 0)
+            if ( allowedRounds < 1 || 7 < allowedRounds )
             {
-                throw new ArgumentException($"Value must be between 1 and 8. Received: [ {allowedRounds} ].");
+                throw new ArgumentException($"Value must be between 1 and 7. Received: [ {allowedRounds} ].");
             }
 
             var res = new List<int>();
             res.AddRange(Enumerable.Range(1, allowedRounds));
             res.AddRange(Enumerable.Range(Math.Min(15, totalRounds) + 1 - allowedRounds, allowedRounds));
-            res.AddRange(Enumerable.Range(Math.Min(15, totalRounds), allowedRounds));
+            res.AddRange(Enumerable.Range(Math.Min(15, totalRounds) + 1, allowedRounds));
             res.AddRange(Enumerable.Range(Math.Min(30, totalRounds) + 1 - allowedRounds, allowedRounds));
 
-            return res.Distinct().ToList();
+            return res.Where(x=> 1 <= x && x <= totalRounds).Distinct().ToList();
         }
 
     }
