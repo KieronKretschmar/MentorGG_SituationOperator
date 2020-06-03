@@ -89,7 +89,7 @@ namespace SituationOperator.SituationManagers
 
                     // Ignore damages not done by bullets (e.g. grenades)
                     damages = damages
-                        .Where(x => equipmentHelper.GetEquipmentInfo(x.Weapon, data).IsFireArm());
+                        .Where(x => equipmentHelper.GetEquipmentInfo(x.Weapon, data)?.IsFireArm() ?? false);
 
                     // Ignore consecutive damages taken by the same victim
                     damages = damages

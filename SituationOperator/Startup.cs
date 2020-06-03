@@ -28,6 +28,7 @@ using SituationOperator.SituationManagers;
 using SituationDatabase.Models;
 using StackExchange.Redis;
 using Moq;
+using SituationOperator.Helpers.SubscriptionConfig;
 
 namespace SituationOperator
 {
@@ -119,7 +120,7 @@ namespace SituationOperator
             #region Swagger
             services.AddSwaggerGen(options =>
             {
-                OpenApiInfo interface_info = new OpenApiInfo { Title = "Mentor Interface", Version = "v1", };
+                OpenApiInfo interface_info = new OpenApiInfo { Title = "SituationOperator", Version = "v1", };
                 options.SwaggerDoc("v1", interface_info);
 
                 // Generate documentation based on the Docstrings provided.
@@ -208,6 +209,21 @@ namespace SituationOperator
 
                 return new EquipmentHelper(equipmentProvider);
             });
+            #endregion
+
+            #region Subscription Configuration
+
+            if (!GetOptionalEnvironmentVariable<bool>(Configuration, "MOCK_SUBSCRIPTION_LOADER", false))
+            {
+                services.AddSingleton<ISubscriptionConfigProvider, SubscriptionConfigLoader>();
+            }
+            else
+            {
+                Console.WriteLine(
+                    "WARNING: SubscriptionConfigLoader is mocked and will return mocked values!");
+                services.AddSingleton<ISubscriptionConfigProvider, MockedSubscriptionConfigLoader>();
+            }
+
             #endregion
 
             #region SituationManagers

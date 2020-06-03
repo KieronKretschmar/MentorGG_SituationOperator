@@ -76,7 +76,7 @@ namespace SituationOperator
         /// <returns></returns>
         private async Task UploadMetaDataAsync(MatchDataSet data)
         {
-            var match = new MatchEntity(data.MatchStats);
+            var match = new MatchEntity(data.MatchStats, data.RoundStatsList.Count);
             _context.Match.Add(match);
 
             var rounds = data.RoundStatsList.Select(x => new RoundEntity(x));

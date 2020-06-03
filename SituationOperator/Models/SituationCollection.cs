@@ -36,9 +36,7 @@ namespace SituationOperator.Models
             public SituationTypeMetaData(SituationType situationType, SkillDomain skillDomain)
             {
                 SituationType = situationType;
-                SituationName = situationType.ToString();
                 SkillDomain = skillDomain;
-                SkillDomainName = skillDomain.ToString();
             }
 
             /// <summary>
@@ -49,7 +47,7 @@ namespace SituationOperator.Models
             /// <summary>
             /// Name of the type of situation.
             /// </summary>
-            public string SituationName { get; set; }
+            public string SituationName => SituationType.ToString();
 
             /// <summary>
             /// The area of expertise a SituationType belongs to.
@@ -59,7 +57,7 @@ namespace SituationOperator.Models
             /// <summary>
             /// Name of the type of SkillDomain.
             /// </summary>
-            public string SkillDomainName { get; set; }
+            public string SkillDomainName => SkillDomain.ToString();
         }
     }
 }

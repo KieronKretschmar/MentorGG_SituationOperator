@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SituationDatabase;
+using SituationOperator.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,13 @@ namespace SituationOperator.SituationManagers
     /// </summary>
     public interface ISinglePlayerSituationManager : ISituationManager
     {
+        /// <summary>
+        /// Loads all Situations managed by this manager of the specified player in the given matches.
+        /// </summary>
+        /// <param name="steamId"></param>
+        /// <param name="matchIds"></param>
+        /// <returns></returns>
+        Task<SituationCollection> GetSituationCollectionAsync(long steamId, List<long> matchIds);
 
         /// <summary>
         /// Loads all Situations managed by this manager of the specified player in the given matches.
@@ -38,12 +46,21 @@ namespace SituationOperator.SituationManagers
         }
 
         /// <inheritdoc/>
+        public async Task<SituationCollection> GetSituationCollectionAsync(long steamId, List<long> matchIds)
+        {
+            var situations = await LoadSituationsAsync(steamId, matchIds);
+            var collection = new SituationCollection(SituationType, SkillDomain, situations);
+            return collection;
+        }
+
+        /// <inheritdoc/>
         public async Task<List<ISinglePlayerSituation>> LoadSituationsAsync(long steamId, List<long> matchIds)
         {
             var table = TableSelector(_context);
             var existingEntries = table.Where(x => x.SteamId == steamId && matchIds.Contains(x.MatchId));
-            var res = await existingEntries.Select(x => x as ISinglePlayerSituation).ToListAsync();
-            return res;
+            var situations = await existingEntries.Select(x => x as ISinglePlayerSituation).ToListAsync();
+
+            return situations;
         }
     }
 }
