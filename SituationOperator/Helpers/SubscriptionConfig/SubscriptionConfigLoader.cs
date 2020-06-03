@@ -79,16 +79,19 @@ namespace SituationOperator.Helpers.SubscriptionConfig
             {
                 MatchAccessDurationInDays = 14,
                 DailyMatchesLimit = 3,
+                FirstAndLastRoundsForSituations = 1,
             },
             Premium = new SubscriptionSettings
             {
                 MatchAccessDurationInDays = 82,
                 DailyMatchesLimit = -1,
+                FirstAndLastRoundsForSituations = -1,
             },
             Ultimate = new SubscriptionSettings
             {
                 MatchAccessDurationInDays = -1,
                 DailyMatchesLimit = -1,
+                FirstAndLastRoundsForSituations = -1,
             }
         };
         public SubscriptionConfig Config { get; }

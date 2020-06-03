@@ -47,5 +47,10 @@ namespace SituationOperator.Helpers.SubscriptionConfig
         public int MatchAccessDurationInDays { get; set; }
 
         public int DailyMatchesLimit { get; set; }
+
+        /// <summary>
+        /// Number of rounds at the start and end of each half (excl. overtime) for which the user may access Situations.
+        /// </summary>
+        public int FirstAndLastRoundsForSituations { get; set; }
     }
 }
