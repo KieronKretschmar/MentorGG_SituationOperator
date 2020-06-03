@@ -8,10 +8,10 @@ namespace SituationOperator.Models
 {
     public class SituationDetailModel
     {
-        public List<MatchInfo> Matches { get; set; }
+        public Dictionary<long, MatchInfo> Matches { get; set; }
         public SituationCollection SituationCollection { get; set; }
 
-        public SituationDetailModel(List<MatchInfo> matches, SituationCollection situationCollection)
+        public SituationDetailModel(Dictionary<long, MatchInfo> matches, SituationCollection situationCollection)
         {
             Matches = matches;
             SituationCollection = situationCollection;

@@ -14,13 +14,13 @@ namespace SituationOperator.Models
         /// <summary>
         /// Contains metadata about the analyzed matches
         /// </summary>
-        public List<MatchInfo> Matches { get; set; }
+        public Dictionary<long,MatchInfo> Matches { get; set; }
 
         public PlayerSituationsModel()
         {
             Misplays = new Dictionary<SituationType, SituationCollection>();
             Highlights = new Dictionary<SituationType, SituationCollection>();
-            Matches = new List<MatchInfo>();
+            Matches = new Dictionary<long, MatchInfo>();
         }
     }
 }

@@ -45,7 +45,7 @@ namespace SituationOperator.Controllers
             model.Matches = _context.Match
                 .Where(x => matchIds.Contains(x.MatchId))
                 .Select(x=>new MatchInfo(x, config.FirstAndLastRoundsForSituations))
-                .ToList();
+                .ToDictionary(x => x.MatchId, x => x);
 
             var managers = _managerProvider.GetSinglePlayerManagers(Enums.SituationTypeCollection.ProductionAccessDefault);
             foreach (var manager in managers)
@@ -89,8 +89,8 @@ namespace SituationOperator.Controllers
 
             var matches = _context.Match
                 .Where(x => matchIds.Contains(x.MatchId))
-                .Select(x=>new MatchInfo(x, config.FirstAndLastRoundsForSituations))
-                .ToList();
+                .Select(x => new MatchInfo(x, config.FirstAndLastRoundsForSituations))
+                .ToDictionary(x => x.MatchId, x => x);
 
             var situationCollection = await manager.GetSituationCollectionAsync(steamId, matchIds);
 

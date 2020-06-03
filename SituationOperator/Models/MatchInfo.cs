@@ -8,6 +8,7 @@ namespace SituationOperator.Models
 {
     public class MatchInfo
     {
+        public long MatchId { get; set; }
         public int TotalRounds { get; set; }
         public string Map { get; set; }
         public DateTime MatchDate { get; set; }
@@ -24,7 +25,10 @@ namespace SituationOperator.Models
         /// <param name="nFirstAndLastRoundsPerHalf">Allowed rounds at start and end of each half. Set to -1 to allow Situations of every round.</param>
         public MatchInfo(MatchEntity matchEntity, int nFirstAndLastRoundsPerHalf)
         {
-
+            MatchId = matchEntity.MatchId;
+            TotalRounds = matchEntity.Rounds;
+            Map = matchEntity.Map;
+            MatchDate = matchEntity.MatchDate;
             AllowedRounds = nFirstAndLastRoundsPerHalf == -1
                 ? Enumerable.Range(1, matchEntity.Rounds).ToList()
                 : GetFirstAndLastRounds(matchEntity.Rounds, (int)nFirstAndLastRoundsPerHalf);
