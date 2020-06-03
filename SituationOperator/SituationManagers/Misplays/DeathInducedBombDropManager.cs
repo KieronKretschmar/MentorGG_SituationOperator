@@ -29,8 +29,10 @@ namespace SituationOperator.SituationManagers
 
         /// <summary>
         /// Maximum required distance (csgo units) to the nearest teammate at death count as a misplay.
+        /// 
+        /// 1 Meter ~ 525 units (see https://developer.valvesoftware.com/wiki/Dimensions#Map_Grid_Units:_quick_reference)
         /// </summary>
-        private const int MAX_TEAMMATE_DISTANCE = 1;
+        private const int MAX_TEAMMATE_DISTANCE = 300;
 
         private readonly IServiceProvider _sp;
         private readonly ILogger<DeathInducedBombDropManager> _logger;
