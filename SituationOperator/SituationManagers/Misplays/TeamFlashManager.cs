@@ -63,6 +63,9 @@ namespace SituationOperator.SituationManagers
         public override SituationCategory SituationCategory => SituationCategory.Misplay;
 
         /// <inheritdoc/>
+        public override SkillDomain SkillDomain => SkillDomain.Grenades;
+
+        /// <inheritdoc/>
         public override SituationType SituationType => SituationType.TeamFlash;
 
         /// <inheritdoc/>

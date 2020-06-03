@@ -41,6 +41,9 @@ namespace SituationOperator.SituationManagers
         public override SituationCategory SituationCategory => SituationCategory.Highlight;
 
         /// <inheritdoc/>
+        public override SkillDomain SkillDomain => SkillDomain.Grenades;
+
+        /// <inheritdoc/>
         public override SituationType SituationType => SituationType.KillWithOwnFlashAssist;
 
         /// <inheritdoc/>

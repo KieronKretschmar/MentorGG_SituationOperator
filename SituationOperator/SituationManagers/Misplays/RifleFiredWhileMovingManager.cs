@@ -76,6 +76,9 @@ namespace SituationOperator.SituationManagers
         public override SituationCategory SituationCategory => SituationCategory.Misplay;
 
         /// <inheritdoc/>
+        public override SkillDomain SkillDomain => SkillDomain.Movement;
+
+        /// <inheritdoc/>
         public override SituationType SituationType => SituationType.RifleFiredWhileMoving;
 
         /// <inheritdoc/>

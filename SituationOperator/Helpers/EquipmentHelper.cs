@@ -38,8 +38,12 @@ namespace SituationOperator.Helpers
         public EquipmentInfo GetEquipmentInfo(MatchEntities.Enums.EquipmentElement equipmentElement, MatchDataSet data)
         {
             var equipmentLibSource = (EquipmentLib.Enums.Source)data.MatchStats.Source;
-            // casts EquipmentElement enum and
-            return _equipmentProvider.GetEquipmentDict(equipmentLibSource, data.MatchStats.MatchDate)[(short)equipmentElement];
+            EquipmentInfo equipmentInfo;
+            if(!_equipmentProvider.GetEquipmentDict(equipmentLibSource, data.MatchStats.MatchDate).TryGetValue((short)equipmentElement, out equipmentInfo))
+            {
+                return null;
+            }
+            return equipmentInfo;
         }
     }
 }

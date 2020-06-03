@@ -14,8 +14,31 @@ namespace SituationOperator
     /// </summary>
     public interface ISituationManagerProvider
     {
+        /// <summary>
+        /// Returns the specified collection of ISituationManagers.
+        /// </summary>
+        /// <param name="collectionIdentifier"></param>
+        /// <returns></returns>
         IEnumerable<ISituationManager> GetManagers(SituationTypeCollection collection);
+
+        /// <summary>
+        /// Returns the specified collection of ISinglePlayerSituationManagers.
+        /// </summary>
+        /// <param name="collectionIdentifier"></param>
+        /// <returns></returns>
         IEnumerable<ISinglePlayerSituationManager> GetSinglePlayerManagers(SituationTypeCollection collection);
+
+        /// <summary>
+        /// Returns the specified ISituationManager or null if not found.
+        /// </summary>
+        /// <returns></returns>
+        ISituationManager GetManager(SituationType situationType);
+
+        /// <summary>
+        /// Returns the specified ISinglePlayerSituationManager or null if not found.
+        /// </summary>
+        /// <returns></returns>
+        ISinglePlayerSituationManager GetSinglePlayerManager(SituationType situationType);
     }
 
     /// <summary>
@@ -39,11 +62,7 @@ namespace SituationOperator
             _situationManagers = situationManagers;
         }
 
-        /// <summary>
-        /// Returns the specified collection of ISituationManagers.
-        /// </summary>
-        /// <param name="collectionIdentifier"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public IEnumerable<ISituationManager> GetManagers(SituationTypeCollection collectionIdentifier)
         {
             _logger.LogTrace($"GetManagers called with identifier [ {collectionIdentifier} ]");
@@ -58,11 +77,7 @@ namespace SituationOperator
             }
         }
 
-        /// <summary>
-        /// Returns the specified collection of ISituationManagers.
-        /// </summary>
-        /// <param name="collectionIdentifier"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public IEnumerable<ISinglePlayerSituationManager> GetSinglePlayerManagers(SituationTypeCollection collectionIdentifier)
         {
             _logger.LogTrace($"GetManagers called with identifier [ {collectionIdentifier} ]");
@@ -77,6 +92,20 @@ namespace SituationOperator
                 default:
                     throw new NotImplementedException();
             }
+        }
+
+        /// <inheritdoc/>
+        public ISituationManager GetManager(SituationType situationType)
+        {
+            return _situationManagers.SingleOrDefault(x => x.SituationType == situationType);
+        }
+
+        /// <inheritdoc/>
+        public ISinglePlayerSituationManager GetSinglePlayerManager(SituationType situationType)
+        {
+            return _situationManagers
+                .SingleOrDefault(x => x.SituationType == situationType && x is ISinglePlayerSituationManager)
+                as ISinglePlayerSituationManager;
         }
     }
 }

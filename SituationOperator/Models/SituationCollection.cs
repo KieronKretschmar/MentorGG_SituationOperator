@@ -25,18 +25,18 @@ namespace SituationOperator.Models
         /// <summary>
         /// Constructor.
         /// </summary>
-        public SituationCollection(SituationType situationType, IEnumerable<ISituation> situations)
+        public SituationCollection(SituationType situationType, SkillDomain skillDomain, IEnumerable<ISituation> situations)
         {
             Situations = situations.ToList();
-            MetaData = new SituationTypeMetaData(situationType);
+            MetaData = new SituationTypeMetaData(situationType, skillDomain);
         }
 
         public class SituationTypeMetaData
         {
-            public SituationTypeMetaData(SituationType situationType)
+            public SituationTypeMetaData(SituationType situationType, SkillDomain skillDomain)
             {
                 SituationType = situationType;
-                SituationName = situationType.ToString();
+                SkillDomain = skillDomain;
             }
 
             /// <summary>
@@ -47,7 +47,17 @@ namespace SituationOperator.Models
             /// <summary>
             /// Name of the type of situation.
             /// </summary>
-            public string SituationName { get; set; }
+            public string SituationName => SituationType.ToString();
+
+            /// <summary>
+            /// The area of expertise a SituationType belongs to.
+            /// </summary>
+            public SkillDomain SkillDomain { get; set; }
+
+            /// <summary>
+            /// Name of the type of SkillDomain.
+            /// </summary>
+            public string SkillDomainName => SkillDomain.ToString();
         }
     }
 }

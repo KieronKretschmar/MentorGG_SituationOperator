@@ -25,7 +25,7 @@ namespace SituationDatabase.Models
         /// <summary>
         /// Constructor.
         /// </summary>
-        public MatchEntity(MatchStats matchStats)
+        public MatchEntity(MatchStats matchStats, int rounds)
         {
             MatchId = matchStats.MatchId;
             MatchDate = matchStats.MatchDate;
@@ -35,12 +35,14 @@ namespace SituationDatabase.Models
             Source = matchStats.Source;
             GameType = matchStats.GameType;
             AvgRank = matchStats.AvgRank;
+            Rounds = rounds;
         }
 
         public long MatchId { get; set; }
         public DateTime MatchDate { get; set; }
         public string Map { get; set; }
         public StartingFaction WinnerTeam { get; set; }
+        public int Rounds { get; set; }
 
         #region TeamMatchStats
         // team 1 is the team that starts as terrorists first
