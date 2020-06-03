@@ -119,7 +119,7 @@ namespace SituationOperator
             #region Swagger
             services.AddSwaggerGen(options =>
             {
-                OpenApiInfo interface_info = new OpenApiInfo { Title = "Mentor Interface", Version = "v1", };
+                OpenApiInfo interface_info = new OpenApiInfo { Title = "SituationOperator", Version = "v1", };
                 options.SwaggerDoc("v1", interface_info);
 
                 // Generate documentation based on the Docstrings provided.
