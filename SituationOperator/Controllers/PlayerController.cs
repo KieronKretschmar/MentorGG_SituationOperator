@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using SituationDatabase;
 using SituationOperator.Enums;
 using SituationOperator.Helpers;
+using SituationOperator.Helpers.SubscriptionConfig;
 using SituationOperator.Models;
 using static SituationOperator.Models.MatchSituationsModel;
 
@@ -19,27 +20,31 @@ namespace SituationOperator.Controllers
     {
         private readonly SituationContext _context;
         private readonly ISituationManagerProvider _managerProvider;
+        private readonly ISubscriptionConfigProvider _subscriptionConfigLoader;
 
-        public PlayerController(SituationContext context, ISituationManagerProvider managerProvider)
+        public PlayerController(
+            SituationContext context, 
+            ISituationManagerProvider managerProvider,
+            ISubscriptionConfigProvider subscriptionConfigLoader)
         {
             _context = context;
             _managerProvider = managerProvider;
+            _subscriptionConfigLoader = subscriptionConfigLoader;
         }
 
         /// <summary>
         /// Get all Situations from a given player and the given matches.
         /// </summary>
-        /// <param name="nFirstAndLastRoundsPerHalf">        
-        /// The number of rounds of the beginning and end of each half for which to allow situations.
-        /// </param>
         /// <returns></returns>
         [HttpGet("{steamId}/situations")]
-        public async Task<ActionResult<PlayerSituationsModel>> PlayerSituationsAsync(long steamId, [CsvModelBinder] List<long> matchIds, int? nFirstAndLastRoundsPerHalf = null)
+        public async Task<ActionResult<PlayerSituationsModel>> PlayerSituationsAsync(long steamId, [CsvModelBinder] List<long> matchIds, SubscriptionType subscriptionType)
         {
+            var config = _subscriptionConfigLoader.Config.SettingsFromSubscriptionType(subscriptionType);
+
             var model = new PlayerSituationsModel();
             model.Matches = _context.Match
                 .Where(x => matchIds.Contains(x.MatchId))
-                .Select(x=>new MatchInfo(x, nFirstAndLastRoundsPerHalf))
+                .Select(x=>new MatchInfo(x, config.FirstAndLastRoundsForSituations))
                 .ToList();
 
             var managers = _managerProvider.GetSinglePlayerManagers(Enums.SituationTypeCollection.ProductionAccessDefault);
@@ -69,14 +74,12 @@ namespace SituationOperator.Controllers
         /// <param name="steamId"></param>
         /// <param name="situationType"></param>
         /// <param name="matchIds"></param>
-        /// <param name="nFirstAndLastRoundsPerHalf">
-        /// The number of rounds of the beginning and end of each half for which to load situations. 
-        /// A value of 1 means that misplays from the first and last round of each half are loaded.
-        /// </param>
         /// <returns></returns>
         [HttpGet("{steamId}/situations/{situationType}")]
-        public async Task<ActionResult<SituationDetailModel>> SituationCollectionAsync(long steamId, SituationType situationType, [CsvModelBinder] List<long> matchIds, int? nFirstAndLastRoundsPerHalf = null)
+        public async Task<ActionResult<SituationDetailModel>> SituationCollectionAsync(long steamId, SituationType situationType, [CsvModelBinder] List<long> matchIds, SubscriptionType subscriptionType)
         {
+            var config = _subscriptionConfigLoader.Config.SettingsFromSubscriptionType(subscriptionType);
+
             var manager = _managerProvider.GetSinglePlayerManager(situationType);
 
             if(manager == null)
@@ -86,7 +89,7 @@ namespace SituationOperator.Controllers
 
             var matches = _context.Match
                 .Where(x => matchIds.Contains(x.MatchId))
-                .Select(x=>new MatchInfo(x, nFirstAndLastRoundsPerHalf))
+                .Select(x=>new MatchInfo(x, config.FirstAndLastRoundsForSituations))
                 .ToList();
 
             var situationCollection = await manager.GetSituationCollectionAsync(steamId, matchIds);

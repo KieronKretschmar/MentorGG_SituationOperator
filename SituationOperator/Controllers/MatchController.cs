@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SituationDatabase;
+using SituationOperator.Enums;
+using SituationOperator.Helpers.SubscriptionConfig;
 using SituationOperator.Models;
 using static SituationOperator.Models.MatchSituationsModel;
 
@@ -17,31 +19,38 @@ namespace SituationOperator.Controllers
     {
         private readonly SituationContext _context;
         private readonly ISituationManagerProvider _managerProvider;
+        private readonly ISubscriptionConfigProvider _subscriptionConfigLoader;
 
-        public MatchController(SituationContext context, ISituationManagerProvider managerProvider)
+        public MatchController(
+            SituationContext context, 
+            ISituationManagerProvider managerProvider,
+            ISubscriptionConfigProvider subscriptionConfigLoader)
         {
             _context = context;
             _managerProvider = managerProvider;
+            _subscriptionConfigLoader = subscriptionConfigLoader;
         }
 
         /// <summary>
         /// Get all Situations from a particular match.
         /// </summary>
         /// <param name="matchId"></param>
-        /// <param name="nFirstAndLastRoundsPerHalf">
+        /// <param name="subscriptionType">
         /// The number of rounds of the beginning and end of each half for which to allow situations.
         /// </param>
         /// <returns></returns>
         [HttpGet("{matchId}/situations")]
-        public async Task<ActionResult<MatchSituationsModel>> MatchSituationsAsync(long matchId, int? nFirstAndLastRoundsPerHalf = null)
+        public async Task<ActionResult<MatchSituationsModel>> MatchSituationsAsync(long matchId, SubscriptionType subscriptionType)
         {
+            var config = _subscriptionConfigLoader.Config.SettingsFromSubscriptionType(subscriptionType);
+
             var match = _context.Match.SingleOrDefault(x => x.MatchId == matchId);
             if (match == null)
             {
                 return NotFound();
             }
 
-            var model = new MatchSituationsModel(new MatchInfo(match, nFirstAndLastRoundsPerHalf));
+            var model = new MatchSituationsModel(new MatchInfo(match, config.FirstAndLastRoundsForSituations));
 
             var managers = _managerProvider.GetManagers(Enums.SituationTypeCollection.ProductionAccessDefault);
 

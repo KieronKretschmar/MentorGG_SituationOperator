@@ -17,10 +17,15 @@ namespace SituationOperator.Models
         /// </summary>
         public List<int> AllowedRounds { get; set; }
 
-        public MatchInfo(MatchEntity matchEntity, int? nFirstAndLastRoundsPerHalf)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="matchEntity"></param>
+        /// <param name="nFirstAndLastRoundsPerHalf">Allowed rounds at start and end of each half. Set to -1 to allow Situations of every round.</param>
+        public MatchInfo(MatchEntity matchEntity, int nFirstAndLastRoundsPerHalf)
         {
 
-            AllowedRounds = nFirstAndLastRoundsPerHalf == null
+            AllowedRounds = nFirstAndLastRoundsPerHalf == -1
                 ? Enumerable.Range(1, matchEntity.Rounds).ToList()
                 : GetFirstAndLastRounds(matchEntity.Rounds, (int)nFirstAndLastRoundsPerHalf);
         }
