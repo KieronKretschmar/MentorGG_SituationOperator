@@ -22,8 +22,8 @@ namespace SituationOperator.Communications
         public RabbitConsumer(
             ILogger<RabbitConsumer> logger,
             IServiceProvider serviceProvider,
-            IExchangeQueueConnection exchangeQueueConnection,
-            ushort prefetchCount) : base(exchangeQueueConnection, prefetchCount)
+            IQueueConnection queueConnection,
+            ushort prefetchCount) : base(queueConnection, prefetchCount)
         {
             _serviceProvider = serviceProvider;
             _logger = logger;

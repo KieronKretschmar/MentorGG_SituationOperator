@@ -149,22 +149,21 @@ namespace SituationOperator
                 var AMQP_URI = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_URI");
 
                 // Consumer for instructions from Fanout / DemoCentral
-                var AMQP_EXCHANGE_NAME = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_EXCHANGE_NAME");
                 var AMQP_PREFETCH_COUNT = GetOptionalEnvironmentVariable<ushort>(Configuration, "AMQP_PREFETCH_COUNT", AMQP_PREFETCH_COUNT_DEFAULT);
-                var AMQP_EXCHANGE_CONSUME_QUEUE = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_EXCHANGE_CONSUME_QUEUE");
-                var exchangeQueue = new ExchangeQueueConnection(AMQP_URI, AMQP_EXCHANGE_NAME, AMQP_EXCHANGE_CONSUME_QUEUE);
+                var AMQP_EXTRACTION_INSTRUCTIONS = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_EXTRACTION_INSTRUCTIONS");
+                var extractionQueue = new QueueConnection(AMQP_URI, AMQP_EXTRACTION_INSTRUCTIONS);
                 services.AddHostedService<RabbitConsumer>(serviceProvider =>
                 {
                     return new RabbitConsumer(
                         serviceProvider.GetRequiredService<ILogger<RabbitConsumer>>(),
                         serviceProvider,
-                        exchangeQueue,
+                        extractionQueue,
                         AMQP_PREFETCH_COUNT);
                 });
 
                 // Producer for Reports to DemoCentral
-                var AMQP_DEMOCENTRAL_REPLY = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_DEMOCENTRAL_REPLY");
-                var callbackQueue = new QueueConnection(AMQP_URI, AMQP_DEMOCENTRAL_REPLY);
+                var AMQP_EXTRACTION_REPLY = GetRequiredEnvironmentVariable<string>(Configuration, "AMQP_EXTRACTION_REPLY");
+                var callbackQueue = new QueueConnection(AMQP_URI, AMQP_EXTRACTION_REPLY);
                 services.AddTransient<IProducer<SituationExtractionReport>>(sp =>
                 {
                     return new Producer<SituationExtractionReport>(callbackQueue);
