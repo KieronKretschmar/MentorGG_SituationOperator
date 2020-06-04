@@ -28,11 +28,9 @@ namespace SituationOperator.SituationManagers
         private const int MIN_TEAMMATES_ALIVE = 1;
 
         /// <summary>
-        /// Minimum required distance (csgo units) to the nearest teammate at death count as a misplay.
-        /// 
-        /// 1 Meter ~ 525 units (see https://developer.valvesoftware.com/wiki/Dimensions#Map_Grid_Units:_quick_reference)
+        /// Minimum required distance in meters to the nearest teammate at death count as a misplay.
         /// </summary>
-        private const int MIN_TEAMMATE_DISTANCE = 300;
+        private const double MIN_TEAMMATE_DISTANCE = 5.0;
 
         private readonly IServiceProvider _sp;
         private readonly ILogger<DeathInducedBombDropManager> _logger;
@@ -91,7 +89,7 @@ namespace SituationOperator.SituationManagers
 
                     var closestTeammateDistance = teamMateDistances.Min() ?? null; // -1 if none alive
 
-                    if(closestTeammateDistance == null || closestTeammateDistance < MIN_TEAMMATE_DISTANCE)
+                    if(closestTeammateDistance == null || closestTeammateDistance < UnitConverter.MetersToUnits(MIN_TEAMMATE_DISTANCE))
                     {
                         continue;
                     }
