@@ -30,6 +30,24 @@ namespace SituationOperator.Helpers
         }
 
         /// <summary>
+        /// WARNING: Incomplete / Inaccurate for providers other than Valve.
+        /// See https://counterstrike.fandom.com/wiki/Competitive.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static MatchRules GetMatchSettings(this MatchDataSet data)
+        {
+            switch (data.MatchStats.Source)
+            {
+                case MatchEntities.Enums.Source.Valve:
+                    return new MatchRules(15000, 115000, 40000);
+                default:
+                    // Default to MatchMaking rules
+                    return new MatchRules(15000, 115000, 40000);
+            }
+        }
+
+        /// <summary>
         /// Determines whether the player was alive at the specified moment, including the exact moment.
         /// </summary>
         /// <param name="data"></param>
