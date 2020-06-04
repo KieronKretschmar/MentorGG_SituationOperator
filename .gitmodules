@@ -1,12 +1,12 @@
 [submodule "RabbitCommunicationLib"]
 	path = RabbitCommunicationLib
-	url = git@gitlab.com:mentorgg/engine/RabbitCommunicationLib.git
+	url = ../../engine/RabbitCommunicationLib.git
 [submodule "zonereader"]
 	path = zonereader
-	url = git@gitlab.com:mentorgg/csgo/zonereader.git
+	url = ../../csgo/zonereader.git
 [submodule "EquipmentLib"]
 	path = EquipmentLib
-	url = git@gitlab.com:mentorgg/csgo/EquipmentLib.git
+	url = ../../csgo/EquipmentLib.git
 [submodule "matchentities"]
 	path = matchentities
-	url = git@gitlab.com:mentorgg/csgo/matchentities.git
+	url = ../../csgo/matchentities.git
