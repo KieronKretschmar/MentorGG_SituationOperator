@@ -167,6 +167,13 @@ namespace SituationOperatorTestProject
                     GetMockLogger<PushBeforeSmokeDetonatedManager>(),
                     context)
                 );
+
+            managers.Add(
+                new BombDropAtSpawnManager(
+                    serviceProvider,
+                    GetMockLogger<BombDropAtSpawnManager>(),
+                    context)
+                );
             #endregion
 
             #region Highlights - Singleplayer

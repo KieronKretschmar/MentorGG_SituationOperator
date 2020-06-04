@@ -32,6 +32,7 @@ namespace SituationDatabase
         public virtual DbSet<RifleFiredWhileMoving> RifleFiredWhileMoving { get; set; }
         public virtual DbSet<UnnecessaryReload> UnnecessaryReload { get; set; }
         public virtual DbSet<PushBeforeSmokeDetonated> PushBeforeSmokeDetonated { get; set; }
+        public virtual DbSet<BombDropAtSpawn> BombDropAtSpawn { get; set; }
         #endregion
 
         #region Highlights - SinglePlayer
@@ -134,6 +135,7 @@ namespace SituationDatabase
             modelBuilder.AddSinglePlayerSituation<RifleFiredWhileMoving>("RifleFiredWhileMoving");
             modelBuilder.AddSinglePlayerSituation<UnnecessaryReload>("UnnecessaryReload");
             modelBuilder.AddSinglePlayerSituation<PushBeforeSmokeDetonated>("PushBeforeSmokeDetonated");
+            modelBuilder.AddSinglePlayerSituation<BombDropAtSpawn>("BombDropAtSpawn");
             #endregion
 
             #region Goodplays - SinglePlayer

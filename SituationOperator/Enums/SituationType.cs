@@ -28,6 +28,7 @@ namespace SituationOperator.Enums
         RifleFiredWhileMoving = 510005,
         UnnecessaryReload = 510006,
         PushBeforeSmokeDetonated = 510007,
+        BombDropAtSpawn = 510008,
 
         // 52XXXX For Team - Misplays
 
