@@ -65,7 +65,7 @@ namespace SituationOperator.SituationManagers
             {
                 var misplays = new List<DeathInducedBombDrop>();
                 var bombDrops = data.ItemDroppedList
-                    .Where(x => x.MatchId == data.MatchId && x.Equipment == EquipmentElement.Bomb)
+                    .Where(x => x.Equipment == EquipmentElement.Bomb)
                     // ItemDropped.ByDeath is wrong in database as of 13.09.2019. Remove the '!' when DemoAnalyzer is fixed
                     .Where(x => !x.ByDeath)
                     .ToList();
@@ -99,7 +99,6 @@ namespace SituationOperator.SituationManagers
                     var pickedUpAfter = data.ItemPickedUpList
                         .FirstOrDefault(x =>
                             x.Equipment == EquipmentElement.Bomb
-                            && x.MatchId == bombDrop.MatchId
                             && x.Round == bombDrop.Round
                             && x.Time > bombDrop.Time
                         )?.Time - bombDrop.Time ?? -1;
