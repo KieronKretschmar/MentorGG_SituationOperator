@@ -17,7 +17,7 @@ namespace SituationOperator.Helpers
         /// <param name="matchData"></param>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public static RoundStats RoundStats(this MatchDataSet matchData, IRoundEntity entity)
+        public static RoundStats GetRoundStats(this MatchDataSet matchData, IRoundEntity entity)
         {
             return matchData.RoundStatsList.Single(x => x.Round == entity.Round);
         }
