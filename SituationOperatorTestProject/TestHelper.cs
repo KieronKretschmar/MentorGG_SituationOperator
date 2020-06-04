@@ -174,6 +174,13 @@ namespace SituationOperatorTestProject
                     GetMockLogger<BombDropAtSpawnManager>(),
                     context)
                 );
+
+            managers.Add(
+                new HasNotBoughtDefuseKitManager(
+                    serviceProvider,
+                    GetMockLogger<HasNotBoughtDefuseKitManager>(),
+                    context)
+                );
             #endregion
 
             #region Highlights - Singleplayer

@@ -29,6 +29,7 @@ namespace SituationOperator.Enums
         UnnecessaryReload = 510006,
         PushBeforeSmokeDetonated = 510007,
         BombDropAtSpawn = 510008,
+        HasNotBoughtDefuseKit = 510009,
 
         // 52XXXX For Team - Misplays
 
