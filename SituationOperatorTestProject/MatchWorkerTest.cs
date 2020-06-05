@@ -58,7 +58,7 @@ namespace SituationOperatorTestProject
 
             // ASSERT
             Assert.IsTrue(result.AttemptedManagers > 0);
-            Assert.IsTrue(result.FailedManagers < result.AttemptedManagers);
+            Assert.IsTrue(result.FailedManagers == 0);
 
             // Assert that meta data was inserted into database
             Assert.IsTrue(context.Match.Count(x => x.MatchId == matchDataSet.MatchId) == 1);
@@ -67,7 +67,7 @@ namespace SituationOperatorTestProject
             Assert.IsTrue(context.PlayerRound.Count(x => x.MatchId == matchDataSet.MatchId) > 0);
 
             // Assert that at least some situation data was inserted to database
-            Assert.IsTrue(context.EffectiveHeGrenade.Count() > 0);
+            Assert.IsTrue(context.EffectiveHeGrenade.Count() + context.SelfFlash.Count() + context.TeamFlash.Count() > 0);
         }
 
         /// <summary>
