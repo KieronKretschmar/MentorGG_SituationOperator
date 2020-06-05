@@ -44,7 +44,7 @@ namespace SituationDatabase.Models
         public StartingFaction WinnerTeam { get; set; }
         public bool OriginalSide { get; set; }
         public bool BombPlanted { get; set; }
-        public byte WinType { get; set; }
+        public WinType WinType { get; set; }
         public int RoundTime { get; set; }
         public int StartTime { get; set; }
         public int EndTime { get; set; }
