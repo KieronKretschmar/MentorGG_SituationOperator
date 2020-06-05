@@ -1,4 +1,5 @@
 ﻿using MatchEntities;
+using MatchEntities.Enums;
 using MatchEntities.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,25 @@ namespace SituationOperator.Helpers
             return data.RoundStatsList
                 .OrderByDescending(x => x.StartTime)
                 .First(x => x.StartTime < time);
+        }
+
+        /// <summary>
+        /// Returns the PlayerRoundStats entries of the winners/losers of the specified round.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="round"></param>
+        /// <param name="selectWinners">Whether to select the winners or losers</param>
+        /// <returns></returns>
+        public static List<PlayerRoundStats> GetPlayerRoundStatsByRoundOutcome(this MatchDataSet data, short round, bool selectWinners)
+        {
+            var winnerTeam = data.RoundStatsList.Single(x => x.Round == round).WinnerTeam;
+            var ctsWon = winnerTeam == StartingFaction.CtStarter;
+            var selectCt = selectWinners == ctsWon;
+
+            return data.PlayerRoundStatsList
+                .Where(x => x.Round == round)
+                .Where(x => selectCt == x.IsCt)
+                .ToList();
         }
 
         /// <summary>
