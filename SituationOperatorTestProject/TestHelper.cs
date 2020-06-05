@@ -196,6 +196,13 @@ namespace SituationOperatorTestProject
                     GetMockLogger<KillWithOwnFlashAssistManager>(),
                     context)
                 );
+
+            managers.Add(
+                new ClutchManager(
+                    serviceProvider,
+                    GetMockLogger<ClutchManager>(),
+                    context)
+                );
             #endregion
 
             return managers;

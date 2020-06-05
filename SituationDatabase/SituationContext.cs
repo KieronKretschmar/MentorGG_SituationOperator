@@ -39,6 +39,7 @@ namespace SituationDatabase
         #region Highlights - SinglePlayer
         public virtual DbSet<EffectiveHeGrenade> EffectiveHeGrenade { get; set; }
         public virtual DbSet<KillWithOwnFlashAssist> KillWithOwnFlashAssist { get; set; }
+        public virtual DbSet<Clutch> Clutch { get; set; }
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -143,6 +144,7 @@ namespace SituationDatabase
             #region Goodplays - SinglePlayer
             modelBuilder.AddSinglePlayerSituation<EffectiveHeGrenade>("EffectiveHeGrenade");
             modelBuilder.AddSinglePlayerSituation<KillWithOwnFlashAssist>("KillWithOwnFlashAssist");
+            modelBuilder.AddSinglePlayerSituation<Clutch>("Clutch");
             #endregion
         }
     }
