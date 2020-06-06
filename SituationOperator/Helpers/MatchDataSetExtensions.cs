@@ -50,6 +50,46 @@ namespace SituationOperator.Helpers
         }
 
         /// <summary>
+        /// Helper method to return a player's teammates PlayerRoundStats in a given round, including his own. 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="steamId"></param>
+        /// <param name="round"></param>
+        /// <returns></returns>
+        public static List<PlayerRoundStats> GetTeamRoundStats(this MatchDataSet data, IPlayerEvent playerEvent)
+        {
+            var teammatesThisRound = data.PlayerRoundStatsList
+                .Where(x => x.Round == playerEvent.Round && x.IsCt == playerEvent.IsCt)
+                .ToList();
+
+            return teammatesThisRound;
+        }
+
+        /// <summary>
+        /// Helper method to return a player's teammates PlayerRoundStats in a given round. 
+        /// 
+        /// Preferably use override with IPlayerEvent param, if available, as it's more efficient.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="steamId"></param>
+        /// <param name="round"></param>
+        /// <returns></returns>
+        public static List<PlayerRoundStats> GetTeammateRoundStats(this MatchDataSet data, long steamId, short round)
+        {
+            var playerTeam = data.PlayerMatchStatsList.Single(x => x.SteamId == steamId).Team;
+
+            var teammateSteamIds = data.PlayerMatchStatsList
+                .Where(x => x.Team == playerTeam)
+                .Select(x => x.SteamId);
+
+            var teammatesThisRound = data.PlayerRoundStatsList
+                .Where(x => x.Round == round && teammateSteamIds.Contains(x.PlayerId))
+                .ToList();
+
+            return teammatesThisRound;
+        }
+
+        /// <summary>
         /// WARNING: Incomplete / Inaccurate for providers other than Valve.
         /// See https://counterstrike.fandom.com/wiki/Competitive.
         /// </summary>

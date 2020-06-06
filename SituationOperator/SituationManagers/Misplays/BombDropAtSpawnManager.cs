@@ -116,7 +116,9 @@ namespace SituationOperator.SituationManagers
                     var pickerDidNotStopConditionHolds = true;
                     // start with a true value and set to false as soon as a player without detour was detected
                     var allTeammatesDetouredConditionHolds = true;
-                    var teammateSteamIds = TeammateSteamIds(data, bombDrop.PlayerId);
+                    var teammateSteamIds = data.GetTeammateRoundStats(bombDrop.PlayerId, bombDrop.Round)
+                        .Select(x=>x.PlayerId)
+                        .Where(x=>x != bombDrop.PlayerId);
                     foreach (var steamId in teammateSteamIds)
                     {
                         // Get this players positions between drop and pickup
@@ -173,23 +175,6 @@ namespace SituationOperator.SituationManagers
 
                 return misplays;
             }
-        }
-
-        /// <summary>
-        /// Helper method to return a player's teammates' SteamIds. 
-        /// 
-        /// Using navigational properties would be better, but impossible because currently ItemDropped does not implement IPlayerEvent.
-        /// </summary>
-        /// <returns></returns>
-        private List<long> TeammateSteamIds(MatchDataSet data, long steamId)
-        {
-            var playerTeam = data.PlayerMatchStatsList.Single(x => x.SteamId == steamId).Team;
-
-            var teamMates = data.PlayerMatchStatsList.Where(x => x.Team == playerTeam && x.SteamId != steamId);
-
-            return teamMates
-                .Select(x => x.SteamId)
-                .ToList();
         }
     }
 }
