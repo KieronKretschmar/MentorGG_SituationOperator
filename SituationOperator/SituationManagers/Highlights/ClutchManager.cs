@@ -80,7 +80,7 @@ namespace SituationOperator.SituationManagers
 
                 var losingPlayers = data.GetPlayerRoundStatsByRoundOutcome(round.Round, false);
 
-                var enemiesAlive = losingPlayers.Where(x => data.IsAlive(x.PlayerId, clutchStartTime) == false);
+                var enemiesAlive = losingPlayers.Where(x => data.IsAlive(x.PlayerId, round.Round, clutchStartTime) == false);
                 if (enemiesAlive.Count() < 2)
                     continue;
 

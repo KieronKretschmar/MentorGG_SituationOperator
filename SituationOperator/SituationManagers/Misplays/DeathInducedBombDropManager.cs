@@ -73,7 +73,7 @@ namespace SituationOperator.SituationManagers
                     var livingTeammateSteamIds = data.GetTeammateRoundStats(bombDrop.PlayerId, bombDrop.Round)
                         .Select(x => x.PlayerId)
                         .Where(x => x != bombDrop.PlayerId)
-                        .Where(x => data.IsAlive(x, bombDrop.Time));
+                        .Where(x => data.IsAlive(x, bombDrop.Round, bombDrop.Time));
 
                     var teammatesAlive = livingTeammateSteamIds.Count();
 

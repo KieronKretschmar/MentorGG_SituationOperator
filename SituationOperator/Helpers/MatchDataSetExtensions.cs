@@ -114,10 +114,14 @@ namespace SituationOperator.Helpers
         /// <param name="steamId"></param>
         /// <param name="time"></param>
         /// <returns></returns>
-        public static bool IsAlive(this MatchDataSet data, long steamId, int time)
+        public static bool IsAlive(this MatchDataSet data, long steamId, short round, int time)
         {
-            var round = data.GetRoundByTime(time);
-            var death = data.Death(steamId, round.Round);
+            if (data.PlayerRoundStatsList.Any(x=>x.Round == round && x.PlayerId == steamId) == false)
+            {
+                return false;
+            }
+
+            var death = data.Death(steamId, round);
 
             if (death == null || death.Time > time)
             {
