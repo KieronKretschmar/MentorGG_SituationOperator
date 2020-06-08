@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2020-06-08
+### Added
+- Add env var SKIP_REDIS
+- Fallback for accessing MatchDataSet through MatchRetriever if Redis fails
+
+### Changed
+- Replace env var MOCK_REDIS with MOCK_MATCHDATASET_PROVIDER
+
 ## [0.2.0] - 2020-06-02
 ### Added
 - Endpoint for situations of a specific type

@@ -29,6 +29,7 @@ using SituationDatabase.Models;
 using StackExchange.Redis;
 using Moq;
 using SituationOperator.Helpers.SubscriptionConfig;
+using System.Net.Http;
 
 namespace SituationOperator
 {
@@ -177,19 +178,34 @@ namespace SituationOperator
             }
             #endregion
 
-            #region Redis
-            if (IsDevelopment && GetOptionalEnvironmentVariable<bool>(Configuration, "MOCK_REDIS", false))
+            #region MatchDataSet retrieval
+            if (IsDevelopment && GetOptionalEnvironmentVariable<bool>(Configuration, "MOCK_MATCHDATASET_PROVIDER", false))
             {
-                services.AddTransient<IMatchDataSetProvider, MockRedis>();
+                services.AddTransient<IMatchDataSetProvider, MockMatchDataSetProvider>();
             }
             else
             {
-                var REDIS_CONFIGURATION_STRING = GetRequiredEnvironmentVariable<string>(Configuration, "REDIS_CONFIGURATION_STRING");
+                // If redis is to be skipped, add IConnectionMultiplexer as null
+                if (GetOptionalEnvironmentVariable<bool>(Configuration, "SKIP_REDIS", false))
+                {
+                    services.AddTransient<IMatchDataSetProvider, MatchDataSetProvider>(sp =>
+                    {
+                        return new MatchDataSetProvider(
+                            sp.GetRequiredService<ILogger<MatchDataSetProvider>>(),
+                            null,
+                            sp.GetRequiredService<IHttpClientFactory>());
+                    });
 
-                // Add ConnectionMultiplexer as singleton as it is made to be reused
-                // see https://stackexchange.github.io/StackExchange.Redis/Basics.html
-                services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(REDIS_CONFIGURATION_STRING));
-                services.AddTransient<IMatchDataSetProvider, MatchRedis>();                
+                }
+                else
+                {
+                    // Add ConnectionMultiplexer as singleton as it is made to be reused
+                    // see https://stackexchange.github.io/StackExchange.Redis/Basics.html
+                    var REDIS_CONFIGURATION_STRING = GetRequiredEnvironmentVariable<string>(Configuration, "REDIS_CONFIGURATION_STRING");
+                    services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(REDIS_CONFIGURATION_STRING));
+                    services.AddTransient<IMatchDataSetProvider, MatchDataSetProvider>();
+                }
+
             }
             #endregion
 

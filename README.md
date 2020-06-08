@@ -16,7 +16,8 @@ Computes, stores and serves Situations.
 - `IS_MIGRATING` : Warning: Do not use in production. If this is set to true, migrations to SituationDatabase will be applied but nothing else. Only works if `MYSQL_CONNECTION_STRING` is also provided.
 
 **Redis**
-- `MOCK_REDIS` : Whether a mocked redis connection should be used, making `REDIS_CONFIGURATION_STRING` unrequired. Only usable in Development.
+- `MOCK_MATCHDATASET_PROVIDER` : Whether a mocked version of MatchDataSetProvider should be used that returns empty datasets, making `REDIS_CONFIGURATION_STRING` unrequired. Only usable in Development.
+- `SKIP_REDIS` : Whether retrieval of MatchDataSets through redis should be skipped, making `REDIS_CONFIGURATION_STRING` unrequired. Only usable in Development.
 - `REDIS_CONFIGURATION_STRING` : Comma-seperated options for the configuration of the MatchData Redis cache. [\*] 
 
 **HTTP**
