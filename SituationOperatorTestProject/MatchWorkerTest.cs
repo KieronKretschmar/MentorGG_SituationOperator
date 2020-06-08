@@ -26,23 +26,20 @@ namespace SituationOperatorTestProject
         /// Assertions are made on EffectiveHeGrenades only.
         /// Can also be used to insert data into real database.
         /// </summary>
-        /// <param name="jsonMatchDataPath"></param>
-        /// <param name="connectionString">If provided, uses real database.</param>
+        /// <param name="jsonFileName"></param>
         /// <returns></returns>
-        [DataRow("TestDemo_Valve4.json", true)]
-        [DataRow("TestDemo_Valve3.json", true)]
-        [DataRow("TestDemo_Valve2.json", true)]
-        [DataRow("TestDemo_Valve1.json", true)]
+        [DataRow("TestDemo_Valve4.json")]
+        [DataRow("TestDemo_Valve3.json")]
+        [DataRow("TestDemo_Valve2.json")]
+        [DataRow("TestDemo_Valve1.json")]
         [DataTestMethod]
-        public async Task AnalysisTest(string jsonMatchDataPath, bool useRealDatabase = false)
+        public async Task AnalysisTest(string jsonFileName)
         {
             // ARRANGE
-            var matchDataSet = TestHelper.GetTestMatchData(jsonMatchDataPath);
+            var matchDataSet = TestHelper.GetTestMatchData(jsonFileName);
 
-            // Use Real or InMemory SituationContext
-            SituationContext context = useRealDatabase 
-                ? TestHelper.GetRealContext()
-                : TestHelper.GetInMemoryContext();
+            // Use InMemory SituationContext
+            SituationContext context = TestHelper.GetInMemoryContext();
 
             // Get managerProvider with some SituationManagers
             var managerProvider = TestHelper.GetRealProvider(context);
