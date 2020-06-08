@@ -132,8 +132,14 @@ namespace SituationOperator
             });
             #endregion
 
+            #region HTTP Clients
+
+            // Add HTTP clients for communication with other services in the cluster
+            services.AddConnectedHttpService(ConnectedServices.MatchRetriever, Configuration, "MATCHRETRIEVER_URL_OVERRIDE");
+            #endregion
+
             #region Rabbit
-            if(IsDevelopment && GetOptionalEnvironmentVariable<bool>(Configuration, "MOCK_RABBIT", false))
+            if (IsDevelopment && GetOptionalEnvironmentVariable<bool>(Configuration, "MOCK_RABBIT", false))
             {
                 Console.WriteLine("Using mocked rabbit classes.");
                 // Use mocked producer
