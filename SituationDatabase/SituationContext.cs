@@ -34,6 +34,7 @@ namespace SituationDatabase
         public virtual DbSet<PushBeforeSmokeDetonated> PushBeforeSmokeDetonated { get; set; }
         public virtual DbSet<BombDropAtSpawn> BombDropAtSpawn { get; set; }
         public virtual DbSet<HasNotBoughtDefuseKit> HasNotBoughtDefuseKit { get; set; }
+        public virtual DbSet<HighImpactRound> HighImpactRound { get; set; }
         #endregion
 
         #region Highlights - SinglePlayer
@@ -141,10 +142,11 @@ namespace SituationDatabase
             modelBuilder.AddSinglePlayerSituation<HasNotBoughtDefuseKit>("HasNotBoughtDefuseKit");
             #endregion
 
-            #region Goodplays - SinglePlayer
+            #region Highlights - SinglePlayer
             modelBuilder.AddSinglePlayerSituation<EffectiveHeGrenade>("EffectiveHeGrenade");
             modelBuilder.AddSinglePlayerSituation<KillWithOwnFlashAssist>("KillWithOwnFlashAssist");
             modelBuilder.AddSinglePlayerSituation<Clutch>("Clutch");
+            modelBuilder.AddSinglePlayerSituation<HighImpactRound>("HighImpactRound");
             #endregion
         }
     }

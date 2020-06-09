@@ -205,6 +205,14 @@ namespace SituationOperatorTestProject
                 );
             #endregion
 
+            managers.Add(
+                new HighImpactRoundManager(
+                    serviceProvider,
+                    GetMockLogger<HighImpactRoundManager>(),
+                    context)
+                );
+            #endregion
+
             return managers;
         }
 

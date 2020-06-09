@@ -262,6 +262,8 @@ namespace SituationOperator
             #region Highlights - Singleplayer
             services.AddTransient<ISituationManager, EffectiveHeGrenadeManager>();
             services.AddTransient<ISituationManager, KillWithOwnFlashAssistManager>();
+            services.AddTransient<ISituationManager, ClutchManager>();
+            services.AddTransient<ISituationManager, HighImpactRoundManager>();
             #endregion
 
             #endregion

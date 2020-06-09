@@ -17,6 +17,7 @@ namespace SituationOperator.Enums
         EffectiveHeGrenade = 210001,
         KillWithOwnFlashAssist = 210002,
         Clutch = 210003,
+        HighImpactRound = 210004,
 
         // 22XXXX For Team - Highlights
 
