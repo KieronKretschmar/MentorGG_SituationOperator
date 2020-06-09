@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SituationDatabase;
 using SituationOperator.Enums;
 using SituationOperator.Helpers;
@@ -18,15 +19,18 @@ namespace SituationOperator.Controllers
     [ApiController]
     public class PlayerController : ControllerBase
     {
+        private readonly ILogger<PlayerController> _logger;
         private readonly SituationContext _context;
         private readonly ISituationManagerProvider _managerProvider;
         private readonly ISubscriptionConfigProvider _subscriptionConfigLoader;
 
         public PlayerController(
+            ILogger<PlayerController> logger,
             SituationContext context, 
             ISituationManagerProvider managerProvider,
             ISubscriptionConfigProvider subscriptionConfigLoader)
         {
+            _logger = logger;
             _context = context;
             _managerProvider = managerProvider;
             _subscriptionConfigLoader = subscriptionConfigLoader;
@@ -50,18 +54,25 @@ namespace SituationOperator.Controllers
             var managers = _managerProvider.GetSinglePlayerManagers(Enums.SituationTypeCollection.ProductionAccessDefault);
             foreach (var manager in managers)
             {
-                var situationCollection = await manager.GetSituationCollectionAsync(steamId, matchIds);
-
-                switch (manager.SituationCategory)
+                try
                 {
-                    case SituationDatabase.Enums.SituationCategory.Misplay:
-                        model.Misplays[situationCollection.MetaData.SituationType] = situationCollection;
-                        break;
-                    case SituationDatabase.Enums.SituationCategory.Highlight:
-                        model.Highlights[situationCollection.MetaData.SituationType] = situationCollection;
-                        break;
-                    default:
-                        break;
+                    var situationCollection = await manager.GetSituationCollectionAsync(steamId, matchIds);
+
+                    switch (manager.SituationCategory)
+                    {
+                        case SituationDatabase.Enums.SituationCategory.Misplay:
+                            model.Misplays[situationCollection.MetaData.SituationType] = situationCollection;
+                            break;
+                        case SituationDatabase.Enums.SituationCategory.Highlight:
+                            model.Highlights[situationCollection.MetaData.SituationType] = situationCollection;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                catch (Exception e)
+                {
+                    _logger.LogWarning(e, $"Error when loading SituationCollection of type [ {manager.SituationType} ].");
                 }
             }
 
