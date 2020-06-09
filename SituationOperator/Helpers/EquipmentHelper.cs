@@ -14,6 +14,7 @@ namespace SituationOperator.Helpers
     /// </summary>
     public interface IEquipmentHelper
     {
+        Dictionary<EquipmentElement, EquipmentInfo> GetEquipmentDict(MatchDataSet data);
         EquipmentInfo GetEquipmentInfo(EquipmentElement equipmentElement, MatchDataSet data);
     }
 
@@ -35,7 +36,7 @@ namespace SituationOperator.Helpers
         /// <param name="equipmentElement"></param>
         /// <param name="data">Used for resolving Source and MatchDate</param>
         /// <returns></returns>
-        public EquipmentInfo GetEquipmentInfo(MatchEntities.Enums.EquipmentElement equipmentElement, MatchDataSet data)
+        public EquipmentInfo GetEquipmentInfo(EquipmentElement equipmentElement, MatchDataSet data)
         {
             var equipmentLibSource = (EquipmentLib.Enums.Source)data.MatchStats.Source;
             EquipmentInfo equipmentInfo;
@@ -44,6 +45,18 @@ namespace SituationOperator.Helpers
                 return null;
             }
             return equipmentInfo;
+        }
+
+        /// <summary>
+        /// Get EquipmentInfo of a given element. For more info see EquipmentLib.
+        /// </summary>
+        /// <param name="data">Used for resolving Source and MatchDate</param>
+        /// <returns></returns>
+        public Dictionary<EquipmentElement,EquipmentInfo> GetEquipmentDict(MatchDataSet data)
+        {
+            var equipmentLibSource = (EquipmentLib.Enums.Source)data.MatchStats.Source;
+            return _equipmentProvider.GetEquipmentDict(equipmentLibSource, data.MatchStats.MatchDate)
+                .ToDictionary(x => (EquipmentElement)x.Key, x => x.Value);
         }
     }
 }

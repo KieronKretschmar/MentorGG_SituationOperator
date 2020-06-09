@@ -42,6 +42,13 @@ namespace SituationOperator.SituationManagers
         private const int MIN_SHOTS = 3;
 
         /// <summary>
+        /// Maximum time between the theoretical moment a weapon could have fired the next bullet and the actual moment the bullet was fired to count as a single spray.
+        /// 
+        /// Reason: Time is inaccurate and players sometimes click very fast instead of spraying, which may still be a misplay.
+        /// </summary>
+        private const int SINGLE_BURST_TOLERANCE = 200;
+
+        /// <summary>
         /// Collection of weapons for which bursts will be analyzed.
         /// </summary>
         private static List<EquipmentElement> AnalyzedWeapons => new List<EquipmentElement> {
@@ -90,19 +97,15 @@ namespace SituationOperator.SituationManagers
             using (var scope = _sp.CreateScope())
             {
                 var equipmentHelper = _sp.GetRequiredService<IEquipmentHelper>();
+                var equipmentDict = equipmentHelper.GetEquipmentDict(data);
 
                 // compute bursts from all weapons that were fired in the match
-                var bursts = new List<Burst>();
-                var weaponFiredGroups = data.WeaponFiredList
-                    // Group by player and weapon
-                    .GroupBy(x => new { x.PlayerId, x.Weapon })
+                var weaponFireds = data.WeaponFiredList
                     // Remove shots of irrelevant weapons
-                    .Where(x => AnalyzedWeapons.Contains(x.Key.Weapon));
-                foreach (var weaponFiredGroup in weaponFiredGroups)
-                {
-                    var equipmentInfo = equipmentHelper.GetEquipmentInfo(weaponFiredGroup.Key.Weapon, data);
-                    bursts.AddRange(DivideIntoBursts(weaponFiredGroup, MIN_SHOTS, equipmentInfo));
-                }
+                    .Where(x => AnalyzedWeapons.Contains(x.Weapon));
+
+                var bursts = BurstHelper.DivideIntoBursts(weaponFireds, equipmentDict, SINGLE_BURST_TOLERANCE)
+                    .Where(x => x.WeaponFireds.Count >= MIN_SHOTS).ToList();
 
                 // create misplays from bursts that fulfill the specified conditions
                 var misplays = new List<RifleFiredWhileMoving>();
@@ -132,86 +135,5 @@ namespace SituationOperator.SituationManagers
             }
         }
 
-        private List<Burst> DivideIntoBursts(IEnumerable<WeaponFired> weaponFireds, int minShots, EquipmentInfo equipmentInfo)
-        {
-            var bursts = new List<Burst>();
-            var weaponFiredsByRound = weaponFireds.GroupBy(x => x.Round);
-
-            foreach (var weaponFiredInRound in weaponFiredsByRound)
-            {
-                foreach (var wf in weaponFiredInRound.OrderBy(x => x.Time))
-                {
-                    // If there are no bursts or assigning this wf to the previous burst does not work, start a new burst. 
-                    if (bursts.Count() == 0 || !bursts.Last().TryAdd(wf))
-                    {
-                        bursts.Add(new Burst(wf, equipmentInfo));
-                        continue;
-                    }
-                }
-            }
-
-            return bursts.Where(x => x.WeaponFireds.Count >= minShots).ToList();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public class Burst
-        {
-            /// <summary>
-            /// Used to add some extra allowed time between shots to count as burst, to allow for inaccurate data or players tapping 
-            /// very very quickly yet not shooting at the exact CycleTime.
-            /// </summary>
-            private const double EXTEND_CYCLETIME_FACTOR = 1.15;
-
-            public long PlayerId { get; set; }
-            public short Round { get; set; }
-            public EquipmentElement Weapon { get; set; }
-            public List<WeaponFired> WeaponFireds { get; set; } = new List<WeaponFired>();
-
-            /// <summary>
-            /// Maximum velocity a player can move at to shoot accurately with this weapon. 
-            /// </summary>
-            private double MaxAccurateVelocity { get; set; }
-
-            /// <summary>
-            /// Maximum time the weapon needs between two shots.
-            /// </summary>
-            private double MaxAllowedTimeBetweenShots { get; set; }
-
-            public int InaccurateBullets => WeaponFireds.Count(x => x.PlayerVelo.Length() > MaxAccurateVelocity);
-            public Burst(WeaponFired weaponFired, EquipmentInfo equipmentInfo)
-            {
-                PlayerId = weaponFired.PlayerId;
-                Round = weaponFired.Round;
-                Weapon = weaponFired.Weapon;
-                WeaponFireds.Add(weaponFired);
-
-                MaxAccurateVelocity = (double)equipmentInfo.MaxPlayerSpeed / 3;
-
-                MaxAllowedTimeBetweenShots = equipmentInfo.CycleTime * EXTEND_CYCLETIME_FACTOR;
-            }
-
-            public bool TryAdd(WeaponFired wf)
-            {
-                if (wf.Time < WeaponFireds.Last().Time)
-                {
-                    throw new ArgumentException("WeaponFireds have to be added in chronological order.");
-                }
-
-                var belongsToThisBurst =
-                    wf.Round == Round
-                    && wf.Weapon == Weapon
-                    && WeaponFireds.Last().Time + MaxAllowedTimeBetweenShots >= wf.Time;
-
-                if (belongsToThisBurst)
-                {
-                    WeaponFireds.Add(wf);
-                    return true;
-                }
-
-                return false;
-            }
-        }
     }
 }
