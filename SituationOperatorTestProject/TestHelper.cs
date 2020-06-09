@@ -210,6 +210,13 @@ namespace SituationOperatorTestProject
                     GetMockLogger<HighImpactRoundManager>(),
                     context)
                 );
+
+            managers.Add(
+                new MultiKillManager(
+                    serviceProvider,
+                    GetMockLogger<MultiKillManager>(),
+                    context)
+                );
             #endregion
 
             return managers;

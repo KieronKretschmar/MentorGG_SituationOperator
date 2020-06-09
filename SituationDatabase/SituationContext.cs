@@ -34,13 +34,14 @@ namespace SituationDatabase
         public virtual DbSet<PushBeforeSmokeDetonated> PushBeforeSmokeDetonated { get; set; }
         public virtual DbSet<BombDropAtSpawn> BombDropAtSpawn { get; set; }
         public virtual DbSet<HasNotBoughtDefuseKit> HasNotBoughtDefuseKit { get; set; }
-        public virtual DbSet<HighImpactRound> HighImpactRound { get; set; }
         #endregion
 
         #region Highlights - SinglePlayer
         public virtual DbSet<EffectiveHeGrenade> EffectiveHeGrenade { get; set; }
         public virtual DbSet<KillWithOwnFlashAssist> KillWithOwnFlashAssist { get; set; }
         public virtual DbSet<Clutch> Clutch { get; set; }
+        public virtual DbSet<HighImpactRound> HighImpactRound { get; set; }
+        public virtual DbSet<MultiKill> MultiKill { get; set; }
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -147,6 +148,7 @@ namespace SituationDatabase
             modelBuilder.AddSinglePlayerSituation<KillWithOwnFlashAssist>("KillWithOwnFlashAssist");
             modelBuilder.AddSinglePlayerSituation<Clutch>("Clutch");
             modelBuilder.AddSinglePlayerSituation<HighImpactRound>("HighImpactRound");
+            modelBuilder.AddSinglePlayerSituation<MultiKill>("MultiKill");
             #endregion
         }
     }

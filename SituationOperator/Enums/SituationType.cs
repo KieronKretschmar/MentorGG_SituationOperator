@@ -18,6 +18,7 @@ namespace SituationOperator.Enums
         KillWithOwnFlashAssist = 210002,
         Clutch = 210003,
         HighImpactRound = 210004,
+        MultiKill = 210005,
 
         // 22XXXX For Team - Highlights
 
