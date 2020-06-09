@@ -203,7 +203,6 @@ namespace SituationOperatorTestProject
                     GetMockLogger<ClutchManager>(),
                     context)
                 );
-            #endregion
 
             managers.Add(
                 new HighImpactRoundManager(

@@ -272,6 +272,7 @@ namespace SituationOperator
             services.AddTransient<IMessageProcessor, MessageProcessor>();
             services.AddTransient<IMatchWorker, MatchWorker>();
             services.AddTransient<ISituationManagerProvider, SituationManagerProvider>();
+            services.AddTransient<IBurstHelper, BurstHelper>();
             #endregion
         }
 

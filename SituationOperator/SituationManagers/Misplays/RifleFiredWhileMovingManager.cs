@@ -96,15 +96,14 @@ namespace SituationOperator.SituationManagers
         {
             using (var scope = _sp.CreateScope())
             {
-                var equipmentHelper = _sp.GetRequiredService<IEquipmentHelper>();
-                var equipmentDict = equipmentHelper.GetEquipmentDict(data.MatchStats);
+                var burstHelper = _sp.GetRequiredService<IBurstHelper>();
 
                 // compute bursts from all weapons that were fired in the match
                 var weaponFireds = data.WeaponFiredList
                     // Remove shots of irrelevant weapons
                     .Where(x => AnalyzedWeapons.Contains(x.Weapon));
 
-                var bursts = BurstHelper.DivideIntoBursts(weaponFireds, equipmentDict, SINGLE_BURST_TOLERANCE)
+                var bursts = burstHelper.DivideIntoBursts(weaponFireds, data.MatchStats, SINGLE_BURST_TOLERANCE)
                     .Where(x => x.WeaponFireds.Count >= MIN_SHOTS).ToList();
 
                 // create misplays from bursts that fulfill the specified conditions

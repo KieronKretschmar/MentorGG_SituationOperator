@@ -8,17 +8,36 @@ using System.Threading.Tasks;
 
 namespace SituationOperator.Helpers
 {
-    public static class BurstHelper
+    /// <summary>
+    /// Helper class for working with bursts (sprays), i.e. shots fired in rapid succession by the same weapon and player.
+    /// </summary>
+    public interface IBurstHelper
     {
         /// <summary>
-        /// Divides WeaponFireds of a single player
+        /// Divides WeaponFireds of a single player.
         /// </summary>
         /// <param name="weaponFireds"></param>
-        /// <param name="equipmentDict"></param>
         /// <param name="tolerance"></param>
-        /// <returns></returns>
-        public static List<Burst> DivideIntoBursts(IEnumerable<WeaponFired> weaponFireds, Dictionary<EquipmentElement, EquipmentInfo> equipmentDict, int tolerance)
+        /// <returns>
+        /// List of bursts with bullets ordered by time. Bursts of the same player are also in ordered by time.
+        /// </returns>
+        List<BurstHelper.Burst> DivideIntoBursts(IEnumerable<WeaponFired> weaponFireds, MatchStats matchStats, int tolerance);
+    }
+
+    /// <inheritdoc/>
+    public class BurstHelper : IBurstHelper
+    {
+        private readonly IEquipmentHelper _equipmentHelper;
+
+        public BurstHelper(IEquipmentHelper equipmentHelper)
         {
+            _equipmentHelper = equipmentHelper;
+        }
+
+        /// <inheritdoc/>
+        public List<Burst> DivideIntoBursts(IEnumerable<WeaponFired> weaponFireds, MatchStats matchStats, int tolerance)
+        {
+            var equipmentDict = _equipmentHelper.GetEquipmentDict(matchStats);
             var bursts = new List<Burst>();
             var weaponFiredsByPlayerAndRound = weaponFireds
                 .GroupBy(x => new { x.PlayerId, x.Round });
@@ -41,7 +60,7 @@ namespace SituationOperator.Helpers
         }
 
         /// <summary>
-        /// 
+        /// Holds a number of WeaponFireds that were fired within rapid succession by the same player.
         /// </summary>
         public class Burst
         {
