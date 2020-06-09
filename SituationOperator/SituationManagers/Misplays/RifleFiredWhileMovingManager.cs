@@ -97,7 +97,7 @@ namespace SituationOperator.SituationManagers
             using (var scope = _sp.CreateScope())
             {
                 var equipmentHelper = _sp.GetRequiredService<IEquipmentHelper>();
-                var equipmentDict = equipmentHelper.GetEquipmentDict(data);
+                var equipmentDict = equipmentHelper.GetEquipmentDict(data.MatchStats);
 
                 // compute bursts from all weapons that were fired in the match
                 var weaponFireds = data.WeaponFiredList

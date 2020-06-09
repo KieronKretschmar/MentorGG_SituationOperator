@@ -14,8 +14,22 @@ namespace SituationOperator.Helpers
     /// </summary>
     public interface IEquipmentHelper
     {
-        Dictionary<EquipmentElement, EquipmentInfo> GetEquipmentDict(MatchDataSet data);
-        EquipmentInfo GetEquipmentInfo(EquipmentElement equipmentElement, MatchDataSet data);
+
+        /// <summary>
+        /// Get EquipmentInfo of a given element. For more info see EquipmentLib.
+        /// </summary>
+        /// <param name="matchStats">Used for resolving Source and MatchDate</param>
+        /// <returns></returns>
+        Dictionary<EquipmentElement, EquipmentInfo> GetEquipmentDict(MatchStats matchStats);
+
+
+        /// <summary>
+        /// Get EquipmentInfo of a given element. For more info see EquipmentLib.
+        /// </summary>
+        /// <param name="equipmentElement"></param>
+        /// <param name="matchStats">Used for resolving Source and MatchDate</param>
+        /// <returns></returns>
+        EquipmentInfo GetEquipmentInfo(EquipmentElement equipmentElement, MatchStats matchStats);
     }
 
     /// <summary>
@@ -30,32 +44,23 @@ namespace SituationOperator.Helpers
             _equipmentProvider = equipmentProvider;
         }
 
-        /// <summary>
-        /// Get EquipmentInfo of a given element. For more info see EquipmentLib.
-        /// </summary>
-        /// <param name="equipmentElement"></param>
-        /// <param name="data">Used for resolving Source and MatchDate</param>
-        /// <returns></returns>
-        public EquipmentInfo GetEquipmentInfo(EquipmentElement equipmentElement, MatchDataSet data)
+        /// <inheritdoc/>
+        public EquipmentInfo GetEquipmentInfo(EquipmentElement equipmentElement, MatchStats matchStats)
         {
-            var equipmentLibSource = (EquipmentLib.Enums.Source)data.MatchStats.Source;
+            var equipmentLibSource = (EquipmentLib.Enums.Source)matchStats.Source;
             EquipmentInfo equipmentInfo;
-            if(!_equipmentProvider.GetEquipmentDict(equipmentLibSource, data.MatchStats.MatchDate).TryGetValue((short)equipmentElement, out equipmentInfo))
+            if(!_equipmentProvider.GetEquipmentDict(equipmentLibSource, matchStats.MatchDate).TryGetValue((short)equipmentElement, out equipmentInfo))
             {
                 return null;
             }
             return equipmentInfo;
         }
 
-        /// <summary>
-        /// Get EquipmentInfo of a given element. For more info see EquipmentLib.
-        /// </summary>
-        /// <param name="data">Used for resolving Source and MatchDate</param>
-        /// <returns></returns>
-        public Dictionary<EquipmentElement,EquipmentInfo> GetEquipmentDict(MatchDataSet data)
+        /// <inheritdoc/>
+        public Dictionary<EquipmentElement,EquipmentInfo> GetEquipmentDict(MatchStats matchStats)
         {
-            var equipmentLibSource = (EquipmentLib.Enums.Source)data.MatchStats.Source;
-            return _equipmentProvider.GetEquipmentDict(equipmentLibSource, data.MatchStats.MatchDate)
+            var equipmentLibSource = (EquipmentLib.Enums.Source)matchStats.Source;
+            return _equipmentProvider.GetEquipmentDict(equipmentLibSource, matchStats.MatchDate)
                 .ToDictionary(x => (EquipmentElement)x.Key, x => x.Value);
         }
     }
