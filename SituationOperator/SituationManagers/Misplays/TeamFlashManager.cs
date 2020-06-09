@@ -84,7 +84,7 @@ namespace SituationOperator.SituationManagers
                 var flashedTeammates = 0;
                 var timeFlashedTeam = 0;
                 var flashedTeammatesDeaths = 0;
-                foreach (var teamFlashed in flasheds.Where(x => x.TeamAttack))
+                foreach (var teamFlashed in flasheds.Where(x => x.TeamAttack && x.VictimId != flash.PlayerId))
                 {
                     if (teamFlashed.TimeFlashed < MAX_TIME_FLASHED_TO_IGNORE_TEAMMATE)
                         continue;
