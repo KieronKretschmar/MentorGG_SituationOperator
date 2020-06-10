@@ -44,12 +44,12 @@ namespace SituationDatabase.Models
         /// <summary>
         /// Weapon with which the player dealt the first kill.
         /// </summary>
-        public EquipmentElement FirstKillWeapon { get; }
+        public EquipmentElement FirstKillWeapon { get; set; }
 
         /// <summary>
         /// Whether or not all kills of this situation came from a single burst (spray) with a weapon.
         /// </summary>
-        public bool SingleBurst { get; }
+        public bool SingleBurst { get; set; }
     }
 
     #region Partial definitions of metadata tables for navigational properties
