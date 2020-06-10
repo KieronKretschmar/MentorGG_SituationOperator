@@ -11,6 +11,7 @@ using SituationOperator.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using ZoneReader;
 
@@ -35,12 +36,21 @@ namespace SituationOperator.SituationManagers
         /// <summary>
         /// Minimum required distance in meters to the nearest teammate at death count as a misplay.
         /// </summary>
-        private const double MIN_TEAMMATE_DISTANCE = 5.0;
+        private const double MIN_TEAMMATE_DISTANCE = 2;
 
         /// <summary>
         /// Minimum time the player must have held the bomb before dying to count as a misplay.
         /// </summary>
         private const double MIN_TIME_HELD_BOMB = 6000;
+
+        /// <summary>
+        /// Whether no teammate may have stood "between" killer and player to count as a misplay.
+        /// 
+        /// Nobody being "between" player and killer means that nobody was 
+        /// - closer to the player than the killer, AND
+        /// - closer to the killer than the player.
+        /// </summary>
+        private const bool REQUIRE_NO_TEAMMATE_BETWEEN_KILLER_AND_PLAYER = true;
 
         private readonly IServiceProvider _sp;
         private readonly ILogger<DeathInducedBombDropManager> _logger;
@@ -91,12 +101,24 @@ namespace SituationOperator.SituationManagers
                     if (bombDrop.Time - MIN_TIME_HELD_BOMB < bombPickupBeforeDrop.Time)
                         continue;
 
-                    var livingTeammateSteamIds = data.GetTeammateRoundStats(bombDrop.PlayerId, bombDrop.Round)
+                    // Get SteamIds of teammates who lived up until a few moments before the player died
+                    var involvedTeammates = data.GetTeammateRoundStats(bombDrop.PlayerId, bombDrop.Round)
                         .Select(x => x.PlayerId)
                         .Where(x => x != bombDrop.PlayerId)
-                        .Where(x => data.IsAlive(x, bombDrop.Round, bombDrop.Time - MAX_TIME_TEAMMATE_DIED_BEFORE_TO_COUNT_AS_ALIVE));
+                        .Select(x=> new
+                        {
+                            PlayerId = x,
+                            Death = data.Death(x, bombDrop.Round)
+                        })
+                        .Select(x=> new
+                        {
+                            PlayerId = x.PlayerId,
+                            IsInvolved = x.Death == null || bombDrop.Time - MAX_TIME_TEAMMATE_DIED_BEFORE_TO_COUNT_AS_ALIVE <= x.Death.Time,
+                            IsAliveAtBombDrop = x.Death == null || bombDrop.Time <= x.Death.Time
+                        })
+                        .Where(x => x.IsInvolved);
 
-                    var teammatesAlive = livingTeammateSteamIds.Count();
+                    var teammatesAlive = involvedTeammates.Count(x=>x.IsAliveAtBombDrop);
 
                     // Ignore bombdrops where too few teammates were alive
                     if (teammatesAlive < MIN_TEAMMATES_ALIVE)
@@ -104,13 +126,46 @@ namespace SituationOperator.SituationManagers
                         continue;
                     }
 
-                    var teamMateDistances = livingTeammateSteamIds
-                        .Select(x => data.LastPositionDistance(bombDrop.PlayerId, x, bombDrop.Time));
-                    var closestTeammateDistance = teamMateDistances.Min() ?? null; // -1 if none alive
+                    var lastVictimPosition = data.LastPlayerPos(bombDrop.PlayerId, bombDrop.Time);
+                    var teammatePositions = involvedTeammates
+                        .ToDictionary(x=>x, x=> new
+                        {
+                            LastPosition = data.LastPlayerPos(x.PlayerId, bombDrop.Time).PlayerPos
+                        })
+                        .ToDictionary(x=>x.Key, x=> new
+                        {
+                            x.Value.LastPosition,
+                            LastDistanceToVictim = Vector3.Distance(lastVictimPosition.PlayerPos, x.Value.LastPosition)
+                        });
 
-                    if(closestTeammateDistance == null || closestTeammateDistance < UnitConverter.MetersToUnits(MIN_TEAMMATE_DISTANCE))
+                    var closestTeammateDistance = teammatePositions.Select(x=>x.Value.LastDistanceToVictim).Min();
+                    if(closestTeammateDistance < UnitConverter.MetersToUnits(MIN_TEAMMATE_DISTANCE))
                     {
                         continue;
+                    }
+
+                    if (REQUIRE_NO_TEAMMATE_BETWEEN_KILLER_AND_PLAYER)
+                    {
+                        var conditionFulfilled = true;
+
+                        var kill = data.Death(bombDrop.PlayerId, bombDrop.Round);
+                        var killerPosition = data.LastPlayerPos(kill.PlayerId, kill.Time);
+                        var victimToKillerDistance = Vector3.Distance(killerPosition.PlayerPos, lastVictimPosition.PlayerPos);
+
+                        foreach (var teammatePosition in teammatePositions)
+                        {
+                            var teammateToKillerDistance = Vector3.Distance(teammatePosition.Value.LastPosition, killerPosition.PlayerPos);
+                            var teammateToVictimDistance = teammatePosition.Value.LastDistanceToVictim;
+                            var teammateWasBetweenVictimAndKiller = teammateToVictimDistance <= victimToKillerDistance && teammateToKillerDistance <= victimToKillerDistance;
+                            if (teammateWasBetweenVictimAndKiller)
+                            {
+                                conditionFulfilled = false;
+                                continue;
+                            }
+                        }
+
+                        if (!conditionFulfilled)
+                            continue;
                     }
 
                     var pickedUpAfter = data.ItemPickedUpList
@@ -123,7 +178,6 @@ namespace SituationOperator.SituationManagers
                     var misplay = new DeathInducedBombDrop(bombDrop, pickedUpAfter, teammatesAlive, (float) closestTeammateDistance);
 
                     misplays.Add(misplay);
-
                 }
 
                 return misplays;
