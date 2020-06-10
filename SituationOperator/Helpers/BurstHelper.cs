@@ -44,13 +44,19 @@ namespace SituationOperator.Helpers
 
             foreach (var weaponFiredsByPlayerInRound in weaponFiredsByPlayerAndRound)
             {
+                var forceStartNewBurst = true;
                 foreach (var wf in weaponFiredsByPlayerInRound.OrderBy(x => x.Time))
                 {
-                    // If there are no bursts or assigning this wf to the previous burst does not work, start a new burst. 
-                    if (bursts.Count() == 0 || !bursts.Last().TryAdd(wf))
+                    // If there are no bursts for this player and round or assigning this wf to the previous burst did not work, start a new burst.
+                    var addedToPreviousBurst = forceStartNewBurst 
+                        ? false 
+                        : bursts.Last().TryAdd(wf);
+                    
+                    if (addedToPreviousBurst == false)
                     {
                         var equipmentInfo = equipmentDict[wf.Weapon];
                         bursts.Add(new Burst(wf, equipmentInfo, tolerance));
+                        forceStartNewBurst = false;
                         continue;
                     }
                 }
@@ -102,20 +108,20 @@ namespace SituationOperator.Helpers
                 MaxAllowedTimeBetweenShots = equipmentInfo.CycleTime + tolerance;
             }
 
+            /// <summary>
+            /// Tries to add a new weaponFired to this burst. Before calling, make sure that the new weaponfired is from the same player.
+            /// </summary>
+            /// <param name="wf"></param>
+            /// <returns>Whether the WeaponFired was added to this burst, or wasn't because it does not belong to it.</returns>
             public bool TryAdd(WeaponFired wf)
             {
-                if (wf.Time < WeaponFireds.Last().Time)
-                {
-                    throw new ArgumentException("WeaponFireds have to be added in chronological order.");
-                }
-
                 var belongsToThisBurst =
-                    wf.Round == Round
-                    && wf.Weapon == Weapon
+                    wf.Weapon == Weapon
                     && WeaponFireds.Last().Time + MaxAllowedTimeBetweenShots >= wf.Time;
 
                 if (belongsToThisBurst)
                 {
+
                     WeaponFireds.Add(wf);
                     return true;
                 }
