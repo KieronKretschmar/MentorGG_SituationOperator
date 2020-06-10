@@ -37,5 +37,51 @@ namespace SituationDatabase.Helpers
                 return A + AB * distance;
             }
         }
+
+        /// <summary>
+        /// Determines the angle between the viewDirection of an object or player and a the line to another position.
+        /// </summary>
+        /// <param name="position1">Position of the first object or player</param>
+        /// <param name="view1">Viewdirection of the first object or player</param>
+        /// <param name="position2">Position of the second object or player</param>
+        /// <returns>Angle theta in [0,360] in degrees </returns>
+        public static double AngleFromViewDirection(Vector3 position1, Vector2 view1, Vector3 position2)
+        {
+            // TODO: Add height to get eyelevel new Vector3(position1.X, position1.Y, position1.Z + (isDucking ? 46 : 64));
+            // Determine vector v1 from player to object
+            var positionToObject = position2 - position1;
+
+            // Determine vector v2 from player in direction of his view
+            // The view directions are stored as follows:
+            // Yaw == PlayerViewX, and 
+            // Pitch == 90 - PlayerViewY.
+            // Since C# computes in radiants, we also convert the degrees to radiants
+            var yaw = DegreeToRadian(view1.X);
+            var pitch = DegreeToRadian(90 - view1.Y);
+
+            // Compute v2 from yaw and pitch
+            var v2X = Math.Cos(yaw) * Math.Cos(pitch);
+            var v2Y = Math.Sin(yaw) * Math.Cos(pitch);
+            var v2Z = Math.Sin(pitch);
+            var v2 = new Vector3((float)v2X, (float)v2Y, (float)v2Z); ;
+
+
+            // Determine the angle theta between v1 and v2, using 
+            // cos(theta) = v1 DOT v2 / (Length(v1) * Length(v2))
+            var theta = Math.Acos(Vector3.Dot(positionToObject, v2) / (positionToObject.Length() * v2.Length()));
+
+            // return resulting angle in degrees
+            return RadianToDegree(theta);
+        }
+
+        private static double DegreeToRadian(double angle)
+        {
+            return Math.PI * angle / 180.0;
+        }
+
+        private static double RadianToDegree(double angle)
+        {
+            return angle * (180.0 / Math.PI);
+        }
     }
 }
