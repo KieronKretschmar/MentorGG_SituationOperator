@@ -81,15 +81,19 @@ namespace SituationOperatorTestProject
         /// <returns></returns>
         public static SituationContext GetRealContext()
         {
-            var connStringPath = GetTestFilePath("ConnectionString.txt");
-            var connString = File.ReadAllText(connStringPath);
             var options = new DbContextOptionsBuilder<SituationContext>()
-                .UseMySql(connString)
+                .UseMySql(GetConnectionString())
                 .Options;
             var context = new SituationContext(options);
             return context;
         }
 
+        public static string GetConnectionString()
+        {
+            var connStringPath = GetTestFilePath("ConnectionString.txt");
+            var connString = File.ReadAllText(connStringPath);
+            return connString;
+        }
 
         #endregion
 
