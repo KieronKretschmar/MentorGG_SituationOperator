@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SituationDatabase;
 using SituationDatabase.Enums;
+using SituationDatabase.Extensions;
 using SituationDatabase.Models;
 using SituationOperator.Enums;
 using SituationOperator.Helpers;
@@ -47,6 +48,16 @@ namespace SituationOperator.SituationManagers
         /// Reason: Time is inaccurate and players sometimes click very fast instead of spraying, which may still be a misplay.
         /// </summary>
         private const int SINGLE_BURST_TOLERANCE = 200;
+
+        /// <summary>
+        /// If the player's Line of Sight was blocked by a smoke, this is the minimum length in meters from the smokes center and the player's position
+        /// in order to count as a misplay.
+        /// 
+        /// Set to -1 to ignore this condition.
+        /// 
+        /// Reason: Spraying into a smoke while changing positions does not count as a misplay, as it may discourage enemies from pushing or land a lucky hit.
+        /// </summary>
+        private const int MIN_DISTANCE_FROM_SMOKE = 200;
 
         /// <summary>
         /// Collection of weapons for which bursts will be analyzed.
@@ -123,6 +134,25 @@ namespace SituationOperator.SituationManagers
                     if(!data.PlayerDealtOrTookDamage(burst.PlayerId, startTime: fightTimeFrameStart, endTime: fightTimeFrameEnd)) 
                     {
                         continue;
+                    }
+
+                    if(MIN_DISTANCE_FROM_SMOKE != -1)
+                    {
+                        var firstWeaponFired = burst.WeaponFireds.First();
+
+                        var smokeInFrontConditionFulfilled = false;
+                        foreach (var smoke in data.SmokeList.Where(x => x.Round == burst.Round))
+                        {
+                            var playerAimedOnSmoke = smoke.PlayerAimsAtSmoke(firstWeaponFired.PlayerPos, firstWeaponFired.PlayerView, firstWeaponFired.Time, firstWeaponFired.IsDucking);
+                            if(playerAimedOnSmoke && (smoke.DetonationPos - firstWeaponFired.PlayerPos).Length() < MIN_DISTANCE_FROM_SMOKE)
+                            {
+                                smokeInFrontConditionFulfilled = true;
+                                continue;
+                            }
+                        }
+
+                        if (smokeInFrontConditionFulfilled)
+                            continue;
                     }
 
                     var misplay = new RifleFiredWhileMoving(burst.WeaponFireds.First(), burst.WeaponFireds.Count, burst.InaccurateBullets);
