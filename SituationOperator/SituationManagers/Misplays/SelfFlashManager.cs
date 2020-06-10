@@ -93,7 +93,7 @@ namespace SituationOperator.SituationManagers
                 if ((double) timeFlashedEnemies / timeFlashedSelf > MAX_FACTOR_MORE_TIME_ENEMIES_FLASHED)
                     continue;
 
-                if (angleToCrosshairSelf < MAX_ANGLE_TO_CROSSHAIR)
+                if (angleToCrosshairSelf > MAX_ANGLE_TO_CROSSHAIR)
                     continue;
 
                 if (REQUIRE_NO_ENEMY_DIED && enemyDeaths > 0)

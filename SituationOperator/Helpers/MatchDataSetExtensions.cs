@@ -1,4 +1,5 @@
 ﻿using MatchEntities;
+using MatchEntities.Enums;
 using MatchEntities.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace SituationOperator.Helpers
         /// <param name="matchData"></param>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public static RoundStats RoundStats(this MatchDataSet matchData, IRoundEntity entity)
+        public static RoundStats GetRoundStats(this MatchDataSet matchData, IRoundEntity entity)
         {
             return matchData.RoundStatsList.Single(x => x.Round == entity.Round);
         }
@@ -30,16 +31,97 @@ namespace SituationOperator.Helpers
         }
 
         /// <summary>
+        /// Returns the PlayerRoundStats entries of the winners/losers of the specified round.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="round"></param>
+        /// <param name="selectWinners">Whether to select the winners or losers</param>
+        /// <returns></returns>
+        public static List<PlayerRoundStats> GetPlayerRoundStatsByRoundOutcome(this MatchDataSet data, short round, bool selectWinners)
+        {
+            var winnerTeam = data.RoundStatsList.Single(x => x.Round == round).WinnerTeam;
+            var ctsWon = winnerTeam == StartingFaction.CtStarter;
+            var selectCt = selectWinners == ctsWon;
+
+            return data.PlayerRoundStatsList
+                .Where(x => x.Round == round)
+                .Where(x => selectCt == x.IsCt)
+                .ToList();
+        }
+
+        /// <summary>
+        /// Helper method to return a player's teammates PlayerRoundStats in a given round, including his own. 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="steamId"></param>
+        /// <param name="round"></param>
+        /// <returns></returns>
+        public static List<PlayerRoundStats> GetTeamRoundStats(this MatchDataSet data, IPlayerEvent playerEvent)
+        {
+            var teammatesThisRound = data.PlayerRoundStatsList
+                .Where(x => x.Round == playerEvent.Round && x.IsCt == playerEvent.IsCt)
+                .ToList();
+
+            return teammatesThisRound;
+        }
+
+        /// <summary>
+        /// Helper method to return a player's teammates PlayerRoundStats in a given round. 
+        /// 
+        /// Preferably use override with IPlayerEvent param, if available, as it's more efficient.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="steamId"></param>
+        /// <param name="round"></param>
+        /// <returns></returns>
+        public static List<PlayerRoundStats> GetTeammateRoundStats(this MatchDataSet data, long steamId, short round)
+        {
+            var playerTeam = data.PlayerMatchStatsList.Single(x => x.SteamId == steamId).Team;
+
+            var teammateSteamIds = data.PlayerMatchStatsList
+                .Where(x => x.Team == playerTeam)
+                .Select(x => x.SteamId);
+
+            var teammatesThisRound = data.PlayerRoundStatsList
+                .Where(x => x.Round == round && teammateSteamIds.Contains(x.PlayerId))
+                .ToList();
+
+            return teammatesThisRound;
+        }
+
+        /// <summary>
+        /// WARNING: Incomplete / Inaccurate for providers other than Valve.
+        /// See https://counterstrike.fandom.com/wiki/Competitive.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static MatchRules GetMatchSettings(this MatchDataSet data)
+        {
+            switch (data.MatchStats.Source)
+            {
+                case MatchEntities.Enums.Source.Valve:
+                    return new MatchRules(15000, 115000, 40000);
+                default:
+                    // Default to MatchMaking rules
+                    return new MatchRules(15000, 115000, 40000);
+            }
+        }
+
+        /// <summary>
         /// Determines whether the player was alive at the specified moment, including the exact moment.
         /// </summary>
         /// <param name="data"></param>
         /// <param name="steamId"></param>
         /// <param name="time"></param>
         /// <returns></returns>
-        public static bool IsAlive(this MatchDataSet data, long steamId, int time)
+        public static bool IsAlive(this MatchDataSet data, long steamId, short round, int time)
         {
-            var round = data.GetRoundByTime(time);
-            var death = data.Death(steamId, round.Round);
+            if (data.PlayerRoundStatsList.Any(x=>x.Round == round && x.PlayerId == steamId) == false)
+            {
+                return false;
+            }
+
+            var death = data.Death(steamId, round);
 
             if (death == null || death.Time > time)
             {

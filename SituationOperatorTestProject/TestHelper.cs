@@ -167,6 +167,20 @@ namespace SituationOperatorTestProject
                     GetMockLogger<PushBeforeSmokeDetonatedManager>(),
                     context)
                 );
+
+            managers.Add(
+                new BombDropAtSpawnManager(
+                    serviceProvider,
+                    GetMockLogger<BombDropAtSpawnManager>(),
+                    context)
+                );
+
+            managers.Add(
+                new HasNotBoughtDefuseKitManager(
+                    serviceProvider,
+                    GetMockLogger<HasNotBoughtDefuseKitManager>(),
+                    context)
+                );
             #endregion
 
             #region Highlights - Singleplayer
@@ -180,6 +194,27 @@ namespace SituationOperatorTestProject
             managers.Add(
                 new KillWithOwnFlashAssistManager(
                     GetMockLogger<KillWithOwnFlashAssistManager>(),
+                    context)
+                );
+
+            managers.Add(
+                new ClutchManager(
+                    serviceProvider,
+                    GetMockLogger<ClutchManager>(),
+                    context)
+                );
+
+            managers.Add(
+                new HighImpactRoundManager(
+                    serviceProvider,
+                    GetMockLogger<HighImpactRoundManager>(),
+                    context)
+                );
+
+            managers.Add(
+                new MultiKillManager(
+                    serviceProvider,
+                    GetMockLogger<MultiKillManager>(),
                     context)
                 );
             #endregion

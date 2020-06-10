@@ -28,6 +28,7 @@ namespace SituationDatabase.Models
         public MatchEntity(MatchStats matchStats, int rounds)
         {
             MatchId = matchStats.MatchId;
+            AnalysisDate = DateTime.UtcNow;
             MatchDate = matchStats.MatchDate;
             Map = matchStats.Map;
             WinnerTeam = matchStats.WinnerTeam;
@@ -39,6 +40,7 @@ namespace SituationDatabase.Models
         }
 
         public long MatchId { get; set; }
+        public DateTime AnalysisDate { get; set; }
         public DateTime MatchDate { get; set; }
         public string Map { get; set; }
         public StartingFaction WinnerTeam { get; set; }

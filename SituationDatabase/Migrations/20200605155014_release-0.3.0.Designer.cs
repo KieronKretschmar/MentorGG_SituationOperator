@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SituationDatabase;
 
 namespace SituationDatabase.Migrations
 {
     [DbContext(typeof(SituationContext))]
-    partial class SituationContextModelSnapshot : ModelSnapshot
+    [Migration("20200605155014_release-0.3.0")]
+    partial class release030
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -217,43 +219,6 @@ namespace SituationDatabase.Migrations
                     b.ToTable("HasNotBoughtDefuseKit");
                 });
 
-            modelBuilder.Entity("SituationDatabase.Models.HighImpactRound", b =>
-                {
-                    b.Property<long>("MatchId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("DamageDealt")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Kills")
-                        .HasColumnType("int");
-
-                    b.Property<short>("Round")
-                        .HasColumnType("smallint");
-
-                    b.Property<int>("StartTime")
-                        .HasColumnType("int");
-
-                    b.Property<long>("SteamId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("MatchId", "Id");
-
-                    b.HasIndex("MatchId");
-
-                    b.HasIndex("SteamId");
-
-                    b.HasIndex("MatchId", "SteamId");
-
-                    b.HasIndex("MatchId", "Round", "SteamId");
-
-                    b.ToTable("HighImpactRound");
-                });
-
             modelBuilder.Entity("SituationDatabase.Models.KillWithOwnFlashAssist", b =>
                 {
                     b.Property<long>("MatchId")
@@ -299,9 +264,6 @@ namespace SituationDatabase.Migrations
                     b.Property<long>("MatchId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
-
-                    b.Property<DateTime>("AnalysisDate")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<float?>("AvgRank")
                         .HasColumnType("float");
@@ -383,46 +345,6 @@ namespace SituationDatabase.Migrations
                     b.HasIndex("MatchId");
 
                     b.ToTable("Match");
-                });
-
-            modelBuilder.Entity("SituationDatabase.Models.MultiKill", b =>
-                {
-                    b.Property<long>("MatchId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    b.Property<short>("FirstKillWeapon")
-                        .HasColumnType("smallint");
-
-                    b.Property<int>("Kills")
-                        .HasColumnType("int");
-
-                    b.Property<short>("Round")
-                        .HasColumnType("smallint");
-
-                    b.Property<bool>("SingleBurst")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<int>("StartTime")
-                        .HasColumnType("int");
-
-                    b.Property<long>("SteamId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("MatchId", "Id");
-
-                    b.HasIndex("MatchId");
-
-                    b.HasIndex("SteamId");
-
-                    b.HasIndex("MatchId", "SteamId");
-
-                    b.HasIndex("MatchId", "Round", "SteamId");
-
-                    b.ToTable("MultiKill");
                 });
 
             modelBuilder.Entity("SituationDatabase.Models.PlayerMatchEntity", b =>
@@ -918,33 +840,6 @@ namespace SituationDatabase.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SituationDatabase.Models.HighImpactRound", b =>
-                {
-                    b.HasOne("SituationDatabase.Models.MatchEntity", "Match")
-                        .WithMany("HighImpactRound")
-                        .HasForeignKey("MatchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SituationDatabase.Models.RoundEntity", "RoundEntity")
-                        .WithMany("HighImpactRound")
-                        .HasForeignKey("MatchId", "Round")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SituationDatabase.Models.PlayerMatchEntity", "PlayerMatch")
-                        .WithMany("HighImpactRound")
-                        .HasForeignKey("MatchId", "SteamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SituationDatabase.Models.PlayerRoundEntity", "PlayerRound")
-                        .WithMany("HighImpactRound")
-                        .HasForeignKey("MatchId", "Round", "SteamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("SituationDatabase.Models.KillWithOwnFlashAssist", b =>
                 {
                     b.HasOne("SituationDatabase.Models.MatchEntity", "Match")
@@ -967,33 +862,6 @@ namespace SituationDatabase.Migrations
 
                     b.HasOne("SituationDatabase.Models.PlayerRoundEntity", "PlayerRound")
                         .WithMany("KillWithOwnFlashAssist")
-                        .HasForeignKey("MatchId", "Round", "SteamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("SituationDatabase.Models.MultiKill", b =>
-                {
-                    b.HasOne("SituationDatabase.Models.MatchEntity", "Match")
-                        .WithMany("MultiKill")
-                        .HasForeignKey("MatchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SituationDatabase.Models.RoundEntity", "RoundEntity")
-                        .WithMany("MultiKill")
-                        .HasForeignKey("MatchId", "Round")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SituationDatabase.Models.PlayerMatchEntity", "PlayerMatch")
-                        .WithMany("MultiKill")
-                        .HasForeignKey("MatchId", "SteamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SituationDatabase.Models.PlayerRoundEntity", "PlayerRound")
-                        .WithMany("MultiKill")
                         .HasForeignKey("MatchId", "Round", "SteamId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

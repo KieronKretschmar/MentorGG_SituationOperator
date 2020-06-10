@@ -26,23 +26,20 @@ namespace SituationOperatorTestProject
         /// Assertions are made on EffectiveHeGrenades only.
         /// Can also be used to insert data into real database.
         /// </summary>
-        /// <param name="jsonMatchDataPath"></param>
-        /// <param name="connectionString">If provided, uses real database.</param>
+        /// <param name="jsonFileName"></param>
         /// <returns></returns>
-        [DataRow("TestDemo_Valve4.json", true)]
-        [DataRow("TestDemo_Valve3.json", true)]
-        [DataRow("TestDemo_Valve2.json", true)]
-        [DataRow("TestDemo_Valve1.json", true)]
+        [DataRow("TestDemo_Valve4.json")]
+        [DataRow("TestDemo_Valve3.json")]
+        [DataRow("TestDemo_Valve2.json")]
+        [DataRow("TestDemo_Valve1.json")]
         [DataTestMethod]
-        public async Task AnalysisTest(string jsonMatchDataPath, bool useRealDatabase = false)
+        public async Task AnalysisTest(string jsonFileName)
         {
             // ARRANGE
-            var matchDataSet = TestHelper.GetTestMatchData(jsonMatchDataPath);
+            var matchDataSet = TestHelper.GetTestMatchData(jsonFileName);
 
-            // Use Real or InMemory SituationContext
-            SituationContext context = useRealDatabase 
-                ? TestHelper.GetRealContext()
-                : TestHelper.GetInMemoryContext();
+            // Use InMemory SituationContext
+            SituationContext context = TestHelper.GetInMemoryContext();
 
             // Get managerProvider with some SituationManagers
             var managerProvider = TestHelper.GetRealProvider(context);
@@ -58,7 +55,7 @@ namespace SituationOperatorTestProject
 
             // ASSERT
             Assert.IsTrue(result.AttemptedManagers > 0);
-            Assert.IsTrue(result.FailedManagers < result.AttemptedManagers);
+            Assert.IsTrue(result.FailedManagers == 0);
 
             // Assert that meta data was inserted into database
             Assert.IsTrue(context.Match.Count(x => x.MatchId == matchDataSet.MatchId) == 1);
@@ -67,7 +64,7 @@ namespace SituationOperatorTestProject
             Assert.IsTrue(context.PlayerRound.Count(x => x.MatchId == matchDataSet.MatchId) > 0);
 
             // Assert that at least some situation data was inserted to database
-            Assert.IsTrue(context.EffectiveHeGrenade.Count() > 0);
+            Assert.IsTrue(context.EffectiveHeGrenade.Count() + context.SelfFlash.Count() + context.TeamFlash.Count() > 0);
         }
 
         /// <summary>

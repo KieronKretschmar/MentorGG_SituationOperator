@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SituationDatabase;
 using SituationOperator.Enums;
 using SituationOperator.Helpers.SubscriptionConfig;
@@ -17,15 +18,18 @@ namespace SituationOperator.Controllers
     [ApiController]
     public class MatchController : ControllerBase
     {
+        private readonly ILogger<MatchController> _logger;
         private readonly SituationContext _context;
         private readonly ISituationManagerProvider _managerProvider;
         private readonly ISubscriptionConfigProvider _subscriptionConfigLoader;
 
         public MatchController(
-            SituationContext context, 
+            ILogger<MatchController> logger, 
+            SituationContext context,
             ISituationManagerProvider managerProvider,
             ISubscriptionConfigProvider subscriptionConfigLoader)
         {
+            _logger = logger;
             _context = context;
             _managerProvider = managerProvider;
             _subscriptionConfigLoader = subscriptionConfigLoader;
@@ -56,18 +60,25 @@ namespace SituationOperator.Controllers
 
             foreach (var manager in managers)
             {
-                var situationCollection = await manager.LoadSituationCollectionAsync(matchId);
-
-                switch (manager.SituationCategory)
+                try
                 {
-                    case SituationDatabase.Enums.SituationCategory.Misplay:
-                        model.Misplays.Add(situationCollection);
-                        break;
-                    case SituationDatabase.Enums.SituationCategory.Highlight:
-                        model.Highlights.Add(situationCollection);
-                        break;
-                    default:
-                        break;
+                    var situationCollection = await manager.LoadSituationCollectionAsync(matchId);
+
+                    switch (manager.SituationCategory)
+                    {
+                        case SituationDatabase.Enums.SituationCategory.Misplay:
+                            model.Misplays.Add(situationCollection);
+                            break;
+                        case SituationDatabase.Enums.SituationCategory.Highlight:
+                            model.Highlights.Add(situationCollection);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                catch (Exception e)
+                {
+                    _logger.LogWarning(e, $"Error when loading SituationCollection of type [ {manager.SituationType} ].");
                 }
             }
 

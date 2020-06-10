@@ -78,6 +78,10 @@ namespace SituationOperatorTestProject
             var equipmentHelper = new EquipmentHelper(equipmentProvider);
             AddService<IEquipmentHelper>(equipmentHelper);
 
+            // Bursthelper
+            var burstHelper = new BurstHelper(equipmentHelper);
+            AddService<IBurstHelper>(burstHelper);
+
             // Add FileReader
             var fileReader = new FileReader(
                 TestHelper.GetMockLogger<FileReader>(),
