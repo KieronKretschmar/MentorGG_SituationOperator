@@ -22,6 +22,16 @@ namespace SituationOperator.Helpers
         /// List of bursts with bullets ordered by time. Bursts of the same player are also in ordered by time.
         /// </returns>
         List<BurstHelper.Burst> DivideIntoBursts(IEnumerable<WeaponFired> weaponFireds, MatchStats matchStats, int tolerance);
+
+        /// <summary>
+        /// Divides WeaponFireds of a single player.
+        /// </summary>
+        /// <param name="weaponFireds"></param>
+        /// <param name="tolerance"></param>
+        /// <returns>
+        /// List of bursts with bullets ordered by time. Bursts of the same player are also in ordered by time.
+        /// </returns>
+        List<BurstHelper.Burst> DivideIntoBursts(IEnumerable<WeaponFired> weaponFireds, Source source, DateTime matchDate, int tolerance);
     }
 
     /// <inheritdoc/>
@@ -37,7 +47,13 @@ namespace SituationOperator.Helpers
         /// <inheritdoc/>
         public List<Burst> DivideIntoBursts(IEnumerable<WeaponFired> weaponFireds, MatchStats matchStats, int tolerance)
         {
-            var equipmentDict = _equipmentHelper.GetEquipmentDict(matchStats);
+            return DivideIntoBursts(weaponFireds, matchStats.Source, matchStats.MatchDate, tolerance);
+        }
+
+        /// <inheritdoc/>
+        public List<Burst> DivideIntoBursts(IEnumerable<WeaponFired> weaponFireds, Source source, DateTime matchDate, int tolerance)
+        {
+            var equipmentDict = _equipmentHelper.GetEquipmentDict(source, matchDate);
             var bursts = new List<Burst>();
             var weaponFiredsByPlayerAndRound = weaponFireds
                 .GroupBy(x => new { x.PlayerId, x.Round });
