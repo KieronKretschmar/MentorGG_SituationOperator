@@ -24,7 +24,7 @@ namespace SituationOperator.SituationManagers
         /// <summary>
         /// Minimum required time the player must have flashed themselves to count as a misplay.
         /// </summary>
-        private const int MIN_TIME_FLASHED_SELF = 500;
+        private const int MIN_TIME_FLASHED_SELF = 1000;
 
         /// <summary>
         /// When enemies were flashed at least this value times longer than the thrower, it does not count as a misplay.
