@@ -27,7 +27,7 @@ namespace SituationOperator.SituationManagers
         /// <summary>
         /// Minimum fraction of inaccurate shots in the burst to count as a misplay.
         /// </summary>
-        private const double MIN_INACCURATE_SHOT_FRACTION = 0.7;
+        private const double MIN_INACCURATE_SHOT_FRACTION = 0.5;
 
         /// <summary>
         /// Maximum time passed without damage being dealt by or to the player after end of burst to count as a misplay.
@@ -57,7 +57,13 @@ namespace SituationOperator.SituationManagers
         /// 
         /// Reason: Spraying into a smoke while changing positions does not count as a misplay, as it may discourage enemies from pushing or land a lucky hit.
         /// </summary>
-        private const int MIN_DISTANCE_FROM_SMOKE_CENTER = 4;
+        private const int MIN_DISTANCE_FROM_SMOKE_CENTER = 7;
+
+        /// <summary>
+        /// Whether or not to require the player not being flashed at the start of his burst in order to count as a misplay.
+        /// </summary>
+        private const bool REQUIRE_NOT_FLASHED = true;
+
 
         /// <summary>
         /// Collection of weapons for which bursts will be analyzed.
@@ -121,6 +127,16 @@ namespace SituationOperator.SituationManagers
                 var misplays = new List<RifleFiredWhileMoving>();
                 foreach (var burst in bursts)
                 {
+                    // remove WeaponFireds that happened after the last enemy died
+                    var allEnemiesDiedTime = data.LastPlayerOfTeamDied(burst.Round, burst.WeaponFireds.First().IsCt);
+                    if(allEnemiesDiedTime != null)
+                    {
+                        burst.WeaponFireds = burst.WeaponFireds.Where(x => x.Time <= (int) allEnemiesDiedTime).ToList();
+                    }
+
+                    if (REQUIRE_NOT_FLASHED && data.GetFlasheds(burst.PlayerId, burst.Round, startTime: burst.StartTime, endTime: burst.StartTime).Any())
+                        continue;
+
                     if (burst.WeaponFireds.Count < MIN_SHOTS)
                         continue;
 
