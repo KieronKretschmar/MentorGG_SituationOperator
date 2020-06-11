@@ -31,6 +31,20 @@ namespace SituationOperator.Helpers
         }
 
         /// <summary>
+        /// Between RoundStats.EndTime and RoundStats.RealEndTime there's a few extra seconds. 
+        /// Returns whether this event happened during these moments.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public static bool HappenedAfterRoundEnd(this MatchDataSet data, IIngameEvent entity)
+        {
+            var roundEndTime = data.GetRoundStats(entity).EndTime;
+
+            return entity.Time > roundEndTime;
+        }
+
+        /// <summary>
         /// Returns the PlayerRoundStats entries of the winners/losers of the specified round.
         /// </summary>
         /// <param name="data"></param>
@@ -58,8 +72,20 @@ namespace SituationOperator.Helpers
         /// <returns></returns>
         public static List<PlayerRoundStats> GetTeamRoundStats(this MatchDataSet data, IPlayerEvent playerEvent)
         {
+            return data.GetTeamRoundStats(playerEvent.Round, playerEvent.IsCt);
+        }
+
+        /// <summary>
+        /// Helper method to return a player's teammates PlayerRoundStats in a given round, including his own. 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="steamId"></param>
+        /// <param name="round"></param>
+        /// <returns></returns>
+        public static List<PlayerRoundStats> GetTeamRoundStats(this MatchDataSet data, short round, bool ctSide)
+        {
             var teammatesThisRound = data.PlayerRoundStatsList
-                .Where(x => x.Round == playerEvent.Round && x.IsCt == playerEvent.IsCt)
+                .Where(x => x.Round == round && x.IsCt == ctSide)
                 .ToList();
 
             return teammatesThisRound;
@@ -136,6 +162,28 @@ namespace SituationOperator.Helpers
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Returns the moment the last player of the given side died, or null if a player survived.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="round"></param>
+        /// <param name="isCtSide"></param>
+        /// <returns></returns>
+        public static int? LastPlayerOfTeamDied(this MatchDataSet data, short round, bool isCtSide)
+        {
+            var teamRoundStats= data.GetTeamRoundStats(round, isCtSide);
+            var deathTimes = teamRoundStats.Select(x => data.Death(x.PlayerId, x.Round))
+                .Where(x=>x != null)
+                .Select(x=>x?.Time);
+
+            if (deathTimes.Count() < teamRoundStats.Count())
+            {
+                return null;
+            }
+
+            return deathTimes.Max();
         }
 
         /// <summary>
