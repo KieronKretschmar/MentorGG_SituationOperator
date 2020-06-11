@@ -6,6 +6,7 @@ using SituationDatabase;
 using SituationDatabase.Enums;
 using SituationDatabase.Models;
 using SituationOperator.Enums;
+using SituationOperator.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,6 +64,7 @@ namespace SituationOperator.SituationManagers
                 var lineups = zoneReader.GetLineups(ZoneReader.Enums.LineupType.Smoke, mapFromEnum).Lineups;
 
                 var failedSmokes = data.SmokeList
+                    .Where(x => data.HappenedAfterRoundEnd(x) == false)
                     .Where(x => x.Result == MatchEntities.Enums.TargetResult.Miss)
                     .Select(x => new SmokeFail(x))
                     .ToList();

@@ -70,7 +70,9 @@ namespace SituationOperator.SituationManagers
         {
             var misplays = new List<SelfFlash>();
 
-            foreach (var flash in data.FlashList)
+            var flashes = data.FlashList
+                .Where(x => data.HappenedAfterRoundEnd(x) == false);
+            foreach (var flash in flashes)
             {
                 var flasheds = data.FlashedsByFlash(flash);
                 var timeFlashedSelf = flasheds.Where(x => x.VictimId == flash.PlayerId).SingleOrDefault()?.TimeFlashed ?? 0;

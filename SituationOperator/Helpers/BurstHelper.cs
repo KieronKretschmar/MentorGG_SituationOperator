@@ -104,6 +104,8 @@ namespace SituationOperator.Helpers
 
             public int InaccurateBullets => WeaponFireds.Count(x => x.PlayerVelo.Length() > MaxAccurateVelocity);
 
+            public int StartTime => WeaponFireds.First().Time;
+
             /// <summary>
             /// 
             /// </summary>

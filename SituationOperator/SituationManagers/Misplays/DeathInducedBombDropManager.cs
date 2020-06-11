@@ -93,6 +93,7 @@ namespace SituationOperator.SituationManagers
                     .Where(x => !x.ByDeath)
                     // Remove bombdrops of bots who died due to takeover
                     .Where(x=>(x.PlayerId < 0 && data.BotTakeOverList.Any(takover => takover.Time == x.Time)) == false)
+                    .Where(x => data.HappenedAfterRoundEnd(x) == false)
                     .ToList();
 
                 foreach (var bombDrop in bombDrops)

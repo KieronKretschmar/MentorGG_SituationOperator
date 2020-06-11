@@ -76,7 +76,9 @@ namespace SituationOperator.SituationManagers
         {
             var misplays = new List<TeamFlash>();
 
-            foreach (var flash in data.FlashList)
+            var flashes = data.FlashList
+                .Where(x => data.HappenedAfterRoundEnd(x) == false);
+            foreach (var flash in flashes)
             {
                 var flasheds = data.FlashedsByFlash(flash);
 
