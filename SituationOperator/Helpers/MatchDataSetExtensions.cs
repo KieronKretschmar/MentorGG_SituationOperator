@@ -125,6 +125,13 @@ namespace SituationOperator.Helpers
 
             if (death == null || death.Time > time)
             {
+                // Extra check as bots sometimes have a PlayerRoundStats entry without participating
+                // Remove when issue https://gitlab.com/mentorgg/csgo/demofileworker/-/issues/16 is solved,
+                // as this check is performance intensive
+                if (steamId < 0 && data.PlayerPositionList.Any(x => x.Round == round && x.PlayerId == steamId) == false)
+                {
+                    return false;
+                }
                 return true;
             }
 
