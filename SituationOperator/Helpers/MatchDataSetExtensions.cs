@@ -189,6 +189,54 @@ namespace SituationOperator.Helpers
 
         #endregion
 
+        #region Item related
+        /// <summary>
+        /// Returns the time the given item was obtained the last time before <paramref name="time"/>, or null if it's not held by the player at the time.
+        /// 
+        /// If the item was saved from last round, returns time of RoundStart.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="steamId"></param>
+        /// <param name="item"></param>
+        /// <param name="round"></param>
+        /// <param name="time">If null, </param>
+        /// <returns></returns>
+        public static int? ObtainedItemTime(this MatchDataSet data, long steamId, short round, EquipmentElement item, int? time = null)
+        {
+            var lastPickupTime = data.ItemPickedUpList
+                .Where(x =>
+                    x.Round == round
+                    && x.PlayerId == steamId
+                    && x.Equipment == item
+                    && (time == null || x.Time < time))
+                .OrderByDescending(x => x.Time)
+                .FirstOrDefault()
+                ?.Time;
+
+            if(lastPickupTime == null)
+            {
+                var hadFromRoundStart = data.ItemSavedList
+                .Any(x =>
+                    x.Round == round
+                    && x.PlayerId == steamId
+                    && x.Equipment == EquipmentElement.Bomb);
+                if (hadFromRoundStart)
+                {
+                    lastPickupTime = data.RoundStatsList.Single(x => x.Round == round).StartTime;
+                }
+            }
+
+            var droppedAfterPickup = data.ItemDroppedList
+                .Any(x =>
+                    x.Round == round
+                    && x.PlayerId == steamId
+                    && x.Equipment == item
+                    && (time == null || x.Time < time));
+
+            return droppedAfterPickup ? null : lastPickupTime;
+        }
+        #endregion
+
         #region Weapon related
         /// <summary>
         /// Indicates whether the player dealt or took damage in the indicated timeframe.

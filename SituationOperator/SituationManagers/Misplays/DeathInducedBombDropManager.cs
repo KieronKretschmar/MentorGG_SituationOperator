@@ -90,15 +90,8 @@ namespace SituationOperator.SituationManagers
 
                 foreach (var bombDrop in bombDrops)
                 {
-                    var bombPickupBeforeDrop = data.ItemPickedUpList
-                        .Where(x => 
-                        x.Round == bombDrop.Round 
-                        && x.PlayerId == bombDrop.PlayerId 
-                        && x.Equipment == EquipmentElement.Bomb
-                        && x.Time <= bombDrop.Time)
-                        .OrderByDescending(x => x.Time)
-                        .FirstOrDefault();
-                    if (bombDrop.Time - MIN_TIME_HELD_BOMB < bombPickupBeforeDrop.Time)
+                    var obtainedBombTime = data.ObtainedItemTime(bombDrop.PlayerId, bombDrop.Round, EquipmentElement.Bomb, bombDrop.Time);
+                    if (bombDrop.Time - MIN_TIME_HELD_BOMB < obtainedBombTime)
                         continue;
 
                     // Get SteamIds of teammates who lived up until a few moments before the player died
