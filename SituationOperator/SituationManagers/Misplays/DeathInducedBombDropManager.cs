@@ -86,6 +86,8 @@ namespace SituationOperator.SituationManagers
                     .Where(x => x.Equipment == EquipmentElement.Bomb)
                     // ItemDropped.ByDeath is wrong in database as of 13.09.2019. Remove the '!' when DemoAnalyzer is fixed
                     .Where(x => !x.ByDeath)
+                    // Remove bombdrops of bots who died due to takeover
+                    .Where(x=>(x.PlayerId < 0 && data.BotTakeOverList.Any(takover => takover.Time == x.Time)) == false)
                     .ToList();
 
                 foreach (var bombDrop in bombDrops)
