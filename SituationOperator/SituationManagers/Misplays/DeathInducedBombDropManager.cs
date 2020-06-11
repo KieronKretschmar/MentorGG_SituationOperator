@@ -44,6 +44,11 @@ namespace SituationOperator.SituationManagers
         private const double MIN_TIME_HELD_BOMB = 6000;
 
         /// <summary>
+        /// Minimum time the bomb must have lain on the ground before being picked up by a teammate to count as a misplay.
+        /// </summary>
+        private const int MIN_TIME_BOMB_ON_GROUND = 6000;
+
+        /// <summary>
         /// Whether no teammate may have stood "between" killer and player to count as a misplay.
         /// 
         /// Nobody being "between" player and killer means that nobody was 
@@ -163,6 +168,9 @@ namespace SituationOperator.SituationManagers
                             && x.Round == bombDrop.Round
                             && x.Time > bombDrop.Time
                         )?.Time - bombDrop.Time ?? -1;
+
+                    if (pickedUpAfter != -1 && pickedUpAfter < MIN_TIME_BOMB_ON_GROUND)
+                        continue;
 
                     var misplay = new DeathInducedBombDrop(bombDrop, pickedUpAfter, teammatesAlive, (float) closestTeammateDistance);
 
