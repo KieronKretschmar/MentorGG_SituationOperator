@@ -57,7 +57,7 @@ namespace SituationOperator.SituationManagers
         /// 
         /// Reason: Spraying into a smoke while changing positions does not count as a misplay, as it may discourage enemies from pushing or land a lucky hit.
         /// </summary>
-        private const int MIN_DISTANCE_FROM_SMOKE = 200;
+        private const int MIN_DISTANCE_FROM_SMOKE_CENTER = 4;
 
         /// <summary>
         /// Collection of weapons for which bursts will be analyzed.
@@ -136,7 +136,7 @@ namespace SituationOperator.SituationManagers
                         continue;
                     }
 
-                    if(MIN_DISTANCE_FROM_SMOKE != -1)
+                    if(MIN_DISTANCE_FROM_SMOKE_CENTER != -1)
                     {
                         var firstWeaponFired = burst.WeaponFireds.First();
 
@@ -144,7 +144,7 @@ namespace SituationOperator.SituationManagers
                         foreach (var smoke in data.SmokeList.Where(x => x.Round == burst.Round))
                         {
                             var playerAimedOnSmoke = smoke.PlayerAimsAtSmoke(firstWeaponFired.PlayerPos, firstWeaponFired.PlayerView, firstWeaponFired.Time, firstWeaponFired.IsDucking);
-                            if(playerAimedOnSmoke && (smoke.DetonationPos - firstWeaponFired.PlayerPos).Length() < MIN_DISTANCE_FROM_SMOKE)
+                            if(playerAimedOnSmoke && (smoke.DetonationPos - firstWeaponFired.PlayerPos).Length() < UnitConverter.MetersToUnits(MIN_DISTANCE_FROM_SMOKE_CENTER))
                             {
                                 smokeInFrontConditionFulfilled = true;
                                 continue;
