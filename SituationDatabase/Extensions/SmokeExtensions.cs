@@ -25,7 +25,7 @@ namespace SituationDatabase.Extensions
         /// 
         /// Taken from https://counterstrike.fandom.com/wiki/Smoke_Grenade
         /// </summary>
-        public const int THICK_SMOKE_DURATION = 15;
+        public const int THICK_SMOKE_DURATION = 15000;
 
         /// <summary>
         /// Indicates whether a player
