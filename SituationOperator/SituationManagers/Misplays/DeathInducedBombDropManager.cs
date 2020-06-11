@@ -135,7 +135,7 @@ namespace SituationOperator.SituationManagers
 
                     if (REQUIRE_NO_TEAMMATE_BETWEEN_KILLER_AND_PLAYER)
                     {
-                        var conditionFulfilled = true;
+                        var teammateBetweenKillerAndVictim = false;
 
                         var kill = data.Death(bombDrop.PlayerId, bombDrop.Round);
                         var killerPosition = data.LastPlayerPos(kill.PlayerId, kill.Time);
@@ -148,12 +148,12 @@ namespace SituationOperator.SituationManagers
                             var teammateWasBetweenVictimAndKiller = teammateToVictimDistance <= victimToKillerDistance && teammateToKillerDistance <= victimToKillerDistance;
                             if (teammateWasBetweenVictimAndKiller)
                             {
-                                conditionFulfilled = false;
-                                continue;
+                                teammateBetweenKillerAndVictim = true;
+                                break;
                             }
                         }
 
-                        if (!conditionFulfilled)
+                        if (teammateBetweenKillerAndVictim)
                             continue;
                     }
 
