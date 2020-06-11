@@ -96,20 +96,14 @@ namespace SituationOperator.SituationManagers
 
                     // Get SteamIds of teammates who lived up until a few moments before the player died
                     var involvedTeammates = data.GetTeammateRoundStats(bombDrop.PlayerId, bombDrop.Round)
-                        .Select(x => x.PlayerId)
-                        .Where(x => x != bombDrop.PlayerId)
-                        .Select(x=> new
-                        {
-                            PlayerId = x,
-                            Death = data.Death(x, bombDrop.Round)
-                        })
+                        .Where(x => x.PlayerId != bombDrop.PlayerId)
                         .Select(x=> new
                         {
                             PlayerId = x.PlayerId,
-                            IsInvolved = x.Death == null || bombDrop.Time - MAX_TIME_TEAMMATE_DIED_BEFORE_TO_COUNT_AS_ALIVE <= x.Death.Time,
-                            IsAliveAtBombDrop = x.Death == null || bombDrop.Time <= x.Death.Time
+                            IsInvolved = data.IsAlive(x.PlayerId, bombDrop.Round, bombDrop.Time - MAX_TIME_TEAMMATE_DIED_BEFORE_TO_COUNT_AS_ALIVE),
+                            IsAliveAtBombDrop = data.IsAlive(x.PlayerId, bombDrop.Round, bombDrop.Time)
                         })
-                        .Where(x => x.IsInvolved);
+                        .Where(x => x.IsInvolved);                       
 
                     var teammatesAlive = involvedTeammates.Count(x=>x.IsAliveAtBombDrop);
 
@@ -121,11 +115,11 @@ namespace SituationOperator.SituationManagers
 
                     var lastVictimPosition = data.LastPlayerPos(bombDrop.PlayerId, bombDrop.Time);
                     var teammatePositions = involvedTeammates
-                        .ToDictionary(x=>x, x=> new
+                        .ToDictionary(x => x, x => new
                         {
                             LastPosition = data.LastPlayerPos(x.PlayerId, bombDrop.Time).PlayerPos
                         })
-                        .ToDictionary(x=>x.Key, x=> new
+                        .ToDictionary(x => x.Key, x => new
                         {
                             x.Value.LastPosition,
                             LastDistanceToVictim = Vector3.Distance(lastVictimPosition.PlayerPos, x.Value.LastPosition)
