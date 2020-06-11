@@ -19,7 +19,7 @@ namespace SituationOperator.SituationManagers
     /// </summary>
     public class EffectiveHeGrenadeManager : SinglePlayerSituationManager<EffectiveHeGrenade>
     {
-        private const int MIN_TOTAL_DAMAGE = 50;
+        private const int MIN_TOTAL_DAMAGE = 40;
 
         private readonly IServiceProvider _sp;
         private readonly ILogger<EffectiveHeGrenadeManager> _logger;
