@@ -91,7 +91,7 @@ namespace SituationOperatorTestProject
         public static string GetConnectionString()
         {
             var connStringPath = GetTestFilePath("ConnectionString.txt");
-            var connString = File.ReadAllText(connStringPath);
+            var connString = File.ReadLines(connStringPath).First();
             return connString;
         }
 
