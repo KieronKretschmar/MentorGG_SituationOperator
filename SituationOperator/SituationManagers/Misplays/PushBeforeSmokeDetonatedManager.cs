@@ -39,7 +39,7 @@ namespace SituationOperator.SituationManagers
         /// 
         /// Set value to -1 to ignore this condition.
         /// </summary>
-        private const bool REQUIRE_TEAM_THROWER = false;
+        private const bool REQUIRE_TEAM_THROWER = true;
 
         private readonly IServiceProvider _sp;
         private readonly ILogger<PushBeforeSmokeDetonatedManager> _logger;
@@ -99,7 +99,8 @@ namespace SituationOperator.SituationManagers
                     foreach (var damage in damages)
                     {
                         // Apply REQUIRE_TEAM_THROWER condition
-                        if (REQUIRE_TEAM_THROWER && damage.IsCt != smoke.IsCt)
+                        var victimIsCt = damage.IsCt == damage.TeamAttack;
+                        if (REQUIRE_TEAM_THROWER && victimIsCt != smoke.IsCt)
                             continue;
 
                         // Ignore if the smoke would not have blocked the bullets trajectory
