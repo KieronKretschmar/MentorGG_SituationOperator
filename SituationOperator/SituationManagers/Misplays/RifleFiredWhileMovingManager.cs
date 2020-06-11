@@ -147,7 +147,7 @@ namespace SituationOperator.SituationManagers
                             if(playerAimedOnSmoke && (smoke.DetonationPos - firstWeaponFired.PlayerPos).Length() < UnitConverter.MetersToUnits(MIN_DISTANCE_FROM_SMOKE_CENTER))
                             {
                                 smokeInFrontConditionFulfilled = true;
-                                continue;
+                                break;
                             }
                         }
 

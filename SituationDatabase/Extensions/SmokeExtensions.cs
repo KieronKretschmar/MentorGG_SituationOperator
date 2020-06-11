@@ -82,16 +82,16 @@ namespace SituationDatabase.Extensions
                 return true;
             }
 
-            var p = GeometryHelper.GetClosestPointOnRay(posEyeLevel, view, smoke.DetonationPos);
+            var closestPointToSmokeOnLineOfSight = GeometryHelper.GetClosestPointOnRay(posEyeLevel, view, smoke.DetonationPos);
 
             // If the player is not in the smoke, and the closest point to the smoke on the ray is not the player's position, then it must not be in front of him.
-            var smokeIsInFrontOfPlayer = !playerIsInSmoke && (p - posEyeLevel).Length() > 0.01;
+            var smokeIsInFrontOfPlayer = !playerIsInSmoke && (closestPointToSmokeOnLineOfSight - posEyeLevel).Length() > 0.01;
             if (!smokeIsInFrontOfPlayer)
             {
                 return false;
             }
 
-            var distBetweenSmokeAndLineOfSight = (smoke.DetonationPos - p).Length();
+            var distBetweenSmokeAndLineOfSight = (smoke.DetonationPos - closestPointToSmokeOnLineOfSight).Length();
             return distBetweenSmokeAndLineOfSight <= SMOKE_RADIUS;
         }
 
