@@ -29,10 +29,11 @@ namespace SituationDatabase.Models
         public Clutch(
             RoundStats roundStats,
             long steamId,
+            int clutchStartTime,
             int enemiesAlive,
             int equipmentValue,
             int enemyEquipmentValue
-            ) : base(roundStats.MatchId, roundStats.Round, roundStats.StartTime, steamId)
+            ) : base(roundStats.MatchId, roundStats.Round, clutchStartTime, steamId)
         {
             EnemiesAlive = enemiesAlive;
             EquipmentValue = equipmentValue;
