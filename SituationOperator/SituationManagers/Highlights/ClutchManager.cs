@@ -61,27 +61,31 @@ namespace SituationOperator.SituationManagers
                     .Where(x=>x.Value != null)
                     .ToDictionary(x=>x.Key, x=>x.Value);
 
-                var winningSurvivors = winningPlayers.Where(x => winningPlayerDeaths.ContainsKey(x) == false);
+                var winningSurvivors = winningPlayers
+                    .Where(x => winningPlayerDeaths.ContainsKey(x) == false)
+                    .ToList();
 
                 // Continue if more than 1 winner survived
-                if (winningSurvivors.Count() > 1)
+                if (winningSurvivors.Count > 1)
                     continue;
 
                 // The potential clutcher is either the only survivor or the last one to die
-                var potentialClutcher = winningSurvivors.Count() > 0
+                var potentialClutcher = winningSurvivors.Count > 0
                     ? winningSurvivors.Single()
                     : winningPlayerDeaths.OrderByDescending(x => x.Value.Time).First().Key;
 
                 var lastTeammatesDeath = winningPlayerDeaths
                     .Where(x => x.Key.PlayerId != potentialClutcher.PlayerId)
                     .OrderBy(x => x.Value.Time)
-                    .Last();
-                var clutchStartTime = lastTeammatesDeath.Value.Time;
+                    .Last().Value;
 
                 var losingPlayers = data.GetPlayerRoundStatsByRoundOutcome(round.Round, false);
 
-                var enemiesAlive = losingPlayers.Where(x => data.IsAlive(x.PlayerId, round.Round, clutchStartTime) == false);
-                if (enemiesAlive.Count() < 2)
+                var enemiesAlive = losingPlayers
+                    .Where(x => data.IsAlive(x.PlayerId, round.Round, lastTeammatesDeath.Time))
+                    .ToList();
+                
+                if (enemiesAlive.Count < 2)
                     continue;
 
                 if(potentialClutcher.IsCt == false)
@@ -90,14 +94,14 @@ namespace SituationOperator.SituationManagers
                     var bombPlant = data.BombPlantList.SingleOrDefault(x => x.Round == round.Round);
                     if (bombPlant != null)
                     {
-                        var tickingTimePassed = clutchStartTime - bombPlant.Time;
+                        var tickingTimePassed = lastTeammatesDeath.Time - bombPlant.Time;
                         var timeTickingLeft = data.GetMatchSettings().C4Timer - tickingTimePassed;
                         if (timeTickingLeft < MIN_TIME_BOMB_TIME_TICKING_LEFT)
                             continue;
                     }
                 }
 
-                highlights.Add(new Clutch(round, potentialClutcher.PlayerId, clutchStartTime, enemiesAlive.Count()));
+                highlights.Add(new Clutch(round, potentialClutcher.PlayerId, lastTeammatesDeath.Time, enemiesAlive.Count()));
             }
 
             return highlights;
