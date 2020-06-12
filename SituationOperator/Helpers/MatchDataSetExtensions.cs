@@ -148,16 +148,43 @@ namespace SituationOperator.Helpers
                 return false;
             }
 
+
             var death = data.Death(steamId, round);
 
             if (death == null || death.Time > time)
             {
-                // Extra check as bots sometimes have a PlayerRoundStats entry without participating
-                // Remove when issue https://gitlab.com/mentorgg/csgo/demofileworker/-/issues/16 is solved,
-                // as this check is performance intensive
-                if (steamId < 0 && data.PlayerPositionList.Any(x => x.Round == round && x.PlayerId == steamId) == false)
+                // Extra checks for bots
+                if (steamId < 0)
                 {
-                    return false;
+                    // Bots sometimes have a PlayerRoundStats entry without participating, meaning they're not alive
+                    // Consider removing when issue https://gitlab.com/mentorgg/csgo/demofileworker/-/issues/16 is solved
+                    if (data.PlayerPositionList.Any(x => x.Round == round && x.PlayerId == steamId) == false)
+                    {
+                        return false;
+                    }
+
+                    // When taken over, the death of a bot currently counts towards the controlling player
+                    // Consider removing when issue https://gitlab.com/mentorgg/csgo/demofileworker/-/issues/17 is solved
+                    var takeOver = data.BotTakeOverList.SingleOrDefault(x => x.Round == round && x.BotId == steamId && x.Time <= time);
+                    if (takeOver != null)
+                    {
+                        //var debug = data.PlayerRoundStatsList.Count(x => x.PlayerId == takeOver.PlayerId) > 1;
+                        //if (debug)
+                        //{
+                        //    debug = debug;
+                        //}
+
+                        var controllingPlayer = data.PlayerRoundStatsList.Single(x => x.Round == round && x.PlayerId == takeOver.PlayerId);
+                        var botIsDead = data.KillList
+                            .Any(x => x.VictimId == controllingPlayer.PlayerId
+                            && takeOver.Time <= x.Time
+                            && x.Time <= time);
+                        if (botIsDead)
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
                 }
                 return true;
             }
