@@ -147,7 +147,7 @@ namespace SituationOperator.SituationManagers
                     var fightTimeFrameStart = burst.WeaponFireds.First().Time;
                     var fightTimeFrameEnd = burst.WeaponFireds.Last().Time + MAX_TIME_BEFORE_FIGHT;
 
-                    if(!data.PlayerDealtOrTookDamage(burst.PlayerId, startTime: fightTimeFrameStart, endTime: fightTimeFrameEnd)) 
+                    if (!data.PlayerDealtOrTookDamage(burst.PlayerId, startTime: fightTimeFrameStart, endTime: fightTimeFrameEnd, requireEnemyDamage: true)) 
                     {
                         continue;
                     }

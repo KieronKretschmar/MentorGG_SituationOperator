@@ -301,13 +301,14 @@ namespace SituationOperator.Helpers
         /// <param name="round"></param>
         /// <param name="startTime"></param>
         /// <param name="endTime"></param>
+        /// <param name="requireEnemyDamage">Whether to ignore damage dealt by teamattack, world and the player themselves</param>
         /// <returns></returns>
-        public static bool PlayerDealtOrTookDamage(this MatchDataSet data, long steamId, short? round = null, int? startTime = null, int? endTime = null)
+        public static bool PlayerDealtOrTookDamage(this MatchDataSet data, long steamId, short? round = null, int? startTime = null, int? endTime = null, bool requireEnemyDamage = false)
         {
-            var firstDamageDealt = data.FirstDamageDealt(steamId, round, startTime, endTime);
-            var firstDamageTaken = data.FirstDamageDealt(steamId, round, startTime, endTime);
+            var firstDamageDealt = data.FirstDamageDealt(steamId, round, startTime, endTime, requireEnemyDamage);
+            var firstDamageTaken = data.FirstDamageTaken(steamId, round, startTime, endTime, requireEnemyDamage);
 
-            return firstDamageDealt == null && firstDamageTaken == null;
+            return firstDamageDealt != null || firstDamageTaken != null;
         }
 
         /// <summary>
@@ -318,17 +319,23 @@ namespace SituationOperator.Helpers
         /// <param name="round"></param>
         /// <param name="startTime"></param>
         /// <param name="endTime"></param>
+        /// <param name="requireEnemyDamage">Whether to ignore damage dealt by teamattack, world and the player themselves</param>
         /// <returns></returns>
-        public static Damage FirstDamageDealt(this MatchDataSet data, long steamId, short? round = null, int? startTime = null, int? endTime = null)
+        public static Damage FirstDamageDealt(this MatchDataSet data, long steamId, short? round = null, int? startTime = null, int? endTime = null, bool requireEnemyDamage = false)
         {
-            return data.DamageList
-                .Where(x => x.PlayerId == steamId
-                && startTime <= x.Time
-                && (round == null || x.Round == round)
-                && (startTime == null || x.Time <= startTime)
-                && (endTime == null || x.Time <= endTime))
-                .OrderBy(x => x.Time)
-                .FirstOrDefault();
+            var damages = data.DamageList
+                .Where(x => x.PlayerId == steamId);
+
+            if (round != null)
+                damages = damages.Where(x => x.Round == round);
+            if (startTime != null)
+                damages = damages.Where(x => startTime <= x.Time);
+            if (endTime != null)
+                damages = damages.Where(x => endTime <= x.Time);
+            if (requireEnemyDamage)
+                damages = damages.Where(x => (x.TeamAttack || x.Weapon != EquipmentElement.World) == false);
+
+            return damages.FirstOrDefault();
         }
 
         /// <summary>
@@ -339,17 +346,23 @@ namespace SituationOperator.Helpers
         /// <param name="round"></param>
         /// <param name="startTime"></param>
         /// <param name="endTime"></param>
+        /// <param name="requireEnemyDamage">Whether to ignore damage dealt by teamattack, world and the player themselves</param>
         /// <returns></returns>
-        public static Damage FirstDamageTaken(this MatchDataSet data, long steamId, short? round = null, int? startTime = null, int? endTime = null)
+        public static Damage FirstDamageTaken(this MatchDataSet data, long steamId, short? round = null, int? startTime = null, int? endTime = null, bool requireEnemyDamage = false)
         {
-            return data.DamageList
-                .Where(x => x.VictimId == steamId 
-                && startTime <= x.Time 
-                && (round == null || x.Round == round)
-                && (startTime == null || x.Time <= startTime)
-                && (endTime == null || x.Time <= endTime))
-                .OrderBy(x => x.Time)
-                .FirstOrDefault();
+            var damages = data.DamageList
+                .Where(x => x.VictimId == steamId);
+
+            if (round != null)
+                damages = damages.Where(x => x.Round == round);
+            if (startTime != null)
+                damages = damages.Where(x => startTime <= x.Time);
+            if (endTime != null)
+                damages = damages.Where(x => endTime <= x.Time);
+            if (requireEnemyDamage)
+                damages = damages.Where(x => (x.TeamAttack || x.Weapon != EquipmentElement.World) == false);
+
+            return damages.FirstOrDefault();
         }
         #endregion
 
