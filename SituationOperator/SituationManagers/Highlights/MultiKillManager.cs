@@ -121,10 +121,10 @@ namespace SituationOperator.SituationManagers
                 new List<Kill>()
             };
 
-            foreach (var kill in kills)
+            foreach (var kill in kills.OrderBy(x=>x.Time))
             {
                 // Add, if this kill belongs to the last multikill
-                if (multiKills.Last().Count == 0 || multiKills.Last().Last().Time - kill.Time <= maxTimeBetweenKills)
+                if (multiKills.Last().Count == 0 || kill.Time - multiKills.Last().Last().Time <= maxTimeBetweenKills)
                 {
                     multiKills.Last().Add(kill);
                 }
