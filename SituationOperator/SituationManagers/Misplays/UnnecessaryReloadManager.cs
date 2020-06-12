@@ -77,7 +77,7 @@ namespace SituationOperator.SituationManagers
                 foreach (var reload in reloads)
                 {
                     var weaponInfo = equipmentHelper.GetEquipmentInfo(reload.Weapon, data.MatchStats);
-                    if ((double)reload.AmmoBefore / weaponInfo.ClipSize > MIN_BULLETS_LEFT_FRACTION)
+                    if ((double)reload.AmmoBefore / weaponInfo.ClipSize < MIN_BULLETS_LEFT_FRACTION)
                         continue;
 
                     var damageTakenAfter = data.FirstDamageTaken(reload.PlayerId, startTime: reload.Time, endTime: reload.Time + MAX_TIME_DAMAGE_TAKEN_AFTER_RELOAD);
