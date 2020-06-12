@@ -97,8 +97,7 @@ namespace SituationOperator.SituationManagers
                     }
                 }
 
-                var enemyEquipmentValue = enemiesAlive.Select(x => (int?)x.PlayedEquipmentValue).Sum() ?? 0;
-                highlights.Add(new Clutch(round, potentialClutcher.PlayerId, clutchStartTime, enemiesAlive.Count(), potentialClutcher.PlayedEquipmentValue, enemyEquipmentValue));
+                highlights.Add(new Clutch(round, potentialClutcher.PlayerId, clutchStartTime, enemiesAlive.Count()));
             }
 
             return highlights;
