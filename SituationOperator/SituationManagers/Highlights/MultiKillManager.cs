@@ -30,7 +30,7 @@ namespace SituationOperator.SituationManagers
         /// <summary>
         /// Maximum time passed between one kill and the next one to count towards the same situation.
         /// </summary>
-        private const int MAX_TIME_BETWEEN_KILLS = 1000;
+        private const int MAX_TIME_BETWEEN_KILLS = 3141;
 
         /// <summary>
         /// Maximum time between the theoretical moment a weapon could have fired the next bullet and the actual moment the bullet was fired to count as a single spray.
