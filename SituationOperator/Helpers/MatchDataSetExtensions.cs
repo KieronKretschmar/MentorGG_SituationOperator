@@ -333,8 +333,8 @@ namespace SituationOperator.Helpers
         /// <returns></returns>
         public static bool PlayerDealtOrTookDamage(this MatchDataSet data, long steamId, short? round = null, int? startTime = null, int? endTime = null, bool requireEnemyDamage = false)
         {
-            var firstDamageDealt = data.FirstDamageDealt(steamId, round, startTime, endTime, requireEnemyDamage);
-            var firstDamageTaken = data.FirstDamageTaken(steamId, round, startTime, endTime, requireEnemyDamage);
+            var firstDamageDealt = data.DamageDealts(steamId, round, startTime, endTime, requireEnemyDamage).FirstOrDefault();
+            var firstDamageTaken = data.DamageTakens(steamId, round, startTime, endTime, requireEnemyDamage).FirstOrDefault();
 
             return firstDamageDealt != null || firstDamageTaken != null;
         }
@@ -349,7 +349,7 @@ namespace SituationOperator.Helpers
         /// <param name="endTime"></param>
         /// <param name="requireEnemyDamage">Whether to ignore damage dealt by teamattack, world and the player themselves</param>
         /// <returns></returns>
-        public static Damage FirstDamageDealt(this MatchDataSet data, long steamId, short? round = null, int? startTime = null, int? endTime = null, bool requireEnemyDamage = false)
+        public static IEnumerable<Damage> DamageDealts(this MatchDataSet data, long steamId, short? round = null, int? startTime = null, int? endTime = null, bool requireEnemyDamage = false)
         {
             var damages = data.DamageList
                 .Where(x => x.PlayerId == steamId);
@@ -363,7 +363,7 @@ namespace SituationOperator.Helpers
             if (requireEnemyDamage)
                 damages = damages.Where(x => (x.TeamAttack || x.Weapon != EquipmentElement.World) == false);
 
-            return damages.FirstOrDefault();
+            return damages;
         }
 
         /// <summary>
@@ -376,7 +376,7 @@ namespace SituationOperator.Helpers
         /// <param name="endTime"></param>
         /// <param name="requireEnemyDamage">Whether to ignore damage dealt by teamattack, world and the player themselves</param>
         /// <returns></returns>
-        public static Damage FirstDamageTaken(this MatchDataSet data, long steamId, short? round = null, int? startTime = null, int? endTime = null, bool requireEnemyDamage = false)
+        public static IEnumerable<Damage> DamageTakens(this MatchDataSet data, long steamId, short? round = null, int? startTime = null, int? endTime = null, bool requireEnemyDamage = false)
         {
             var damages = data.DamageList
                 .Where(x => x.VictimId == steamId);
@@ -390,7 +390,7 @@ namespace SituationOperator.Helpers
             if (requireEnemyDamage)
                 damages = damages.Where(x => (x.TeamAttack || x.Weapon != EquipmentElement.World) == false);
 
-            return damages.FirstOrDefault();
+            return damages;
         }
         #endregion
 
