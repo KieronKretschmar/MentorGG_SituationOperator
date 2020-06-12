@@ -53,9 +53,10 @@ namespace SituationOperator.Helpers
         /// <returns></returns>
         public static List<PlayerRoundStats> GetPlayerRoundStatsByRoundOutcome(this MatchDataSet data, short round, bool selectWinners)
         {
-            var winnerTeam = data.RoundStatsList.Single(x => x.Round == round).WinnerTeam;
-            var ctsWon = winnerTeam == StartingFaction.CtStarter;
-            var selectCt = selectWinners == ctsWon;
+            var roundStats = data.RoundStatsList.Single(x => x.Round == round);
+            var ctStartersWon = roundStats.WinnerTeam == StartingFaction.CtStarter;
+            var thisRoundCtWon = ctStartersWon == roundStats.OriginalSide;
+            var selectCt = selectWinners == thisRoundCtWon;
 
             return data.PlayerRoundStatsList
                 .Where(x => x.Round == round)
