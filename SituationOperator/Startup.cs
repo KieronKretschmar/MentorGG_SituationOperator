@@ -257,6 +257,8 @@ namespace SituationOperator
             services.AddTransient<ISituationManager, RifleFiredWhileMovingManager>();
             services.AddTransient<ISituationManager, UnnecessaryReloadManager>();
             services.AddTransient<ISituationManager, PushBeforeSmokeDetonatedManager>();
+            services.AddTransient<ISituationManager, BombDropAtSpawnManager>();
+            services.AddTransient<ISituationManager, HasNotBoughtDefuseKitManager>();
             #endregion
 
             #region Highlights - Singleplayer
