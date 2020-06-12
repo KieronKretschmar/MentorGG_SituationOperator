@@ -80,7 +80,9 @@ namespace SituationOperator.SituationManagers
                     if ((double)reload.AmmoBefore / weaponInfo.ClipSize < MIN_BULLETS_LEFT_FRACTION)
                         continue;
 
-                    var damageTakenAfter = data.FirstDamageTaken(reload.PlayerId, startTime: reload.Time, endTime: reload.Time + MAX_TIME_DAMAGE_TAKEN_AFTER_RELOAD);
+                    var damageTakenAfter = data.DamageTakens(reload.PlayerId, startTime: reload.Time, endTime: reload.Time + MAX_TIME_DAMAGE_TAKEN_AFTER_RELOAD, requireEnemyDamage: true)
+                        .Where(x => x.Weapon.IsGrenade() == false);
+
                     if (damageTakenAfter == null)
                         continue;
 
