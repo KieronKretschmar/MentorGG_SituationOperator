@@ -71,7 +71,7 @@ namespace SituationOperator.SituationManagers
 
                 var roundStats = data.GetRoundStats(playerRound);
 
-                highlights.Add(new HighImpactRound(roundStats, playerRound.PlayerId, kills.Count(), totalDamage));
+                highlights.Add(new HighImpactRound(roundStats, playerRound.PlayerId, kills, totalDamage));
             }
 
             return highlights;
