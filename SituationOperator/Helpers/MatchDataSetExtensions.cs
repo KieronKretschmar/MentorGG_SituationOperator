@@ -359,7 +359,7 @@ namespace SituationOperator.Helpers
             if (startTime != null)
                 damages = damages.Where(x => startTime <= x.Time);
             if (endTime != null)
-                damages = damages.Where(x => endTime <= x.Time);
+                damages = damages.Where(x => x.Time <= endTime);
             if (requireEnemyDamage)
                 damages = damages.Where(x => (x.TeamAttack || x.Weapon != EquipmentElement.World) == false);
 
@@ -386,7 +386,7 @@ namespace SituationOperator.Helpers
             if (startTime != null)
                 damages = damages.Where(x => startTime <= x.Time);
             if (endTime != null)
-                damages = damages.Where(x => endTime <= x.Time);
+                damages = damages.Where(x => x.Time <= endTime);
             if (requireEnemyDamage)
                 damages = damages.Where(x => (x.TeamAttack || x.Weapon != EquipmentElement.World) == false);
 
