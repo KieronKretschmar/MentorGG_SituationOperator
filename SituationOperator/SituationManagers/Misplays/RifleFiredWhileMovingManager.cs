@@ -27,7 +27,7 @@ namespace SituationOperator.SituationManagers
         /// <summary>
         /// Minimum fraction of inaccurate shots in the burst to count as a misplay.
         /// </summary>
-        private const double MIN_INACCURATE_SHOT_FRACTION = 0.5;
+        private const double MIN_INACCURATE_SHOT_FRACTION = 0.3;
 
         /// <summary>
         /// Maximum time passed without damage being dealt by or to the player after end of burst to count as a misplay.
