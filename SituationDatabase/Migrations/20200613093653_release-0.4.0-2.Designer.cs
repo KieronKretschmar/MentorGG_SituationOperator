@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SituationDatabase;
 
 namespace SituationDatabase.Migrations
 {
     [DbContext(typeof(SituationContext))]
-    partial class SituationContextModelSnapshot : ModelSnapshot
+    [Migration("20200613093653_release-0.4.0-2")]
+    partial class release0402
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

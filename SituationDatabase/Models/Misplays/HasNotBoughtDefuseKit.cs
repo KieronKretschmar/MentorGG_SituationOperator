@@ -48,12 +48,12 @@ namespace SituationDatabase.Models
         /// <summary>
         /// Total value of the equipment the player's team carried.
         /// </summary>
-        public int TeamEquipmentValue { get; }
+        public int TeamEquipmentValue { get; set; }
 
         /// <summary>
         /// Total value of the equipment the player carried this round.
         /// </summary>
-        public int PlayerEquipmentValue { get; }
+        public int PlayerEquipmentValue { get; set; }
 
         /// <summary>
         /// Number of teammates that bought a defusekit in this round.
