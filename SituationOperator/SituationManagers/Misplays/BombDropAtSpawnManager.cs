@@ -43,7 +43,22 @@ namespace SituationOperator.SituationManagers
         /// 
         /// Reason: To prevent planned situations counting as a misplay where e.g. a Terrorist on de_mirage scopes through middle and then picks up the bomb.
         /// </summary>
-        private const bool REQUIRE_PICKER_DID_NOT_STOP = true;
+        private const bool REQUIRE_PICKER_DID_NOT_STOP = false;
+
+        /// <summary>
+        /// List of maps on which this misplay will be detected, as on some maps it's okay to drop the bomb at spawn.
+        /// 
+        /// Reason: To prevent planned situations counting as a misplay where e.g. a Terrorist on de_mirage scopes through middle and then picks up the bomb.
+        /// </summary>
+        private readonly List<string> AllowedMaps = new List<string>
+        {
+            "de_nuke",
+            "de_vertigo",
+            "de_cache",
+            "de_inferno",
+            "de_overpass",
+            "de_train"
+        };
 
         private readonly IServiceProvider _sp;
         private readonly ILogger<BombDropAtSpawnManager> _logger;
@@ -72,6 +87,11 @@ namespace SituationOperator.SituationManagers
         /// <inheritdoc/>
         protected override async Task<IEnumerable<BombDropAtSpawn>> ExtractSituationsAsync(MatchDataSet data)
         {
+            if (AllowedMaps.Contains(data.MatchStats.Map) == false)
+            {
+                return new List<BombDropAtSpawn>();
+            }
+
             using (var scope = _sp.CreateScope())
             {
                 var bombDrops = data.ItemDroppedList
@@ -103,6 +123,9 @@ namespace SituationOperator.SituationManagers
                         misplays.Add(new BombDropAtSpawn(bombDrop, -1));
                         continue;
                     }
+
+                    if (pickUp.Time < round.StartTime + data.GetMatchSettings().FreezeTime + MIN_TIME_ON_GROUND_AFTER_FREEZETIME_END)
+                        continue;
 
                     #region DetourCondition
                     // Estimate the bomb location by using the last known location of the dropper, 
