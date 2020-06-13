@@ -25,7 +25,7 @@ namespace SituationOperator.SituationManagers
         /// <summary>
         /// Minimum amount of money the player still had available after finishing his buys to count as a misplay.
         /// </summary>
-        private const int MIN_MONEY_LEFT_OVER = 400;
+        private const int MIN_MONEY_LEFT_OVER = 1000;
 
         /// <summary>
         /// Minimum value of the equipment the player's team carried within 10 seconds of FreezeTimeEnd to count as a misplay.
