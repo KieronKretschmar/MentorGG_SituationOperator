@@ -46,7 +46,7 @@ namespace SituationOperator.SituationManagers
         /// 
         /// Note that value needs to be lower than it should be by intuition, to make up for inaccuracy of last known position due to missing PlayerPositions with low FPS.
         /// </summary>
-        private const int TIME_BEFORE_DETONATION_FOR_PUSH_CONDITION = 500;
+        private const int TIME_BEFORE_DETONATION_FOR_PUSH_CONDITION = 3000;
 
         private readonly IServiceProvider _sp;
         private readonly ILogger<PushBeforeSmokeDetonatedManager> _logger;
