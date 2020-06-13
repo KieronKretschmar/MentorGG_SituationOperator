@@ -76,8 +76,6 @@ namespace SituationOperator.SituationManagers
             {
                 var bombDrops = data.ItemDroppedList
                     .Where(x => x.Equipment == EquipmentElement.Bomb)
-                    // ItemDropped.ByDeath is wrong in database as of 13.09.2019. Remove the '!' when DemoAnalyzer is fixed
-                    .Where(x => !x.ByDeath)
                     .ToList();
 
                 var misplays = new List<BombDropAtSpawn>();
