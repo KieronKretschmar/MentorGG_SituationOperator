@@ -1,4 +1,5 @@
-﻿using MatchEntities;
+﻿using EquipmentLib;
+using MatchEntities;
 using MatchEntities.Enums;
 using MatchEntities.Interfaces;
 using System;
@@ -318,6 +319,190 @@ namespace SituationOperator.Helpers
 
             return droppedAfterPickup ? null : lastPickupTime;
         }
+
+        /// <summary>
+        /// Returns the total team's equipment value at the time it was worth the most.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="equipmentDict"></param>
+        /// <param name="round"></param>
+        /// <param name="getCt"></param>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <returns></returns>
+        public static int MaximumTeamEquipmentValue(this MatchDataSet data, Dictionary<EquipmentElement, EquipmentInfo> equipmentDict, short round, bool getCt, int? startTime = null, int? endTime = null)
+        {
+            var teamSteamIds = data.PlayerRoundStatsList.Where(x => x.Round == round && x.IsCt == getCt)
+                .Select(x=>x.PlayerId);
+
+            // Gather itemchanges of all players before endTime (if specified)
+            var relevantTeamItemChanges = teamSteamIds
+                .SelectMany(x => data.GetItemPossessionChanges(round, x))
+                .Where(x => endTime == null || x.Time <= endTime);
+
+            return startTime == null
+                ? MaximumEquipmentValue(relevantTeamItemChanges, equipmentDict)
+                : MaximumEquipmentValue(relevantTeamItemChanges, equipmentDict, (int)startTime);
+        }
+
+        /// <summary>
+        /// Returns the maximum value of the equipment based on <paramref name="itemChanges"/>.
+        /// </summary>
+        /// <param name="itemChanges">A complete list of all relevant times the possession of an item has changed in this round.</param>
+        /// <param name="equipmentDict"></param>
+        /// <returns></returns>
+        public static int MaximumEquipmentValue(IEnumerable<ItemPossessionChange> itemChanges, Dictionary<EquipmentElement, EquipmentInfo> equipmentDict)
+        {
+            // Add and Subtract all items 
+            var maximumEquipmentValue = itemChanges
+                .Select(x => (x.Obtained ? 1 : -1) * equipmentDict[x.Equipment].Price)
+                .Select(x => (int?)x)
+                .Sum() ?? 0;
+
+            return maximumEquipmentValue;
+        }
+
+        /// <summary>
+        /// Returns the maximum value of the equipment based on <paramref name="itemChanges"/>.
+        /// </summary>
+        /// <param name="itemChanges">A complete list of all relevant times the possession of an item has changed in this round. Must include changes before startTime.</param>
+        /// <param name="equipmentDict"></param>
+        /// <param name="minTime">Earliest time at which to measure the maximum value.</param>
+        /// <returns></returns>
+        public static int MaximumEquipmentValue(IEnumerable<ItemPossessionChange> itemChanges, Dictionary<EquipmentElement, EquipmentInfo> equipmentDict, int minTime)
+        {
+            var maximumEquipmentValue = 0;
+            var maximumEquipmentValueAfterStartTime = 0;
+            var lastItemChangeTime = 0;
+            // Store info whether an itemChange occured after startTime
+            bool itemChangeAfterStartTime = false;
+            foreach (var itemChange in itemChanges.OrderBy(x => x.Time))
+            {
+                var valueGain = (itemChange.Obtained ? 1 : -1) * equipmentDict[itemChange.Equipment].Price;
+
+                // If this pickup is in the allowed time
+                if (minTime <= itemChange.Time)
+                {
+                    // Initialize return value to previous max value if this is the first ItemChange after startTime
+                    if (lastItemChangeTime < minTime)
+                    {
+                        maximumEquipmentValueAfterStartTime = maximumEquipmentValue;
+                        itemChangeAfterStartTime = true;
+                    }
+
+                    maximumEquipmentValueAfterStartTime += valueGain;
+                }
+                else
+                {
+                    maximumEquipmentValue += valueGain;
+                }
+
+                lastItemChangeTime = itemChange.Time;
+            }
+
+            return itemChangeAfterStartTime
+                ? maximumEquipmentValueAfterStartTime
+                : maximumEquipmentValue;
+        }
+
+        /// <summary>
+        /// Returns the items the player had in his inventory at the specified time
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="equipmentDict"></param>
+        /// <param name="round"></param>
+        /// <param name="time"></param>
+        /// <param name="steamId"></param>
+        /// <returns></returns>
+        public static List<EquipmentElement> Inventory(this MatchDataSet data, short round, int time, long steamId)
+        {
+            var itemPossessionChanges = data.GetItemPossessionChanges(round, steamId)
+                .Where(x => x.Time <= time);
+
+            var itemsObtained = itemPossessionChanges
+                .Where(x=>x.Obtained == true)
+                .ToList();
+
+            var itemsDropped = itemPossessionChanges
+                .Where(x => x.Obtained == false)
+                .ToList();
+
+            // Remove items from itemsObtained that were dropped
+            foreach (var drop in itemsDropped)
+            {
+                // Remove last occurence of this item being obtained before the drop
+                var obtain = itemsObtained.Where(x => x.ItemId == drop.ItemId)
+                    .Where(x => x.Time <= drop.Time)
+                    .OrderByDescending(x => x.Time)
+                    .First();
+
+                itemsObtained.Remove(obtain);
+            }
+
+            // The inventory are all the items the player obtained but did not drop
+            var inventory = itemsObtained
+                .Select(x => x.Equipment)
+                .ToList();
+
+            return inventory;
+        }
+
+
+        /// <summary>
+        /// Returns all items the player obtained or lost during the round until the specified time.
+        /// 
+        /// Time for ItemSaved's from last round defaults to StartTime of this round.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="round"></param>
+        /// <param name="steamId"></param>
+        /// <returns></returns>
+        public static IEnumerable<ItemPossessionChange> GetItemPossessionChanges(this MatchDataSet data, short round, long steamId)
+        {
+            var roundStartTime = data.RoundStatsList.Single(x => x.Round == round).StartTime;
+
+            // Get items that were saved from last round
+            var savedItems = data.ItemSavedList
+                .Where(x => x.Round == round && x.PlayerId == steamId)
+                .Select(x => new ItemPossessionChange(x.ItemId, x.Equipment, roundStartTime, true));
+
+            // Get items that were picked up until the specified time
+            var pickUps = data.ItemPickedUpList
+                .Where(x => x.Round == round && x.PlayerId == steamId)
+                .Select(x => new ItemPossessionChange(x.ItemId, x.Equipment, x.Time, true));
+
+            // Get items that were dropped until the specified time
+            var drops = data.ItemDroppedList
+                .Where(x => x.Round == round && x.PlayerId == steamId)
+                .Select(x => new ItemPossessionChange(x.ItemId, x.Equipment, x.Time, false));
+
+            return savedItems
+                .Union(pickUps)
+                .Union(drops);
+        }
+
+
+
+        public struct ItemPossessionChange
+        {
+            public ItemPossessionChange(long itemId, EquipmentElement equipment, int possessionChangeTime, bool obtained)
+            {
+                ItemId = itemId;
+                Equipment = equipment;
+                Time = possessionChangeTime;
+                Obtained = obtained;
+            }
+
+            public long ItemId { get; set; }
+            public EquipmentElement Equipment { get; set; }
+            public int Time { get; set; }
+
+            /// <summary>
+            /// Whether or not this item was added or removed from the player's inventory.
+            /// </summary>
+            public bool Obtained { get; set; }
+        }
+
         #endregion
 
         #region Weapon related
