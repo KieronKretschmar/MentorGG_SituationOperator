@@ -93,7 +93,7 @@ namespace SituationOperator.SituationManagers
                     var pickUp = data.ItemPickedUpList
                         .Where(x => x.Equipment == EquipmentElement.Bomb)
                         .Where(x => x.Round == bombDrop.Round)
-                        .Where(x => bombDrop.Time < x.Time)
+                        .Where(x => bombDrop.Time <= x.Time)
                         .OrderBy(x=>x.Time)
                         .FirstOrDefault();
 
