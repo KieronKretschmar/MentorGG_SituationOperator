@@ -89,7 +89,7 @@ namespace SituationOperator.SituationManagers
                         .Where(x => x.Round == round.Round && x.Equipment == EquipmentElement.DefuseKit && x.Buy);
 
                     var defusersSavedFromLastRound = data.ItemSavedList
-                        .Where(x => x.Equipment == EquipmentElement.DefuseKit && x.Round == round.Round - 1);
+                        .Where(x => x.Equipment == EquipmentElement.DefuseKit && x.Round == round.Round);
 
                     // Apply MAX_TEAM_DEFUSEKITS condition
                     if (defusersBought.Count() + defusersSavedFromLastRound.Count() >= MAX_TEAM_DEFUSEKITS)
