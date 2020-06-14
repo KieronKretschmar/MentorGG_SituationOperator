@@ -26,8 +26,24 @@ namespace SituationOperator.SituationManagers
     {
         /// <summary>
         /// Minimum fraction of inaccurate shots in the burst to count as a misplay.
+        /// 
+        /// Either this condition or INACCURATE_SHOTS_MIN_FRACTION needs to hold.
         /// </summary>
-        private const double MIN_INACCURATE_SHOT_FRACTION = 0.3;
+        private const int INACCURATE_SHOTS_MIN_BULLETS = 4;
+
+        /// <summary>
+        /// Minimum fraction of inaccurate shots in the burst to count as a misplay.
+        /// 
+        /// Either this condition or INACCURATE_SHOTS_MIN_BULLETS needs to hold.
+        /// </summary>
+        private const double INACCURATE_SHOTS_MIN_FRACTION = 0.45;
+
+        /// <summary>
+        /// Minimum fraction of the weapon's possible maximum velocity a player must have moved at to count a bullet as inaccurate.
+        /// 
+        /// Value is a bit higher than the real value of 0.34 to ignore hard to decide cases that may look like false positives.
+        /// </summary>
+        private const double MIN_SPEED_FRACTION_TO_COUNT_AS_INACCURATE = 0.40;
 
         /// <summary>
         /// Maximum time passed without damage being dealt by or to the player after end of burst to count as a misplay.
@@ -36,6 +52,11 @@ namespace SituationOperator.SituationManagers
         /// Set value to -1 to ignore this condition.
         /// </summary>
         private const int MAX_TIME_BEFORE_FIGHT = 2000;
+
+        /// <summary>
+        /// Minimum distance the fighting opponent must have been away from the player to count as a misplay.
+        /// </summary>
+        private const double MIN_ENEMY_DISTANCE = 4.5;
 
         /// <summary>
         /// Minimum number of shots fired in quick succession to count as a burst.
@@ -140,17 +161,38 @@ namespace SituationOperator.SituationManagers
                     if (burst.WeaponFireds.Count < MIN_SHOTS)
                         continue;
 
-                    if ((double) burst.InaccurateBullets / burst.WeaponFireds.Count <= MIN_INACCURATE_SHOT_FRACTION)
-                        continue;
+                    // Apply INACCURATE_SHOTS condition(s)
+                    var maxVelocityToCountAsAccurate = burst.EquipmentInfo.MaxPlayerSpeed * MIN_SPEED_FRACTION_TO_COUNT_AS_INACCURATE;
+                    var inaccurateBullets = burst.WeaponFireds.Count(x => x.PlayerVelo.Length() > maxVelocityToCountAsAccurate);
+                    if(inaccurateBullets < INACCURATE_SHOTS_MIN_BULLETS)
+                    {
+                        if ((double)inaccurateBullets / burst.WeaponFireds.Count < INACCURATE_SHOTS_MIN_FRACTION)
+                            continue;
+                    }
 
-                    // ignore bursts where the player took place in no time during or after the burst
+                    // Apply MAX_TIME_BEFORE_FIGHT by ignoring bursts where the player took place in no time during or after the burst
                     var fightTimeFrameStart = burst.WeaponFireds.First().Time;
                     var fightTimeFrameEnd = burst.WeaponFireds.Last().Time + MAX_TIME_BEFORE_FIGHT;
 
-                    if (!data.PlayerDealtOrTookDamage(burst.PlayerId, startTime: fightTimeFrameStart, endTime: fightTimeFrameEnd, requireEnemyDamage: true)) 
+                    var firstDamageTaken = data.DamageTakens(burst.PlayerId, startTime: fightTimeFrameStart, endTime: fightTimeFrameEnd, requireEnemyDamage: true)
+                        .FirstOrDefault();
+                    var firstDamageDealt = data.DamageDealts(burst.PlayerId, startTime: fightTimeFrameStart, endTime: fightTimeFrameEnd, requireEnemyDamage: true)
+                        .FirstOrDefault();
+                    if (firstDamageTaken == null && firstDamageDealt == null) 
                     {
                         continue;
                     }
+
+                    float enemyDistance = 0;
+                    if (firstDamageTaken != null)
+                        enemyDistance = (firstDamageTaken.PlayerPos - firstDamageTaken.VictimPos).Length();
+                    else if (firstDamageDealt != null)
+                        enemyDistance = (firstDamageDealt.PlayerPos - firstDamageDealt.VictimPos).Length();
+
+                    if (enemyDistance < UnitConverter.MetersToUnits(MIN_ENEMY_DISTANCE))
+                        continue;
+
+
 
                     if(MIN_DISTANCE_FROM_SMOKE_CENTER != -1)
                     {
