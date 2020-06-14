@@ -29,14 +29,11 @@ namespace SituationDatabase.Models
         public Clutch(
             RoundStats roundStats,
             long steamId,
-            int enemiesAlive,
-            int equipmentValue,
-            int enemyEquipmentValue
-            ) : base(roundStats.MatchId, roundStats.Round, roundStats.StartTime, steamId)
+            int clutchStartTime,
+            int enemiesAlive
+            ) : base(roundStats.MatchId, roundStats.Round, clutchStartTime, steamId)
         {
             EnemiesAlive = enemiesAlive;
-            EquipmentValue = equipmentValue;
-            EnemyEquipmentValue = enemyEquipmentValue;
             WinType = roundStats.WinType;
         }
 
@@ -44,16 +41,6 @@ namespace SituationDatabase.Models
         /// Number of enemies alive when the player's last teammate died.
         /// </summary>
         public int EnemiesAlive { get; set; }
-
-        /// <summary>
-        /// Amount of money the player's equipment was worth (at RoundStart).
-        /// </summary>
-        public int EquipmentValue { get; set; }
-
-        /// <summary>
-        /// Amount of money the surviving enemies' equipment was worth (at RoundStart).
-        /// </summary>
-        public int EnemyEquipmentValue { get; set; }
 
         /// <summary>
         /// The round's WinType.

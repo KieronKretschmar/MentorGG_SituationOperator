@@ -24,7 +24,7 @@ namespace SituationOperator.SituationManagers
         /// <summary>
         /// Minimum required time the player must have flashed themselves to count as a misplay.
         /// </summary>
-        private const int MIN_TIME_FLASHED_SELF = 500;
+        private const int MIN_TIME_FLASHED_SELF = 1000;
 
         /// <summary>
         /// When enemies were flashed at least this value times longer than the thrower, it does not count as a misplay.
@@ -70,7 +70,9 @@ namespace SituationOperator.SituationManagers
         {
             var misplays = new List<SelfFlash>();
 
-            foreach (var flash in data.FlashList)
+            var flashes = data.FlashList
+                .Where(x => data.HappenedAfterRoundEnd(x) == false);
+            foreach (var flash in flashes)
             {
                 var flasheds = data.FlashedsByFlash(flash);
                 var timeFlashedSelf = flasheds.Where(x => x.VictimId == flash.PlayerId).SingleOrDefault()?.TimeFlashed ?? 0;

@@ -25,10 +25,10 @@ namespace SituationOperator.SituationManagers
         /// <summary>
         /// Minimum amount of money the player still had available after finishing his buys to count as a misplay.
         /// </summary>
-        private const int MIN_MONEY_LEFT_OVER = 400;
+        private const int MIN_MONEY_LEFT_OVER = 1000;
 
         /// <summary>
-        /// Minimum value of the equipment the player's team carried after finishing his buys to count as a misplay.
+        /// Minimum value of the equipment the player's team carried within 10 seconds of FreezeTimeEnd to count as a misplay.
         /// 
         /// Reason: To avoid counting Ecos.
         /// </summary>
@@ -69,40 +69,47 @@ namespace SituationOperator.SituationManagers
         protected override async Task<IEnumerable<HasNotBoughtDefuseKit>> ExtractSituationsAsync(MatchDataSet data)
         {
             var misplays = new List<HasNotBoughtDefuseKit>();
-
-            foreach (var round in data.RoundStatsList)
+            using (var scope = _sp.CreateScope())
             {
-                var ctPlayerRounds = data.PlayerRoundStatsList.Where(x => x.Round == round.Round && x.IsCt);
+                var equipmentHelper = _sp.GetRequiredService<IEquipmentHelper>();
+                var equipmentDict = equipmentHelper.GetEquipmentDict(data.MatchStats);
 
-                // Apply MIN_TEAM_EQUIPMENT_VALUE condition
-                var ctEquipmentValue = ctPlayerRounds.Select(x => (int?)x.PlayedEquipmentValue).Sum() ?? 0;
-                if (ctEquipmentValue <= MIN_TEAM_EQUIPMENT_VALUE)
-                    continue;
-
-                var defusersBought = data.ItemPickedUpList
-                    .Where(x => x.Round == round.Round && x.Equipment == EquipmentElement.DefuseKit && x.Buy);
-
-                var defusersSavedFromLastRound = data.ItemSavedList
-                    .Where(x => x.Equipment == EquipmentElement.DefuseKit && x.Round == round.Round - 1);
-
-                // Apply MAX_TEAM_DEFUSEKITS condition
-                if (defusersBought.Count() + defusersSavedFromLastRound.Count() >= MAX_TEAM_DEFUSEKITS)
-                    continue;
-
-                foreach (var ctPlayerRound in ctPlayerRounds)
+                foreach (var round in data.RoundStatsList)
                 {
-                    var steamId = ctPlayerRound.PlayerId;
+                    var ctPlayerRounds = data.PlayerRoundStatsList.Where(x => x.Round == round.Round && x.IsCt);
 
-                    // If the player had a kit, continue
-                    if (defusersBought.Any(x => x.PlayerId == steamId) || defusersSavedFromLastRound.Any(x => x.PlayerId == steamId))
+                    // Apply MIN_TEAM_EQUIPMENT_VALUE condition
+                    var lastMomentToMeasureEquipmentValue = round.StartTime + data.GetMatchSettings().FreezeTime + 10000;
+                    var ctEquipmentValue = data.MaximumTeamEquipmentValue(equipmentDict, round.Round, true, endTime: lastMomentToMeasureEquipmentValue);
+
+                    if (ctEquipmentValue <= MIN_TEAM_EQUIPMENT_VALUE)
                         continue;
 
-                    // Apply MIN_MONEY_LEFT_OVER condition
-                    var moneyLeftAfterSpending = ctPlayerRound.MoneyInitial - ctPlayerRound.MoneySpent;
-                    if (moneyLeftAfterSpending < MIN_MONEY_LEFT_OVER)
+                    var defusersBought = data.ItemPickedUpList
+                        .Where(x => x.Round == round.Round && x.Equipment == EquipmentElement.DefuseKit && x.Buy);
+
+                    var defusersSavedFromLastRound = data.ItemSavedList
+                        .Where(x => x.Equipment == EquipmentElement.DefuseKit && x.Round == round.Round);
+
+                    // Apply MAX_TEAM_DEFUSEKITS condition
+                    if (defusersBought.Count() + defusersSavedFromLastRound.Count() >= MAX_TEAM_DEFUSEKITS)
                         continue;
 
-                    misplays.Add(new HasNotBoughtDefuseKit(round, steamId, defusersBought.Count() + defusersSavedFromLastRound.Count(), moneyLeftAfterSpending, ctEquipmentValue, ctPlayerRound.PlayedEquipmentValue));
+                    foreach (var ctPlayerRound in ctPlayerRounds)
+                    {
+                        var steamId = ctPlayerRound.PlayerId;
+
+                        // If the player had a kit, continue
+                        if (defusersBought.Any(x => x.PlayerId == steamId) || defusersSavedFromLastRound.Any(x => x.PlayerId == steamId))
+                            continue;
+
+                        // Apply MIN_MONEY_LEFT_OVER condition
+                        var moneyLeftAfterSpending = ctPlayerRound.MoneyInitial - ctPlayerRound.MoneySpent;
+                        if (moneyLeftAfterSpending < MIN_MONEY_LEFT_OVER)
+                            continue;
+
+                        misplays.Add(new HasNotBoughtDefuseKit(round, steamId, defusersBought.Count() + defusersSavedFromLastRound.Count(), moneyLeftAfterSpending, ctEquipmentValue, ctPlayerRound.PlayedEquipmentValue));
+                    }
                 }
             }
 

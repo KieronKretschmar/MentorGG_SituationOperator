@@ -94,8 +94,11 @@ namespace SituationOperator.Helpers
 
             /// <summary>
             /// Maximum velocity a player can move at to shoot accurately with this weapon. 
+            /// 
+            /// Raised from 34% to 38% to reduce number of false positives.
+            /// See https://www.youtube.com/watch?v=ZgjYxBRuagA for more info.
             /// </summary>
-            private double MaxAccurateVelocity => (double)EquipmentInfo.MaxPlayerSpeed / 3;
+            private double MaxAccurateVelocity => EquipmentInfo.MaxPlayerSpeed * 0.38;
 
             /// <summary>
             /// Maximum time the weapon needs between two shots.
@@ -103,6 +106,8 @@ namespace SituationOperator.Helpers
             private double MaxAllowedTimeBetweenShots { get; set; }
 
             public int InaccurateBullets => WeaponFireds.Count(x => x.PlayerVelo.Length() > MaxAccurateVelocity);
+
+            public int StartTime => WeaponFireds.First().Time;
 
             /// <summary>
             /// 

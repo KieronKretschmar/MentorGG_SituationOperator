@@ -113,6 +113,8 @@ namespace SituationOperator
                 $"v1/public/match/{matchId}/matchdataset");
 
             var response = await client.SendAsync(message);
+            response.EnsureSuccessStatusCode();
+
             var json = await response.Content.ReadAsStringAsync();
             var match = MatchDataSet.FromJson(json);
 

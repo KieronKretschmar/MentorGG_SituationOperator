@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SituationDatabase;
 
 namespace SituationDatabase.Migrations
 {
     [DbContext(typeof(SituationContext))]
-    partial class SituationContextModelSnapshot : ModelSnapshot
+    [Migration("20200612082631_release-0.4.0-1")]
+    partial class release0401
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -189,9 +191,6 @@ namespace SituationDatabase.Migrations
                     b.Property<int>("MoneyLeft")
                         .HasColumnType("int");
 
-                    b.Property<int>("PlayerEquipmentValue")
-                        .HasColumnType("int");
-
                     b.Property<short>("Round")
                         .HasColumnType("smallint");
 
@@ -200,9 +199,6 @@ namespace SituationDatabase.Migrations
 
                     b.Property<long>("SteamId")
                         .HasColumnType("bigint");
-
-                    b.Property<int>("TeamEquipmentValue")
-                        .HasColumnType("int");
 
                     b.HasKey("MatchId", "Id");
 

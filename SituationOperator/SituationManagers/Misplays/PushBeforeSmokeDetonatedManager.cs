@@ -39,7 +39,14 @@ namespace SituationOperator.SituationManagers
         /// 
         /// Set value to -1 to ignore this condition.
         /// </summary>
-        private const bool REQUIRE_TEAM_THROWER = false;
+        private const bool REQUIRE_TEAM_THROWER = true;
+
+        /// <summary>
+        /// If the player's last known position this many milliseconds before the smoke popped would not have been covered by the smoke, he did not push and therefore it does not count as a misplay.
+        /// 
+        /// Note that value needs to be lower than it should be by intuition, to make up for inaccuracy of last known position due to missing PlayerPositions with low FPS.
+        /// </summary>
+        private const int TIME_BEFORE_DETONATION_FOR_PUSH_CONDITION = 3000;
 
         private readonly IServiceProvider _sp;
         private readonly ILogger<PushBeforeSmokeDetonatedManager> _logger;
@@ -99,7 +106,8 @@ namespace SituationOperator.SituationManagers
                     foreach (var damage in damages)
                     {
                         // Apply REQUIRE_TEAM_THROWER condition
-                        if (REQUIRE_TEAM_THROWER && damage.IsCt != smoke.IsCt)
+                        var victimIsCt = damage.IsCt == damage.TeamAttack;
+                        if (REQUIRE_TEAM_THROWER && victimIsCt != smoke.IsCt)
                             continue;
 
                         // Ignore if the smoke would not have blocked the bullets trajectory
@@ -107,6 +115,11 @@ namespace SituationOperator.SituationManagers
                         {
                             continue;
                         }
+
+                        // Ignore if the player did not push into the smoke by checking whether he just recently moved into the critical area
+                        var victimPosBeforeSmokePopped = data.LastPlayerPos(damage.VictimId, smoke.GetDetonationTime() - TIME_BEFORE_DETONATION_FOR_PUSH_CONDITION).PlayerPos;
+                        if (smoke.BlocksLineOfSight(damage.PlayerPos, victimPosBeforeSmokePopped))
+                            continue;
 
                         misplays.Add(new PushBeforeSmokeDetonated(smoke, damage));
                     }

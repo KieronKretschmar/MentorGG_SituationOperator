@@ -29,6 +29,9 @@ namespace SituationOperatorTestProject
         [DataTestMethod]
         public async Task WorkJson(string jsonFileName)
         {
+            // Make sure not to connect to real database with this testmethod. Use WorkFromMatchRetriever instead so MatchIds won't get mixed up.
+            Assert.IsFalse(TestHelper.GetConnectionString().Contains(".mysql.database.azure.com"));
+
             var matchDataSet = TestHelper.GetTestMatchData(jsonFileName);
             SituationContext context = TestHelper.GetRealContext();
             var managerProvider = TestHelper.GetRealProvider(context);

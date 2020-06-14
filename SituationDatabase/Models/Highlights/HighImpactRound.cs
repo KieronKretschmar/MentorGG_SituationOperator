@@ -29,11 +29,11 @@ namespace SituationDatabase.Models
         public HighImpactRound(
             RoundStats roundStats,
             long steamId,
-            int kills,
+            List<Kill> kills,
             int damageDealt
-            ) : base(roundStats.MatchId, roundStats.Round, roundStats.StartTime, steamId)
+            ) : base(roundStats.MatchId, roundStats.Round, kills.First().Time, steamId)
         {
-            Kills = kills;
+            Kills = kills.Count();
             DamageDealt = damageDealt;
         }
 

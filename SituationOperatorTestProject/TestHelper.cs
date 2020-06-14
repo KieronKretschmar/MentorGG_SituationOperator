@@ -1,6 +1,9 @@
-﻿using MatchEntities;
+﻿using EquipmentLib;
+using MatchEntities;
+using MatchEntities.Enums;
 using Microsoft.DotNet.PlatformAbstractions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using RabbitCommunicationLib.Interfaces;
@@ -8,6 +11,7 @@ using RabbitCommunicationLib.TransferModels;
 using SituationDatabase;
 using SituationOperator;
 using SituationOperator.Communications;
+using SituationOperator.Helpers;
 using SituationOperator.SituationManagers;
 using System;
 using System.Collections.Generic;
@@ -81,15 +85,19 @@ namespace SituationOperatorTestProject
         /// <returns></returns>
         public static SituationContext GetRealContext()
         {
-            var connStringPath = GetTestFilePath("ConnectionString.txt");
-            var connString = File.ReadAllText(connStringPath);
             var options = new DbContextOptionsBuilder<SituationContext>()
-                .UseMySql(connString)
+                .UseMySql(GetConnectionString())
                 .Options;
             var context = new SituationContext(options);
             return context;
         }
 
+        public static string GetConnectionString()
+        {
+            var connStringPath = GetTestFilePath("ConnectionString.txt");
+            var connString = File.ReadLines(connStringPath).First();
+            return connString;
+        }
 
         #endregion
 
@@ -260,6 +268,15 @@ namespace SituationOperatorTestProject
         public static IMatchWorker GetMockMatchWorker()
         {
             return new Mock<IMatchWorker>().Object;
+        }
+
+        public static Dictionary<EquipmentElement, EquipmentInfo> GetEquipmentDict(Source source, DateTime matchDate)
+        {
+            var spHelper = new MockServiceProviderHelper();
+            spHelper.AddHelperServices();
+            var eqHelper = spHelper.ServiceProviderMock.Object.GetRequiredService<IEquipmentHelper>();
+            var eqDict = eqHelper.GetEquipmentDict(source, matchDate);
+            return eqDict;
         }
         #endregion
 
