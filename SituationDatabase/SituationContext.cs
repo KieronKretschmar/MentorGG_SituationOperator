@@ -44,6 +44,10 @@ namespace SituationDatabase
         public virtual DbSet<MultiKill> MultiKill { get; set; }
         #endregion
 
+        #region Keyless
+        public virtual DbSet<SituationInfoByRank> RankDistribution { get; set; }
+        #endregion
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             #region MetaData
@@ -149,6 +153,10 @@ namespace SituationDatabase
             modelBuilder.AddSinglePlayerSituation<Clutch>("Clutch");
             modelBuilder.AddSinglePlayerSituation<HighImpactRound>("HighImpactRound");
             modelBuilder.AddSinglePlayerSituation<MultiKill>("MultiKill");
+            #endregion
+
+            #region Keyless
+            modelBuilder.Entity<SituationInfoByRank>().HasNoKey();
             #endregion
         }
     }
