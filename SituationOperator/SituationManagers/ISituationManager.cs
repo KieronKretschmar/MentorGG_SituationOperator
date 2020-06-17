@@ -2,10 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using SituationDatabase;
 using SituationDatabase.Enums;
+using SituationDatabase.Models;
 using SituationOperator.Enums;
 using SituationOperator.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -70,6 +72,14 @@ namespace SituationOperator.SituationManagers
         /// <param name="matchIds"></param>
         /// <returns></returns>
         Task<List<ISituation>> LoadSituationsAsync(List<long> matchIds);
+
+        /// <summary>
+        /// Returns Dictionary containing info about occurences of situations for different ranks with the (floored) rank as key.
+        /// </summary>
+        /// <param name="minAnalysisDate"></param>
+        /// <param name="maxAnalysisDate"></param>
+        /// <returns></returns>
+        Task<Dictionary<int, SituationInfoByRank>> GetDistribution(DateTime? minAnalysisDate = null, DateTime? maxAnalysisDate = null);
     }
 
     /// <summary>
@@ -148,6 +158,48 @@ namespace SituationOperator.SituationManagers
             var table = TableSelector(_context);
             var existingEntries = table.Where(x => matchIds.Contains(x.MatchId));
             var res = await existingEntries.Select(x => x as ISituation).ToListAsync();
+            return res;
+        }
+
+        /// <inheritdoc/>
+        public async Task<Dictionary<int, SituationInfoByRank>> GetDistribution(DateTime? minAnalysisDate = null, DateTime? maxAnalysisDate = null)
+        {
+            var table = TableSelector(_context);
+            var situationsQuery = table.Include(x => x.Match).AsQueryable();
+
+            var mysqlDateTimeFormat = "yyyy-MM-yy HH:MM:ss";
+
+            var dateCondition = "";
+
+            if (minAnalysisDate != null)
+            {
+                dateCondition += $" AND '{((DateTime)minAnalysisDate).ToString(mysqlDateTimeFormat)}' <= match.analysisdate ";
+            }
+
+            if (maxAnalysisDate != null)
+            {
+                dateCondition += $" AND match.analysisdate < '{((DateTime)maxAnalysisDate).ToString(mysqlDateTimeFormat)}' ";
+            }
+
+            var mysql = 
+                $"SELECT " +
+                $"  CAST(FLOOR(table1.AvgRank) AS SIGNED) AS AvgRank, " +
+                $"  SUM(table1.Rounds) AS RoundCount, " +
+                $"  SUM(table1.SituationCount) AS SituationCount " +
+                $"  FROM    ( " +
+                $"              SELECT match.AvgRank AS AvgRank, match.Rounds AS Rounds, COUNT(*) AS SituationCount FROM situationoperator.{SituationType.ToString().ToLowerInvariant()} " +
+                $"                  INNER JOIN situationoperator.match " +
+                $"                  ON {SituationType.ToString().ToLowerInvariant()}.MatchId = match.MatchId " +
+                $"              WHERE match.AvgRank IS NOT NULL {dateCondition}" +
+                $"              GROUP BY match.MatchId " +
+                $"          ) AS table1 " +
+                $"GROUP BY CAST(FLOOR(table1.AvgRank) AS SIGNED); ";
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            var res = await _context.RankDistribution.FromSqlRaw(mysql).ToDictionaryAsync(x => x.AvgRank, x => x);
+            sw.Stop();
+
             return res;
         }
 
