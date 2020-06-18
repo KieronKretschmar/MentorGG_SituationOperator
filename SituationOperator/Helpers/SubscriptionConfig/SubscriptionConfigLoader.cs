@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using SituationOperator.Enums;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -37,7 +38,8 @@ namespace SituationOperator.Helpers.SubscriptionConfig
         /// Instantiate the SubscriptionConfig.
         /// </summary>
         public SubscriptionConfigLoader(
-            ILogger<SubscriptionConfigLoader> logger)
+            ILogger<SubscriptionConfigLoader> logger
+            )
         {
             this._logger = logger;
             Config = LoadConfig();
@@ -80,6 +82,12 @@ namespace SituationOperator.Helpers.SubscriptionConfig
                 MatchAccessDurationInDays = 14,
                 DailyMatchesLimit = 3,
                 FirstAndLastRoundsForSituations = 1,
+            },
+            Influencer = new SubscriptionSettings
+            {
+                MatchAccessDurationInDays = 14,
+                DailyMatchesLimit = 3,
+                FirstAndLastRoundsForSituations = 2,
             },
             Premium = new SubscriptionSettings
             {

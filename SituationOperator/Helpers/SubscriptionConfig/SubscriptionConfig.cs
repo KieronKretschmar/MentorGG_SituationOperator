@@ -15,6 +15,8 @@ namespace SituationOperator.Helpers.SubscriptionConfig
     {
         public SubscriptionSettings Free { get; set; }
 
+        public SubscriptionSettings Influencer { get; set; }
+
         public SubscriptionSettings Premium { get; set; }
 
         public SubscriptionSettings Ultimate { get; set; }
@@ -28,6 +30,9 @@ namespace SituationOperator.Helpers.SubscriptionConfig
             {
                 case SubscriptionType.Free:
                     return Free;
+
+                case SubscriptionType.Influencer:
+                    return Influencer;
 
                 case SubscriptionType.Premium:
                     return Premium;
