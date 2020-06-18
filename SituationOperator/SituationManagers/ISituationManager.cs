@@ -183,7 +183,7 @@ namespace SituationOperator.SituationManagers
 
             var mysql = 
                 $"SELECT " +
-                $"  CAST(FLOOR(table1.AvgRank) AS SIGNED) AS AvgRank, " +
+                $"  CAST(ROUND(table1.AvgRank) AS SIGNED) AS AvgRank, " +
                 $"  SUM(table1.Rounds) AS RoundCount, " +
                 $"  SUM(table1.SituationCount) AS SituationCount " +
                 $"  FROM    ( " +
@@ -193,7 +193,7 @@ namespace SituationOperator.SituationManagers
                 $"              WHERE match.AvgRank IS NOT NULL {dateCondition}" +
                 $"              GROUP BY match.MatchId " +
                 $"          ) AS table1 " +
-                $"GROUP BY CAST(FLOOR(table1.AvgRank) AS SIGNED); ";
+                $"GROUP BY CAST(ROUND(table1.AvgRank) AS SIGNED); ";
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
