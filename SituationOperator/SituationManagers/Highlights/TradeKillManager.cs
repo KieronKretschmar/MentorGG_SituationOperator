@@ -67,64 +67,10 @@ namespace SituationOperator.SituationManagers
 
                         highlights.Add(new TradeKill(kill, tradeKill));
                     }
-                    
                 }
 
                 return highlights;
             }
         }
-
-        /// <summary>
-        /// Divides a list of kills into non-overlapping (sub-)lists of kills where the next one happened less than <paramref name="maxTimeBetweenKills"/> after the one before.
-        /// </summary>
-        /// <param name="kills"></param>
-        /// <param name="maxTimeBetweenKills"></param>
-        /// <returns></returns>
-        private List<List<Kill>> DivideIntoSituations(List<Kill> kills, int maxTimeBetweenKills)
-        {
-            var TradeKills = new List<List<Kill>>
-            {
-                new List<Kill>()
-            };
-
-            foreach (var kill in kills.OrderBy(x=>x.Time))
-            {
-                // Add, if this kill belongs to the last TradeKill
-                if (TradeKills.Last().Count == 0 || kill.Time - TradeKills.Last().Last().Time <= maxTimeBetweenKills)
-                {
-                    TradeKills.Last().Add(kill);
-                }
-                // Create new potential TradeKill
-                else
-                {
-                    TradeKills.Add(new List<Kill>());
-                    TradeKills.Last().Add(kill);
-                }
-            }
-
-            return TradeKills;
-        }
-
-        ///// <summary>
-        ///// Returns a boolean that indicate whether the player did not let go of the trigger between these kills.
-        ///// </summary>
-        ///// <param name="kills"></param>
-        ///// <returns></returns>
-        //private bool SingleSpray(List<Kill> kills, EquipmentInfo firstWeaponInfo, int tolerance)
-        //{
-            
-        //    var weapon = kills.First().Weapon;
-        //    if (kills.Any(x => x.Weapon != weapon))
-        //    {
-        //        return false;
-        //    }
-
-        //    var cycleTime = firstWeaponInfo.CycleTime;
-        //    foreach (var kill in collection)
-        //    {
-
-        //    }
-
-        //}
     }
 }

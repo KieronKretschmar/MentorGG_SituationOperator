@@ -138,27 +138,5 @@ namespace SituationOperator.SituationManagers
 
             return multiKills;
         }
-
-        ///// <summary>
-        ///// Returns a boolean that indicate whether the player did not let go of the trigger between these kills.
-        ///// </summary>
-        ///// <param name="kills"></param>
-        ///// <returns></returns>
-        //private bool SingleSpray(List<Kill> kills, EquipmentInfo firstWeaponInfo, int tolerance)
-        //{
-            
-        //    var weapon = kills.First().Weapon;
-        //    if (kills.Any(x => x.Weapon != weapon))
-        //    {
-        //        return false;
-        //    }
-
-        //    var cycleTime = firstWeaponInfo.CycleTime;
-        //    foreach (var kill in collection)
-        //    {
-
-        //    }
-
-        //}
     }
 }
