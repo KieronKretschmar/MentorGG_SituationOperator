@@ -23,6 +23,7 @@ namespace SituationOperator.Enums
         KillThroughSmoke = 210007,
         WallBangKill = 210008,
         CollateralKill = 210009,
+        FlashAssist = 210010,
 
         // 22XXXX For Team - Highlights
 

@@ -34,6 +34,7 @@ namespace SituationDatabase
         public virtual DbSet<KillThroughSmoke> KillThroughSmoke { get; set; }
         public virtual DbSet<WallBangKill> WallBangKill { get; set; }
         public virtual DbSet<CollateralKill> CollateralKill { get; set; }
+        public virtual DbSet<FlashAssist> FlashAssist { get; set; }
         #endregion
 
         #region Misplays - Singleplayer
@@ -149,6 +150,7 @@ namespace SituationDatabase
             modelBuilder.AddSinglePlayerSituation<KillThroughSmoke>("KillThroughSmoke");
             modelBuilder.AddSinglePlayerSituation<WallBangKill>("WallBangKill");
             modelBuilder.AddSinglePlayerSituation<CollateralKill>("CollateralKill");
+            modelBuilder.AddSinglePlayerSituation<FlashAssist>("FlashAssist");
             #endregion
 
             #region Misplays - SinglePlayer

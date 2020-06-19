@@ -102,6 +102,13 @@ namespace SituationOperatorTestProject
                     TestHelper.GetMockLogger<CollateralKillManager>(),
                     context)
                 );
+
+            managers.Add(
+                new FlashAssistManager(
+                    serviceProvider,
+                    TestHelper.GetMockLogger<FlashAssistManager>(),
+                    context)
+                );
             #endregion
 
             #region Highlights - Singleplayer
