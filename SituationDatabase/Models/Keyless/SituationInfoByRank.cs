@@ -6,10 +6,10 @@ namespace SituationDatabase.Models
 {
     public class SituationInfoByRank
     {
-        public int AvgRank { get; set; }
-        public int RoundCount { get; set; }
+        public int RankBeforeMatch { get; set; }
+        public int PlayerRoundCount { get; set; }
         public int SituationCount { get; set; }
 
-        public double SituationsPerRound => (double)SituationCount / RoundCount;
+        public double SituationsPerPlayerAndRound => (double)SituationCount / PlayerRoundCount;
     }
 }

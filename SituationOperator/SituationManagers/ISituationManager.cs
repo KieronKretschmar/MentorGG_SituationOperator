@@ -1,4 +1,5 @@
 ﻿using MatchEntities;
+using MatchEntities.Enums;
 using Microsoft.EntityFrameworkCore;
 using SituationDatabase;
 using SituationDatabase.Enums;
@@ -171,33 +172,56 @@ namespace SituationOperator.SituationManagers
 
             var dateCondition = "";
 
+            // Default to the matchdate from which on situations were analyzed
+            //minAnalysisDate = minAnalysisDate != null ? minAnalysisDate : DateTime.Parse("2020-06-01");
             if (minAnalysisDate != null)
             {
-                dateCondition += $" AND '{((DateTime)minAnalysisDate).ToString(mysqlDateTimeFormat)}' <= match.analysisdate ";
+                dateCondition += $" WHERE '{((DateTime)minAnalysisDate).ToString(mysqlDateTimeFormat)}' <= match.analysisdate ";
             }
 
             if (maxAnalysisDate != null)
             {
+                //var leadingWord = minAnalysisDate != null ? "AND" : "WHERE";
                 dateCondition += $" AND match.analysisdate < '{((DateTime)maxAnalysisDate).ToString(mysqlDateTimeFormat)}' ";
             }
 
-            var mysql = 
-                $"SELECT " +
-                $"  CAST(ROUND(table1.AvgRank) AS SIGNED) AS AvgRank, " +
-                $"  SUM(table1.Rounds) AS RoundCount, " +
-                $"  SUM(table1.SituationCount) AS SituationCount " +
-                $"  FROM    ( " +
-                $"              SELECT match.AvgRank AS AvgRank, match.Rounds AS Rounds, COUNT(*) AS SituationCount FROM situationoperator.{SituationType.ToString().ToLowerInvariant()} " +
-                $"                  INNER JOIN situationoperator.match " +
-                $"                  ON {SituationType.ToString().ToLowerInvariant()}.MatchId = match.MatchId " +
-                $"              WHERE match.AvgRank IS NOT NULL {dateCondition}" +
-                $"              GROUP BY match.MatchId " +
-                $"          ) AS table1 " +
-                $"GROUP BY CAST(ROUND(table1.AvgRank) AS SIGNED); ";
+            // Notes:
+            // - For PlayerRoundCount, each round of the match is counted once for every relevant player, even if he left the game for a few rounds
+            var mysql =
+                $"  SELECT SituationCountsByRank.RankBeforeMatch, PlayerRoundCount, SituationCount FROM " +
+                //  table SituationCountsByRank containing Ranks with corresponding SituationCounts
+                $"  ( " +
+                $"      SELECT RankBeforeMatch, COUNT(RankBeforeMatch) AS SituationCount FROM " +
+                //      table AllSituationsTable containing Ranks with corresponding SituationCounts
+                $"      ( " +
+                $"          SELECT playermatchstats.RankBeforeMatch, playermatchstats.SteamId FROM  " +
+                $"          situationoperator.{SituationType.ToString().ToLowerInvariant()} " +
+                $"          INNER JOIN matchdata.playermatchstats " +
+                $"          ON {SituationType.ToString().ToLowerInvariant()}.MatchId = playermatchstats.MatchId AND {SituationType.ToString().ToLowerInvariant()}.SteamId = playermatchstats.SteamId " +
+                $"          WHERE playermatchstats.SteamId > 0 " +
+                $"          {dateCondition} " +
+                $"      ) AS AllSituationsTable " +
+                $"      GROUP BY RankBeforeMatch " +
+                $"  ) AS SituationCountsByRank " +
+                $"  INNER JOIN " +
+                //  table RoundCountsByRank containing Ranks with corresponding RoundCounts
+                $"  ( " +
+                $"      SELECT RankBeforeMatch, SUM(PlayerRoundCount) AS PlayerRoundCount FROM " +
+                //      table RoundCountTable containing all PlayerMatches with Ranks and RoundCounts
+                $"      ( " +
+                $"          SELECT match.MatchId, playermatchstats.SteamId, playermatchstats.RankBeforeMatch, match.Rounds AS PlayerRoundCount FROM situationoperator.match " +
+                $"          INNER JOIN matchdata.playermatchstats " +
+                $"          ON match.MatchId = playermatchstats.MatchId " +
+                $"          WHERE playermatchstats.SteamId > 0 " +
+                $"          {dateCondition} " +
+                $"      ) AS RoundCountTable " +
+                $"      GROUP BY RankBeforeMatch " +
+                $"  ) AS RoundCountsByRank " +
+                $"  ON SituationCountsByRank.RankBeforeMatch = RoundCountsByRank.RankBeforeMatch ";
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            var res = await _context.RankDistribution.FromSqlRaw(mysql).ToDictionaryAsync(x => x.AvgRank, x => x);
+            var res = await _context.RankDistribution.FromSqlRaw(mysql).ToDictionaryAsync(x => x.RankBeforeMatch, x => x);
             sw.Stop();
 
             return res;
