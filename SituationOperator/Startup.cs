@@ -248,19 +248,6 @@ namespace SituationOperator
             #endregion
 
             #region SituationManagers
-
-            #region Misplays - Singleplayer
-            services.AddTransient<ISituationManager, SmokeFailManager>();
-            services.AddTransient<ISituationManager, DeathInducedBombDropManager>();
-            services.AddTransient<ISituationManager, SelfFlashManager>();
-            services.AddTransient<ISituationManager, TeamFlashManager>();
-            services.AddTransient<ISituationManager, RifleFiredWhileMovingManager>();
-            services.AddTransient<ISituationManager, UnnecessaryReloadManager>();
-            services.AddTransient<ISituationManager, PushBeforeSmokeDetonatedManager>();
-            services.AddTransient<ISituationManager, BombDropAtSpawnManager>();
-            services.AddTransient<ISituationManager, HasNotBoughtDefuseKitManager>();
-            #endregion
-
             #region Highlights - Singleplayer
             services.AddTransient<ISituationManager, EffectiveHeGrenadeManager>();
             services.AddTransient<ISituationManager, KillWithOwnFlashAssistManager>();
@@ -273,6 +260,17 @@ namespace SituationOperator
             services.AddTransient<ISituationManager, FlashAssistManager>();
             #endregion
 
+            #region Misplays - Singleplayer
+            services.AddTransient<ISituationManager, SmokeFailManager>();
+            services.AddTransient<ISituationManager, DeathInducedBombDropManager>();
+            services.AddTransient<ISituationManager, SelfFlashManager>();
+            services.AddTransient<ISituationManager, TeamFlashManager>();
+            services.AddTransient<ISituationManager, RifleFiredWhileMovingManager>();
+            services.AddTransient<ISituationManager, UnnecessaryReloadManager>();
+            services.AddTransient<ISituationManager, PushBeforeSmokeDetonatedManager>();
+            services.AddTransient<ISituationManager, BombDropAtSpawnManager>();
+            services.AddTransient<ISituationManager, HasNotBoughtDefuseKitManager>();
+            #endregion
             #endregion
 
             #region Other worker services
