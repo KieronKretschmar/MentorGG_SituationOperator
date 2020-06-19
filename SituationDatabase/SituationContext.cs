@@ -32,6 +32,7 @@ namespace SituationDatabase
         public virtual DbSet<MultiKill> MultiKill { get; set; }
         public virtual DbSet<TradeKill> TradeKill { get; set; }
         public virtual DbSet<KillThroughSmoke> KillThroughSmoke { get; set; }
+        public virtual DbSet<WallBangKill> WallBangKill { get; set; }
         #endregion
 
         #region Misplays - Singleplayer
@@ -145,6 +146,7 @@ namespace SituationDatabase
             modelBuilder.AddSinglePlayerSituation<MultiKill>("MultiKill");
             modelBuilder.AddSinglePlayerSituation<TradeKill>("TradeKill");
             modelBuilder.AddSinglePlayerSituation<KillThroughSmoke>("KillThroughSmoke");
+            modelBuilder.AddSinglePlayerSituation<WallBangKill>("WallBangKill");
             #endregion
 
             #region Misplays - SinglePlayer

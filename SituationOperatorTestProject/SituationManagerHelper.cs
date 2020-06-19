@@ -88,6 +88,13 @@ namespace SituationOperatorTestProject
                     TestHelper.GetMockLogger<KillThroughSmokeManager>(),
                     context)
                 );
+
+            managers.Add(
+                new WallBangKillManager(
+                    serviceProvider,
+                    TestHelper.GetMockLogger<WallBangKillManager>(),
+                    context)
+                );
             #endregion
 
             #region Highlights - Singleplayer
