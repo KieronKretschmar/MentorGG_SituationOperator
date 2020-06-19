@@ -61,7 +61,7 @@ namespace SituationOperator.SituationManagers
                 {
                     foreach (var kill in roundKills)
                     {
-                        var tradeKill = roundKills.SingleOrDefault(x => x.VictimId == kill.PlayerId && kill.Time <= x.Time + MAX_TIME_BETWEEN_KILLS);
+                        var tradeKill = roundKills.SingleOrDefault(x => x.VictimId == kill.PlayerId && x.Time <= kill.Time && kill.Time <= x.Time + MAX_TIME_BETWEEN_KILLS);
                         if (tradeKill == null)
                             continue;
 
