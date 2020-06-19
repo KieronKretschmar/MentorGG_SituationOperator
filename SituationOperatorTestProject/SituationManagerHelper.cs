@@ -18,6 +18,78 @@ namespace SituationOperatorTestProject
 
             // Add managers
             // Code could possibly be simplified by requiring a uniform constructor for all ISituationManagers.
+
+            #region Highlights - Singleplayer
+            managers.Add(
+                new EffectiveHeGrenadeManager(
+                    serviceProvider,
+                    TestHelper.GetMockLogger<EffectiveHeGrenadeManager>(),
+                    context)
+                );
+
+            managers.Add(
+                new KillWithOwnFlashAssistManager(
+                    TestHelper.GetMockLogger<KillWithOwnFlashAssistManager>(),
+                    context)
+                );
+
+            managers.Add(
+                new ClutchManager(
+                    serviceProvider,
+                    TestHelper.GetMockLogger<ClutchManager>(),
+                    context)
+                );
+
+            managers.Add(
+                new HighImpactRoundManager(
+                    serviceProvider,
+                    TestHelper.GetMockLogger<HighImpactRoundManager>(),
+                    context)
+                );
+
+            managers.Add(
+                new MultiKillManager(
+                    serviceProvider,
+                    TestHelper.GetMockLogger<MultiKillManager>(),
+                    context)
+                );
+
+            managers.Add(
+                new TradeKillManager(
+                    serviceProvider,
+                    TestHelper.GetMockLogger<TradeKillManager>(),
+                    context)
+                );
+
+            managers.Add(
+                new KillThroughSmokeManager(
+                    serviceProvider,
+                    TestHelper.GetMockLogger<KillThroughSmokeManager>(),
+                    context)
+                );
+
+            managers.Add(
+                new WallBangKillManager(
+                    serviceProvider,
+                    TestHelper.GetMockLogger<WallBangKillManager>(),
+                    context)
+                );
+
+            managers.Add(
+                new CollateralKillManager(
+                    serviceProvider,
+                    TestHelper.GetMockLogger<CollateralKillManager>(),
+                    context)
+                );
+
+            managers.Add(
+                new FlashAssistManager(
+                    serviceProvider,
+                    TestHelper.GetMockLogger<FlashAssistManager>(),
+                    context)
+                );
+            #endregion
+
             #region Misplays - Singleplayer
             managers.Add(
                 new SmokeFailManager(
@@ -81,79 +153,7 @@ namespace SituationOperatorTestProject
                     TestHelper.GetMockLogger<HasNotBoughtDefuseKitManager>(),
                     context)
                 );
-
-            managers.Add(
-                new KillThroughSmokeManager(
-                    serviceProvider,
-                    TestHelper.GetMockLogger<KillThroughSmokeManager>(),
-                    context)
-                );
-
-            managers.Add(
-                new WallBangKillManager(
-                    serviceProvider,
-                    TestHelper.GetMockLogger<WallBangKillManager>(),
-                    context)
-                );
-
-            managers.Add(
-                new CollateralKillManager(
-                    serviceProvider,
-                    TestHelper.GetMockLogger<CollateralKillManager>(),
-                    context)
-                );
-
-            managers.Add(
-                new FlashAssistManager(
-                    serviceProvider,
-                    TestHelper.GetMockLogger<FlashAssistManager>(),
-                    context)
-                );
             #endregion
-
-            #region Highlights - Singleplayer
-            managers.Add(
-                new EffectiveHeGrenadeManager(
-                    serviceProvider,
-                    TestHelper.GetMockLogger<EffectiveHeGrenadeManager>(),
-                    context)
-                );
-
-            managers.Add(
-                new KillWithOwnFlashAssistManager(
-                    TestHelper.GetMockLogger<KillWithOwnFlashAssistManager>(),
-                    context)
-                );
-
-            managers.Add(
-                new ClutchManager(
-                    serviceProvider,
-                    TestHelper.GetMockLogger<ClutchManager>(),
-                    context)
-                );
-
-            managers.Add(
-                new HighImpactRoundManager(
-                    serviceProvider,
-                    TestHelper.GetMockLogger<HighImpactRoundManager>(),
-                    context)
-                );
-
-            managers.Add(
-                new MultiKillManager(
-                    serviceProvider,
-                    TestHelper.GetMockLogger<MultiKillManager>(),
-                    context)
-                );
-
-            managers.Add(
-                new TradeKillManager(
-                    serviceProvider,
-                    TestHelper.GetMockLogger<TradeKillManager>(),
-                    context)
-                );
-            #endregion
-
 
             return managers;
         }
