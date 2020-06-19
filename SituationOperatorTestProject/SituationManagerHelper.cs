@@ -95,6 +95,13 @@ namespace SituationOperatorTestProject
                     TestHelper.GetMockLogger<WallBangKillManager>(),
                     context)
                 );
+
+            managers.Add(
+                new CollateralKillManager(
+                    serviceProvider,
+                    TestHelper.GetMockLogger<CollateralKillManager>(),
+                    context)
+                );
             #endregion
 
             #region Highlights - Singleplayer

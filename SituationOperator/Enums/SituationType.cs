@@ -22,6 +22,7 @@ namespace SituationOperator.Enums
         TradeKill = 210006,
         KillThroughSmoke = 210007,
         WallBangKill = 210008,
+        CollateralKill = 210009,
 
         // 22XXXX For Team - Highlights
 
