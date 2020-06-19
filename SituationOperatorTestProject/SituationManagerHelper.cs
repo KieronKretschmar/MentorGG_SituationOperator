@@ -81,6 +81,13 @@ namespace SituationOperatorTestProject
                     TestHelper.GetMockLogger<HasNotBoughtDefuseKitManager>(),
                     context)
                 );
+
+            managers.Add(
+                new KillThroughSmokeManager(
+                    serviceProvider,
+                    TestHelper.GetMockLogger<KillThroughSmokeManager>(),
+                    context)
+                );
             #endregion
 
             #region Highlights - Singleplayer

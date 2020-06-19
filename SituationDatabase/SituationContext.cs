@@ -31,6 +31,7 @@ namespace SituationDatabase
         public virtual DbSet<HighImpactRound> HighImpactRound { get; set; }
         public virtual DbSet<MultiKill> MultiKill { get; set; }
         public virtual DbSet<TradeKill> TradeKill { get; set; }
+        public virtual DbSet<KillThroughSmoke> KillThroughSmoke { get; set; }
         #endregion
 
         #region Misplays - Singleplayer
@@ -143,6 +144,7 @@ namespace SituationDatabase
             modelBuilder.AddSinglePlayerSituation<HighImpactRound>("HighImpactRound");
             modelBuilder.AddSinglePlayerSituation<MultiKill>("MultiKill");
             modelBuilder.AddSinglePlayerSituation<TradeKill>("TradeKill");
+            modelBuilder.AddSinglePlayerSituation<KillThroughSmoke>("KillThroughSmoke");
             #endregion
 
             #region Misplays - SinglePlayer

@@ -20,6 +20,7 @@ namespace SituationOperator.Enums
         HighImpactRound = 210004,
         MultiKill = 210005,
         TradeKill = 210006,
+        KillThroughSmoke = 210007,
 
         // 22XXXX For Team - Highlights
 
