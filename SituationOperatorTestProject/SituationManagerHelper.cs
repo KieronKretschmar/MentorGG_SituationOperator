@@ -117,6 +117,13 @@ namespace SituationOperatorTestProject
                     TestHelper.GetMockLogger<MultiKillManager>(),
                     context)
                 );
+
+            managers.Add(
+                new TradeKillManager(
+                    serviceProvider,
+                    TestHelper.GetMockLogger<TradeKillManager>(),
+                    context)
+                );
             #endregion
 
 

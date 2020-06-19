@@ -42,6 +42,7 @@ namespace SituationDatabase
         public virtual DbSet<Clutch> Clutch { get; set; }
         public virtual DbSet<HighImpactRound> HighImpactRound { get; set; }
         public virtual DbSet<MultiKill> MultiKill { get; set; }
+        public virtual DbSet<TradeKill> TradeKill { get; set; }
         #endregion
 
         #region Keyless
@@ -153,6 +154,7 @@ namespace SituationDatabase
             modelBuilder.AddSinglePlayerSituation<Clutch>("Clutch");
             modelBuilder.AddSinglePlayerSituation<HighImpactRound>("HighImpactRound");
             modelBuilder.AddSinglePlayerSituation<MultiKill>("MultiKill");
+            modelBuilder.AddSinglePlayerSituation<TradeKill>("TradeKill");
             #endregion
 
             #region Keyless

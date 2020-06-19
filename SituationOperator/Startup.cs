@@ -267,6 +267,7 @@ namespace SituationOperator
             services.AddTransient<ISituationManager, ClutchManager>();
             services.AddTransient<ISituationManager, HighImpactRoundManager>();
             services.AddTransient<ISituationManager, MultiKillManager>();
+            services.AddTransient<ISituationManager, TradeKillManager>();
             #endregion
 
             #endregion

@@ -19,6 +19,7 @@ namespace SituationOperator.Enums
         Clutch = 210003,
         HighImpactRound = 210004,
         MultiKill = 210005,
+        TradeKill = 210006,
 
         // 22XXXX For Team - Highlights
 
