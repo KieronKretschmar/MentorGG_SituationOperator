@@ -47,6 +47,7 @@ namespace SituationDatabase
         public virtual DbSet<PushBeforeSmokeDetonated> PushBeforeSmokeDetonated { get; set; }
         public virtual DbSet<BombDropAtSpawn> BombDropAtSpawn { get; set; }
         public virtual DbSet<HasNotBoughtDefuseKit> HasNotBoughtDefuseKit { get; set; }
+        public virtual DbSet<MissedTradeKill> MissedTradeKill { get; set; }
         #endregion
 
         #region Keyless
@@ -163,6 +164,7 @@ namespace SituationDatabase
             modelBuilder.AddSinglePlayerSituation<PushBeforeSmokeDetonated>("PushBeforeSmokeDetonated");
             modelBuilder.AddSinglePlayerSituation<BombDropAtSpawn>("BombDropAtSpawn");
             modelBuilder.AddSinglePlayerSituation<HasNotBoughtDefuseKit>("HasNotBoughtDefuseKit");
+            modelBuilder.AddSinglePlayerSituation<MissedTradeKill>("MissedTradeKill");
             #endregion
 
             #region Keyless

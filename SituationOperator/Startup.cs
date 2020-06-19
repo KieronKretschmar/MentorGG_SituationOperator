@@ -270,6 +270,7 @@ namespace SituationOperator
             services.AddTransient<ISituationManager, PushBeforeSmokeDetonatedManager>();
             services.AddTransient<ISituationManager, BombDropAtSpawnManager>();
             services.AddTransient<ISituationManager, HasNotBoughtDefuseKitManager>();
+            services.AddTransient<ISituationManager, MissedTradeKillManager>();
             #endregion
             #endregion
 

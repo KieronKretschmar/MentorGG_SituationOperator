@@ -153,6 +153,13 @@ namespace SituationOperatorTestProject
                     TestHelper.GetMockLogger<HasNotBoughtDefuseKitManager>(),
                     context)
                 );
+
+            managers.Add(
+                new MissedTradeKillManager(
+                    serviceProvider,
+                    TestHelper.GetMockLogger<MissedTradeKillManager>(),
+                    context)
+                );
             #endregion
 
             return managers;
