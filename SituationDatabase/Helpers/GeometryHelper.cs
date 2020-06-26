@@ -95,11 +95,11 @@ namespace SituationDatabase.Helpers
         /// Returns a vector on eyelevel, assuming <paramref name="position"/> is the groundlevel position of a player like in the MatchDb.
         /// </summary>
         /// <param name="position"></param>
-        /// <param name="isDucking"></param>
+        /// <param name="isDucking">If null, returns same position.</param>
         /// <returns></returns>
-        public static Vector3 GetEyeLevelVector(Vector3 position, bool isDucking = false)
+        public static Vector3 GetEyeLevelVector(Vector3 position, bool? isDucking = null)
         {
-            return new Vector3(position.X, position.Y, position.Z + (isDucking ? 46 : 64));
+            return isDucking == null ? position : new Vector3(position.X, position.Y, position.Z + ((bool)isDucking ? 46 : 64));
         }
 
         /// <summary>

@@ -28,7 +28,7 @@ namespace SituationDatabase.Extensions
         public const int THICK_SMOKE_DURATION = 15000;
 
         /// <summary>
-        /// Indicates whether a player
+        /// Indicates whether the direct connection between two positions was blocked by this smoke.
         /// </summary>
         /// <param name="smoke"></param>
         /// <param name="pos1">Position of the first object or player</param>
@@ -36,21 +36,22 @@ namespace SituationDatabase.Extensions
         /// <param name="time">If null, assumes that the smoke is still fully active at the time.</param>
         /// <param name="isDucking"></param>
         /// <returns></returns>
-        public static bool BlocksLineOfSight(this Smoke smoke, Vector3 pos1, Vector3 pos2, int? time = null, bool isDucking = false)
+        public static bool BlocksLineOfSight(this Smoke smoke, Vector3 pos1, Vector3 pos2, int? time = null, bool? isDucking = null)
         {
-            if(time != null)
+            if (time != null)
             {
-                if(time < smoke.Time || smoke.Time + THICK_SMOKE_DURATION < time)
+                if (time < smoke.Time || smoke.Time + THICK_SMOKE_DURATION < time)
                 {
                     return false;
                 }
             }
 
-            var pos1EyeLevel = GeometryHelper.GetEyeLevelVector(pos1, isDucking);
+            // Only get eye level of pos1, as it's enough to check if one position's eyes can see the other's feet
+            pos1 = GeometryHelper.GetEyeLevelVector(pos1, isDucking);
 
-            var closestPointToSmokeOnTrajectory = GeometryHelper.GetClosestPointOnLineSegment(pos1EyeLevel, pos2, smoke.DetonationPos);
+            var closestPointToSmokeOnTrajectory = GeometryHelper.GetClosestPointOnLineSegment(pos1, pos2, smoke.SmokeCenter());
 
-            var dist = (smoke.DetonationPos - closestPointToSmokeOnTrajectory).Length();
+            var dist = (smoke.SmokeCenter() - closestPointToSmokeOnTrajectory).Length();
 
             return dist <= SMOKE_RADIUS;
         }
@@ -82,7 +83,7 @@ namespace SituationDatabase.Extensions
                 return true;
             }
 
-            var closestPointToSmokeOnLineOfSight = GeometryHelper.GetClosestPointOnRay(posEyeLevel, view, smoke.DetonationPos);
+            var closestPointToSmokeOnLineOfSight = GeometryHelper.GetClosestPointOnRay(posEyeLevel, view, smoke.SmokeCenter());
 
             // If the player is not in the smoke, and the closest point to the smoke on the ray is not the player's position, then it must not be in front of him.
             var smokeIsInFrontOfPlayer = !playerIsInSmoke && (closestPointToSmokeOnLineOfSight - posEyeLevel).Length() > 0.01;
@@ -91,7 +92,7 @@ namespace SituationDatabase.Extensions
                 return false;
             }
 
-            var distBetweenSmokeAndLineOfSight = (smoke.DetonationPos - closestPointToSmokeOnLineOfSight).Length();
+            var distBetweenSmokeAndLineOfSight = (smoke.SmokeCenter() - closestPointToSmokeOnLineOfSight).Length();
             return distBetweenSmokeAndLineOfSight <= SMOKE_RADIUS;
         }
 
@@ -103,9 +104,14 @@ namespace SituationDatabase.Extensions
         /// <returns></returns>
         public static bool CoversPosition(this Smoke smoke, Vector3 pos)
         {
-            var dist = (smoke.DetonationPos - pos).Length();
+            var dist = (smoke.SmokeCenter() - pos).Length();
             return dist <= SMOKE_RADIUS;
 
+        }
+
+        public static Vector3 SmokeCenter(this Smoke smoke)
+        {
+            return new Vector3(smoke.DetonationPos.X, smoke.DetonationPos.Y, smoke.DetonationPos.Z + SMOKE_RADIUS);
         }
     }
 }
