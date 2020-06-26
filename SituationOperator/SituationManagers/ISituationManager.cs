@@ -80,7 +80,7 @@ namespace SituationOperator.SituationManagers
         /// <param name="minAnalysisDate"></param>
         /// <param name="maxAnalysisDate"></param>
         /// <returns></returns>
-        Task<Dictionary<int, SituationInfoByRank>> GetDistribution(DateTime? minAnalysisDate = null, DateTime? maxAnalysisDate = null);
+        Task<Dictionary<int, SituationInfoByRank>> GetDistribution(long? minMatchId = null, long? maxMatchId = null);
     }
 
     /// <summary>
@@ -163,26 +163,19 @@ namespace SituationOperator.SituationManagers
         }
 
         /// <inheritdoc/>
-        public async Task<Dictionary<int, SituationInfoByRank>> GetDistribution(DateTime? minAnalysisDate = null, DateTime? maxAnalysisDate = null)
+        public async Task<Dictionary<int, SituationInfoByRank>> GetDistribution(long? minMatchId = null, long? maxMatchId = null)
         {
             var table = TableSelector(_context);
-            var situationsQuery = table.Include(x => x.Match).AsQueryable();
 
-            var mysqlDateTimeFormat = "yyyy-MM-yy HH:MM:ss";
+            // Set minAnalysisDate to at least the matchdate from which on these situations were analyzed
+            var firstAnalyzedMatchId = await GetFirstAnalyzedMatchId();
+            minMatchId = Math.Max(minMatchId ?? 0, firstAnalyzedMatchId ?? 0);
 
-            var dateCondition = "";
+            var dateCondition = $" AND {minMatchId} <= playermatchstats.MatchId ";
 
-            // Default to the matchdate from which on situations were analyzed
-            //minAnalysisDate = minAnalysisDate != null ? minAnalysisDate : DateTime.Parse("2020-06-01");
-            if (minAnalysisDate != null)
+            if (maxMatchId != null)
             {
-                dateCondition += $" WHERE '{((DateTime)minAnalysisDate).ToString(mysqlDateTimeFormat)}' <= match.analysisdate ";
-            }
-
-            if (maxAnalysisDate != null)
-            {
-                //var leadingWord = minAnalysisDate != null ? "AND" : "WHERE";
-                dateCondition += $" AND match.analysisdate < '{((DateTime)maxAnalysisDate).ToString(mysqlDateTimeFormat)}' ";
+                dateCondition += $" AND playermatchstats.MatchId < {maxMatchId} ";
             }
 
             // Notes:
@@ -225,6 +218,18 @@ namespace SituationOperator.SituationManagers
             sw.Stop();
 
             return res;
+        }
+
+        private async Task<long?> GetFirstAnalyzedMatchId()
+        {
+            var table = TableSelector(_context);
+            var firstAnalyzedMatchId = await table
+                .Select(x => x.MatchId)
+                .Distinct()
+                .OrderBy(x=>x)
+                .FirstOrDefaultAsync();
+
+            return firstAnalyzedMatchId;
         }
 
         /// <summary>
