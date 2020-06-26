@@ -69,15 +69,19 @@ namespace SituationOperator.SituationManagers
                 // Compute values based on enemies flashed
                 var timeFlashedEnemies = 0;
                 var flashedEnemiesDeaths = 0;
-                foreach (var enemyFlashed in flasheds.Where(x => !x.TeamAttack))
+                foreach (var enemyFlashed in flasheds.Where(x => x.TeamAttack == false))
                 {
                     timeFlashedEnemies += enemyFlashed.TimeFlashed;
 
                     var flashVictimDeath = data.Death(enemyFlashed.VictimId, enemyFlashed.Round);
-                    if (flashVictimDeath != null && (flashVictimDeath.Time < flash.Time + enemyFlashed.TimeFlashed))
-                    {
-                        flashedEnemiesDeaths++;
-                    }
+                    if (flashVictimDeath == null)
+                        continue;
+                    if (flashVictimDeath.PlayerId == flash.PlayerId)
+                        continue;
+                    if (flash.Time + enemyFlashed.TimeFlashed <= flashVictimDeath.Time)
+                        continue;
+                    
+                    flashedEnemiesDeaths++;                    
                 }
 
                 if (flashedEnemiesDeaths == 0)
@@ -87,7 +91,7 @@ namespace SituationOperator.SituationManagers
                 var flashedTeammates = 0;
                 var timeFlashedTeam = 0;
                 var flashedTeammatesDeaths = 0;
-                foreach (var FlashAssisted in flasheds.Where(x => x.TeamAttack == false))
+                foreach (var FlashAssisted in flasheds.Where(x => x.TeamAttack))
                 {
                     if (FlashAssisted.AngleToCrosshair > MAX_ANGLE_TO_CROSSHAIR_TO_IGNORE_TEAMMATE)
                         continue;
