@@ -255,6 +255,7 @@ namespace SituationOperator
             services.AddTransient<ISituationManager, HighImpactRoundManager>();
             services.AddTransient<ISituationManager, MultiKillManager>();
             services.AddTransient<ISituationManager, TradeKillManager>();
+            services.AddTransient<ISituationManager, KillThroughSmokeManager>();
             services.AddTransient<ISituationManager, WallBangKillManager>();
             services.AddTransient<ISituationManager, CollateralKillManager>();
             services.AddTransient<ISituationManager, FlashAssistManager>();
