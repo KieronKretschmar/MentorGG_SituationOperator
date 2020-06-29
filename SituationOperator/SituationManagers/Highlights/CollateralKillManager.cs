@@ -63,6 +63,9 @@ namespace SituationOperator.SituationManagers
                     if(kills.Count() < 2)
                         continue;
 
+                    if (kills.Any(x => x.TeamKill == true))
+                        continue;
+
                     highlights.Add(new CollateralKill(kills));
                 }
                 
