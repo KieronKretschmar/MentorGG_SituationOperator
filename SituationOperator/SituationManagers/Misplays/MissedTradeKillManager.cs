@@ -64,7 +64,7 @@ namespace SituationOperator.SituationManagers
                 var misplays = new List<MissedTradeKill>();
                 foreach (var kill in data.KillList)
                 {
-                    var teammates = data.GetTeammateRoundStats(kill.VictimId, kill.Round)
+                    var teammates = data.GetTeamRoundStats(kill.VictimId, kill.Round)
                         .Where(x => x.PlayerId != kill.VictimId);
                     foreach (var player in teammates)
                     {

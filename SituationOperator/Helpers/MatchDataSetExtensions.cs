@@ -69,8 +69,7 @@ namespace SituationOperator.Helpers
         /// Helper method to return a player's teammates PlayerRoundStats in a given round, including his own. 
         /// </summary>
         /// <param name="data"></param>
-        /// <param name="steamId"></param>
-        /// <param name="round"></param>
+        /// <param name="playerEvent">Event identifying the player.</param>
         /// <returns></returns>
         public static List<PlayerRoundStats> GetTeamRoundStats(this MatchDataSet data, IPlayerEvent playerEvent)
         {
@@ -81,8 +80,8 @@ namespace SituationOperator.Helpers
         /// Helper method to return a player's teammates PlayerRoundStats in a given round, including his own. 
         /// </summary>
         /// <param name="data"></param>
-        /// <param name="steamId"></param>
         /// <param name="round"></param>
+        /// <param name="ctSide"></param>
         /// <returns></returns>
         public static List<PlayerRoundStats> GetTeamRoundStats(this MatchDataSet data, short round, bool ctSide)
         {
@@ -94,15 +93,13 @@ namespace SituationOperator.Helpers
         }
 
         /// <summary>
-        /// Helper method to return a player's teammates PlayerRoundStats in a given round. 
-        /// 
-        /// Preferably use override with IPlayerEvent param, if available, as it's more efficient.
+        /// Helper method to return a player's teammates PlayerRoundStats in a given round, including his own. 
         /// </summary>
         /// <param name="data"></param>
         /// <param name="steamId"></param>
         /// <param name="round"></param>
         /// <returns></returns>
-        public static List<PlayerRoundStats> GetTeammateRoundStats(this MatchDataSet data, long steamId, short round)
+        public static List<PlayerRoundStats> GetTeamRoundStats(this MatchDataSet data, long steamId, short round)
         {
             var playerTeam = data.PlayerMatchStatsList.Single(x => x.SteamId == steamId).Team;
 

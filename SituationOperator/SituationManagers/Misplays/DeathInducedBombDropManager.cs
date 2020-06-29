@@ -103,7 +103,7 @@ namespace SituationOperator.SituationManagers
                         continue;
 
                     // Get SteamIds of teammates who lived up until a few moments before the player died
-                    var involvedTeammates = data.GetTeammateRoundStats(bombDrop.PlayerId, bombDrop.Round)
+                    var involvedTeammates = data.GetTeamRoundStats(bombDrop.PlayerId, bombDrop.Round)
                         .Where(x => x.PlayerId != bombDrop.PlayerId)
                         .Select(x=> new
                         {

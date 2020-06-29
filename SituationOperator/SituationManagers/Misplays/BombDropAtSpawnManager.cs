@@ -137,7 +137,7 @@ namespace SituationOperator.SituationManagers
                     var pickerDidNotStopConditionHolds = true;
                     // start with a true value and set to false as soon as a player without detour was detected
                     var allTeammatesDetouredConditionHolds = true;
-                    var teammateSteamIds = data.GetTeammateRoundStats(bombDrop.PlayerId, bombDrop.Round)
+                    var teammateSteamIds = data.GetTeamRoundStats(bombDrop.PlayerId, bombDrop.Round)
                         .Select(x=>x.PlayerId)
                         .Where(x=>x != bombDrop.PlayerId);
                     foreach (var steamId in teammateSteamIds)
