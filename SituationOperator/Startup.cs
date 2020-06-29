@@ -316,15 +316,6 @@ namespace SituationOperator
             #region Prometheus
             app.UseMetricServer(METRICS_PORT);
             #endregion
-
-            #region Run Migrations
-            // migrate if this is not an inmemory database
-            if (services.GetRequiredService<SituationContext>().Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory" && IsDevelopment == false)
-            {
-                services.GetRequiredService<SituationContext>().Database.Migrate();
-            }
-            #endregion
-
         }
 
         /// <summary>
