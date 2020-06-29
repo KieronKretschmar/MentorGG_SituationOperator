@@ -59,13 +59,21 @@ namespace SituationOperator.SituationManagers
                 var highlights = new List<TradeKill>();
                 foreach (var roundKills in data.KillList.GroupBy(x=>x.Round))
                 {
-                    foreach (var kill in roundKills)
+                    foreach (var originalKill in roundKills)
                     {
-                        var tradeKill = roundKills.SingleOrDefault(x => x.VictimId == kill.PlayerId && x.Time <= kill.Time && kill.Time <= x.Time + MAX_TIME_BETWEEN_KILLS);
+                        if (originalKill.TeamKill == true)
+                            continue;
+
+                        var tradeKill = roundKills.SingleOrDefault(x => 
+                            x.VictimId == originalKill.PlayerId 
+                            && x.PlayerId != originalKill.VictimId
+                            && x.TeamKill == false
+                            && originalKill.Time < x.Time && x.Time <= originalKill.Time + MAX_TIME_BETWEEN_KILLS);
+
                         if (tradeKill == null)
                             continue;
 
-                        highlights.Add(new TradeKill(kill, tradeKill));
+                        highlights.Add(new TradeKill(originalKill, tradeKill));
                     }
                 }
 
