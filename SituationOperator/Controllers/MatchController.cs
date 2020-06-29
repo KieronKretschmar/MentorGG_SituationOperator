@@ -46,15 +46,13 @@ namespace SituationOperator.Controllers
         [HttpGet("{matchId}/situations")]
         public async Task<ActionResult<MatchSituationsModel>> MatchSituationsAsync(long matchId, SubscriptionType subscriptionType)
         {
-            var config = _subscriptionConfigLoader.Config.SettingsFromSubscriptionType(subscriptionType);
-
             var match = _context.Match.SingleOrDefault(x => x.MatchId == matchId);
             if (match == null)
             {
                 return NotFound();
             }
 
-            var model = new MatchSituationsModel(new MatchInfo(match, config.FirstAndLastRoundsForSituations));
+            var model = new MatchSituationsModel(new MatchInfo(match, subscriptionType));
 
             var managers = _managerProvider.GetManagers(Enums.SituationTypeCollection.ProductionAccessDefault);
 

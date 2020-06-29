@@ -47,8 +47,6 @@ namespace SituationOperator.Controllers
         [HttpGet("{situationType}/samples-by-matchcount")]
         public async Task<ActionResult<SituationDetailModel>> SituationSamplesAsync(SituationType situationType, int matchCount, SubscriptionType subscriptionType)
         {
-            var config = _subscriptionConfigLoader.Config.SettingsFromSubscriptionType(subscriptionType);
-
             var manager = _managerProvider.GetManager(situationType);
             if(matchCount > MAX_MATCHCOUNT)
             {
@@ -59,7 +57,7 @@ namespace SituationOperator.Controllers
             var matches = _context.Match
                 .OrderByDescending(x=>x.MatchId)
                 .Take(matchCount)
-                .Select(x => new MatchInfo(x, config.FirstAndLastRoundsForSituations))
+                .Select(x => new MatchInfo(x, subscriptionType))
                 .ToDictionary(x => x.MatchId, x => x);
 
             var situationCollection = await manager.LoadSituationCollectionAsync(matches.Keys.ToList());
@@ -86,7 +84,7 @@ namespace SituationOperator.Controllers
             List<ISituation> situations = new List<ISituation>();
             var matches = _context.Match
                 .Where(x=>matchIds.Contains(x.MatchId))
-                .Select(x => new MatchInfo(x, config.FirstAndLastRoundsForSituations))
+                .Select(x => new MatchInfo(x, subscriptionType))
                 .ToDictionary(x => x.MatchId, x => x);
 
             var situationCollection = await manager.LoadSituationCollectionAsync(matchIds);
