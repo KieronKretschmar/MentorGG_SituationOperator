@@ -61,7 +61,7 @@ namespace SituationOperator.SituationManagers
                             continue;
 
                         // Make sure this was not a CollateralKill
-                        if (roundKills.Any(x => x.PlayerId == kill.PlayerId && x.Time == kill.Time && x.Weapon == kill.Weapon))
+                        if (roundKills.Any(x => x.KillId != kill.KillId && x.PlayerId == kill.PlayerId && x.Time == kill.Time && x.Weapon == kill.Weapon))
                             continue;
 
                         highlights.Add(new WallBangKill(kill));
