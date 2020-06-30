@@ -107,7 +107,7 @@ namespace SituationOperator.SituationManagers
                     }
                 }
 
-                highlights.Add(new FlashAssist(flash, flashedTeammates, timeFlashedTeam, flashedTeammatesDeaths, timeFlashedEnemies));
+                highlights.Add(new FlashAssist(flash, flashedEnemiesDeaths, timeFlashedEnemies, timeFlashedTeam));
             }
 
             return highlights;

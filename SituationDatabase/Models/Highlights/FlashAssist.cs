@@ -28,17 +28,15 @@ namespace SituationDatabase.Models
         /// </summary>
         public FlashAssist(
             Flash flash,
-            int flashedTeammates,
-            int timeFlashedTeammates,
-            int flashedTeammatesDeaths,
-            int timeFlashedEnemies
+            int flashedEnemiesDeaths,
+            int timeFlashedEnemies,
+            int timeFlashedTeammates
             ) : base(flash)
         {
             GrenadeId = flash.GrenadeId;
-            FlashedTeammates = flashedTeammates;
-            TimeFlashedTeammates = timeFlashedTeammates;
-            FlashedTeammatesDeaths = flashedTeammatesDeaths;
+            FlashedEnemiesDeaths = flashedEnemiesDeaths;
             TimeFlashedEnemies = timeFlashedEnemies;
+            TimeFlashedTeammates = timeFlashedTeammates;
         }
 
 
@@ -46,10 +44,9 @@ namespace SituationDatabase.Models
         /// Id of the Grenade this Situation is based on.
         /// </summary>
         public long GrenadeId { get; set; }
-        public int FlashedTeammates { get; set; }
-        public int TimeFlashedTeammates { get; set; }
-        public int FlashedTeammatesDeaths { get; set; }
+        public int FlashedEnemiesDeaths { get; set; }
         public int TimeFlashedEnemies { get; set; }
+        public int TimeFlashedTeammates { get; set; }
     }
 
     #region Partial definitions of metadata tables for navigational properties
