@@ -24,9 +24,9 @@ namespace SituationOperator.SituationManagers
     public class KillThroughSmokeManager : SinglePlayerSituationManager<KillThroughSmoke>
     {
         /// <summary>
-        /// Maximum time passed between one kill and the next one to count towards the same situation.
+        /// Minimum time the smoke must have been on the ground to count as a highlight.
         /// </summary>
-        private const int MAX_TIME_BETWEEN_KILLS = 3141;
+        private const int MIN_TIME_SMOKE_ON_GROUND = 1000;
 
         private readonly IServiceProvider _sp;
         private readonly ILogger<KillThroughSmokeManager> _logger;
@@ -69,7 +69,23 @@ namespace SituationOperator.SituationManagers
                     var blockedBySmoke = false;
                     foreach (var smoke in data.SmokeList.Where(x => x.Round == kill.Round))
                     {
-                        blockedBySmoke = smoke.BlocksLineOfSight(kill.PlayerPos, kill.VictimPos, kill.Time);
+                        // ignore smokes that were on the ground for less than 2 seconds
+                        if (kill.Time < smoke.GetDetonationTime() + MIN_TIME_SMOKE_ON_GROUND)
+                            continue;
+
+                        var smokeBlocksLineOfSight = smoke.BlocksLineOfSight(kill.PlayerPos, kill.VictimPos, kill.Time);
+                        if (smokeBlocksLineOfSight)
+                        {
+                            // check if the smoke was "between" killer and victim by comparing distances 
+                            // to avoid situations where the victim peeked out of the smoke
+                            var killerToVictimDistance = (kill.PlayerPos - kill.VictimPos).Length();
+                            var killerToSmokeDistance = (kill.PlayerPos - smoke.DetonationPos).Length();
+                            if (killerToSmokeDistance < killerToVictimDistance)
+                            {
+                                blockedBySmoke = true;
+                            }
+                        }
+
                         if (blockedBySmoke)
                             break;
                     }
