@@ -73,7 +73,7 @@ namespace SituationOperator.SituationManagers
                 {
                     timeFlashedEnemies += enemyFlashed.TimeFlashed;
 
-                    var flashVictimDeath = data.Death(enemyFlashed.VictimId, enemyFlashed.Round);
+                    var flashVictimDeath = data.Death(enemyFlashed.VictimId, enemyFlashed.Round, flash.Time);
                     if (flashVictimDeath == null)
                         continue;
                     if (flashVictimDeath.PlayerId == flash.PlayerId)

@@ -217,13 +217,17 @@ namespace SituationOperator.Helpers
         /// </summary>
         /// <param name="data"></param>
         /// <param name="steamId"></param>
+        /// <param name="round"></param>
+        /// <param name="minTime">
+        /// Optional, to avoid bugs based on issue https://gitlab.com/mentorgg/csgo/demofileworker/-/issues/17
+        /// </param>
         /// <returns></returns>
-        public static Kill Death(this MatchDataSet data, long steamId, int round)
+        public static Kill Death(this MatchDataSet data, long steamId, int round, int minTime = 0)
         {
             // Use FirstOrDefault instead of SingleOrDefault because there is a known issue where a player apparently dies more than once in a single Round
             // Assuming the first death is the real one, and the second one is not because it might have happened after taking over a bot. 
             // For more info on the issue see https://gitlab.com/mentorgg/csgo/demofileworker/-/issues/12
-            var death = data.KillList.FirstOrDefault(x => x.VictimId == steamId && x.Round == round);
+            var death = data.KillList.FirstOrDefault(x => x.VictimId == steamId && x.Round == round && minTime <= x.Time);
             return death;
         }
 
