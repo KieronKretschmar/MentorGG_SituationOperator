@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SituationDatabase;
 using SituationDatabase.Enums;
+using SituationDatabase.Extensions;
 using SituationDatabase.Models;
 using SituationOperator.Enums;
 using SituationOperator.Helpers;
@@ -25,12 +26,22 @@ namespace SituationOperator.SituationManagers
         /// <summary>
         /// Minimium distance in meters between the player and the teammate at the point of the latter's death to count as a misplay.
         /// </summary>
-        private const double MAX_DISTANCE_TO_TEAMMATE = 3.5;
+        private const double MAX_DISTANCE_TO_TEAMMATE = 4;
+
+        /// <summary>
+        /// Minimium time the teammates' killer must have survived after the kill to count as a misplay.
+        /// </summary>
+        private const int MIN_TIME_KILLER_SURVIVED = 3141;
 
         /// <summary>
         /// Minimium time between the teammates' death and the player dealing or taking damage to count as a misplay.
         /// </summary>
         private const int MIN_TIME_NOT_FIGHTING = 3141;
+
+        /// <summary>
+        /// Maximum distance in meters between the player and the killer if the killer had a sniper and and the player did not to count as a misplay.
+        /// </summary>
+        private const double MAX_DISTANCE_TO_SNIPER_KILLER = 25;
 
         private readonly IServiceProvider _sp;
         private readonly ILogger<MissedTradeKillManager> _logger;
@@ -64,9 +75,28 @@ namespace SituationOperator.SituationManagers
                 var misplays = new List<MissedTradeKill>();
                 foreach (var kill in data.KillList)
                 {
-                    var teammates = data.GetTeamRoundStats(kill.VictimId, kill.Round)
-                        .Where(x => x.PlayerId != kill.VictimId);
-                    foreach (var player in teammates)
+                    if (kill.TeamKill == true)
+                        continue;
+
+                    // ignore grenadekills
+                    if (kill.Weapon.IsGun() == false)
+                        continue;
+
+                    // ignore long-distance kills with AWP, as they're hard to trade
+                    if (kill.Weapon.IsSniperRifle() && kill.Distance() > MAX_DISTANCE_TO_SNIPER_KILLER)
+                    {
+                        continue;
+                    }
+
+                    // ignore if the killer died shortly after
+                    var killerDeath = data.Death(kill.PlayerId, kill.Round, kill.Time);
+                    if (killerDeath != null && killerDeath.Time < kill.Time + MIN_TIME_KILLER_SURVIVED)
+                        continue;
+
+                    var aliveTeammates = data.GetTeamRoundStats(kill.VictimId, kill.Round)
+                        .Where(x => x.PlayerId != kill.VictimId)
+                        .Where(x=>data.IsAlive(x.PlayerId, x.Round, kill.Time));
+                    foreach (var player in aliveTeammates)
                     {
                         var distanceToVictim = data.LastPositionDistance(kill.VictimId, player.PlayerId, kill.Time);
                         if (distanceToVictim == null || distanceToVictim > UnitConverter.MetersToUnits(MAX_DISTANCE_TO_TEAMMATE))

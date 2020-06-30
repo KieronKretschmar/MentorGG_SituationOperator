@@ -14,5 +14,10 @@ namespace SituationDatabase.Extensions
             return kill.KillType == MatchEntities.Enums.KillType.CoverBodyShot
                 || kill.KillType == MatchEntities.Enums.KillType.CoverHeadShot;
         }
+
+        public static float Distance(this Kill kill)
+        {
+            return (kill.PlayerPos - kill.VictimPos).Length();
+        }
     }
 }
