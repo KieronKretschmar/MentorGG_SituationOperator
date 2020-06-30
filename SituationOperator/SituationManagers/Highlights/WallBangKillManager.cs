@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using SituationDatabase;
 using SituationDatabase.Enums;
 using SituationDatabase.Extensions;
+using SituationDatabase.Helpers;
 using SituationDatabase.Models;
 using SituationOperator.Enums;
 using SituationOperator.Helpers;
@@ -23,6 +24,14 @@ namespace SituationOperator.SituationManagers
     /// </summary>
     public class WallBangKillManager : SinglePlayerSituationManager<WallBangKill>
     {
+        /// <summary>
+        /// Minimum degree the enemy must have looked away from the killer to count as a highlight.
+        /// 
+        /// Used to avoid open fights that end with a bullet through a minor obstacle.
+        /// </summary>
+        private const int MIN_DEGREE_ENEMY_LOOKS_AWAY = 20;
+
+
         private readonly IServiceProvider _sp;
         private readonly ILogger<WallBangKillManager> _logger;
 
@@ -58,6 +67,11 @@ namespace SituationOperator.SituationManagers
                     foreach (var kill in roundKills)
                     {
                         if(kill.ThroughCover() == false)
+                            continue;
+
+                        var victimPos = data.LastPlayerPos(kill.VictimId, kill.Time);
+                        var angle = GeometryHelper.AngleFromViewDirection(victimPos.PlayerPos, victimPos.PlayerView, kill.PlayerPos);
+                        if (angle < MIN_DEGREE_ENEMY_LOOKS_AWAY)
                             continue;
 
                         // Make sure this was not a CollateralKill
@@ -102,27 +116,5 @@ namespace SituationOperator.SituationManagers
 
             return WallBangKills;
         }
-
-        ///// <summary>
-        ///// Returns a boolean that indicate whether the player did not let go of the trigger between these kills.
-        ///// </summary>
-        ///// <param name="kills"></param>
-        ///// <returns></returns>
-        //private bool SingleSpray(List<Kill> kills, EquipmentInfo firstWeaponInfo, int tolerance)
-        //{
-            
-        //    var weapon = kills.First().Weapon;
-        //    if (kills.Any(x => x.Weapon != weapon))
-        //    {
-        //        return false;
-        //    }
-
-        //    var cycleTime = firstWeaponInfo.CycleTime;
-        //    foreach (var kill in collection)
-        //    {
-
-        //    }
-
-        //}
     }
 }
