@@ -6,7 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.0] - 2020-06-17
 ### Added
-- Influencer SubscriptionType for raising allowedRounds 1->2 
+- Influencer SubscriptionType
+- More Situations
+
+### Changed
+- Free users get to see situations from first half, influencer from whole match
 
 ## [0.3.0] - 2020-06-12
 ### Added
