@@ -54,6 +54,8 @@ namespace SituationDatabase
         public virtual DbSet<SituationInfoByRank> RankDistribution { get; set; }
         #endregion
 
+        public virtual DbSet<UserFeedback> UserFeedback { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             #region MetaData
@@ -170,6 +172,12 @@ namespace SituationDatabase
             #region Keyless
             modelBuilder.Entity<SituationInfoByRank>().HasNoKey();
             #endregion
+
+            modelBuilder.Entity<UserFeedback>(entity =>
+            {
+                entity.HasKey(x => new { x.MatchId, x.SituationType, x.SituationId, x.SteamId });
+            });
+
         }
     }
 
