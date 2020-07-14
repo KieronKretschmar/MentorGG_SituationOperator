@@ -1,4 +1,5 @@
-﻿using SituationDatabase.Models;
+﻿using SituationDatabase.Enums;
+using SituationDatabase.Models;
 using SituationOperator.Enums;
 using System;
 using System.Collections.Generic;

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SituationDatabase;
+using SituationDatabase.Enums;
 using SituationOperator.Enums;
 using SituationOperator.Helpers;
 using SituationOperator.Helpers.SubscriptionConfig;

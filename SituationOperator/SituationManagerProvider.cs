@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using SituationDatabase;
+using SituationDatabase.Enums;
 using SituationOperator.Enums;
 using SituationOperator.SituationManagers;
 using System;

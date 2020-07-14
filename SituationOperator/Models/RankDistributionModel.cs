@@ -1,4 +1,5 @@
 ﻿using SituationDatabase;
+using SituationDatabase.Enums;
 using SituationDatabase.Models;
 using SituationOperator.Enums;
 using System;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SituationOperator.Enums
+namespace SituationDatabase.Enums
 {
     /// <summary>
     /// Identifies a type of situation, that is identified by a particular pattern.
