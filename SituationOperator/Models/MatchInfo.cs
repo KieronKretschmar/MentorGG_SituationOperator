@@ -1,4 +1,5 @@
 ﻿using SituationDatabase.Models;
+using SituationOperator.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,40 +23,28 @@ namespace SituationOperator.Models
         /// 
         /// </summary>
         /// <param name="matchEntity"></param>
-        /// <param name="nFirstAndLastRoundsPerHalf">Allowed rounds at start and end of each half. Set to -1 to allow Situations of every round.</param>
-        public MatchInfo(MatchEntity matchEntity, int nFirstAndLastRoundsPerHalf)
+        /// <param name="subscriptionType"></param>
+        public MatchInfo(MatchEntity matchEntity, SubscriptionType subscriptionType)
         {
             MatchId = matchEntity.MatchId;
             TotalRounds = matchEntity.Rounds;
             Map = matchEntity.Map;
             MatchDate = matchEntity.MatchDate;
-            AllowedRounds = nFirstAndLastRoundsPerHalf == -1
-                ? Enumerable.Range(1, matchEntity.Rounds).ToList()
-                : GetFirstAndLastRounds(matchEntity.Rounds, (int)nFirstAndLastRoundsPerHalf);
-        }
-
-        /// <summary>
-        /// Returns a list with the first and last <paramref name="allowedRounds"/> rounds of each half, excluding overtime.
-        /// Example: totalRounds=25 and allowedRounds=2 returns [1,2,14,15,16,17,24,25]
-        /// </summary>
-        /// <param name="totalRounds">Total number of rounds played in the match.</param>
-        /// <param name="allowedRounds"></param>
-        /// <returns></returns>
-        private List<int> GetFirstAndLastRounds(int totalRounds, int allowedRounds)
-        {
-            if ( allowedRounds < 1 || 7 < allowedRounds )
+            switch (subscriptionType)
             {
-                throw new ArgumentException($"Value must be between 1 and 7. Received: [ {allowedRounds} ].");
+                case SubscriptionType.Free:
+                    // Free users get first half
+                    AllowedRounds = Enumerable.Range(1, Math.Min(15, matchEntity.Rounds)).ToList();
+                    break;
+                case SubscriptionType.Premium:
+                case SubscriptionType.Ultimate:
+                case SubscriptionType.Influencer:
+                    // All other users get all rounds
+                    AllowedRounds = Enumerable.Range(1, matchEntity.Rounds).ToList();
+                    break;
+                default:
+                    break;
             }
-
-            var res = new List<int>();
-            res.AddRange(Enumerable.Range(1, allowedRounds));
-            res.AddRange(Enumerable.Range(Math.Min(15, totalRounds) + 1 - allowedRounds, allowedRounds));
-            res.AddRange(Enumerable.Range(Math.Min(15, totalRounds) + 1, allowedRounds));
-            res.AddRange(Enumerable.Range(Math.Min(30, totalRounds) + 1 - allowedRounds, allowedRounds));
-
-            return res.Where(x=> 1 <= x && x <= totalRounds).Distinct().ToList();
         }
-
     }
 }

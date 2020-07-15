@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SituationDatabase;
+using SituationDatabase.Enums;
 using SituationOperator.Enums;
 using SituationOperator.Helpers;
 using SituationOperator.Helpers.SubscriptionConfig;
@@ -43,12 +44,10 @@ namespace SituationOperator.Controllers
         [HttpGet("{steamId}/situations")]
         public async Task<ActionResult<PlayerSituationsModel>> PlayerSituationsAsync(long steamId, [CsvModelBinder] List<long> matchIds, SubscriptionType subscriptionType)
         {
-            var config = _subscriptionConfigLoader.Config.SettingsFromSubscriptionType(subscriptionType);
-
             var model = new PlayerSituationsModel();
             model.Matches = _context.Match
                 .Where(x => matchIds.Contains(x.MatchId))
-                .Select(x=>new MatchInfo(x, config.FirstAndLastRoundsForSituations))
+                .Select(x=>new MatchInfo(x, subscriptionType))
                 .ToDictionary(x => x.MatchId, x => x);
 
             var managers = _managerProvider.GetSinglePlayerManagers(Enums.SituationTypeCollection.ProductionAccessDefault);
@@ -89,8 +88,6 @@ namespace SituationOperator.Controllers
         [HttpGet("{steamId}/situations/{situationType}")]
         public async Task<ActionResult<SituationDetailModel>> SituationCollectionAsync(long steamId, SituationType situationType, [CsvModelBinder] List<long> matchIds, SubscriptionType subscriptionType)
         {
-            var config = _subscriptionConfigLoader.Config.SettingsFromSubscriptionType(subscriptionType);
-
             var manager = _managerProvider.GetSinglePlayerManager(situationType);
 
             if(manager == null)
@@ -100,7 +97,7 @@ namespace SituationOperator.Controllers
 
             var matches = _context.Match
                 .Where(x => matchIds.Contains(x.MatchId))
-                .Select(x => new MatchInfo(x, config.FirstAndLastRoundsForSituations))
+                .Select(x => new MatchInfo(x, subscriptionType))
                 .ToDictionary(x => x.MatchId, x => x);
 
             var situationCollection = await manager.GetSituationCollectionAsync(steamId, matchIds);

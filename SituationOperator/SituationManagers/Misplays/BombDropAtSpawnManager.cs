@@ -37,13 +37,6 @@ namespace SituationOperator.SituationManagers
         /// Minimum required time the bomb must have been on the ground after freezetime ended to count as a misplay.
         /// </summary>
         private const int MIN_TIME_ON_GROUND_AFTER_FREEZETIME_END = 1000;
-        
-        /// <summary>
-        /// Whether the player picking up the bomb may not have stood still before picking up the bomb to count as a misplay.
-        /// 
-        /// Reason: To prevent planned situations counting as a misplay where e.g. a Terrorist on de_mirage scopes through middle and then picks up the bomb.
-        /// </summary>
-        private const bool REQUIRE_PICKER_DID_NOT_STOP = false;
 
         /// <summary>
         /// List of maps on which this misplay will be detected, as on some maps it's okay to drop the bomb at spawn.
@@ -137,7 +130,7 @@ namespace SituationOperator.SituationManagers
                     var pickerDidNotStopConditionHolds = true;
                     // start with a true value and set to false as soon as a player without detour was detected
                     var allTeammatesDetouredConditionHolds = true;
-                    var teammateSteamIds = data.GetTeammateRoundStats(bombDrop.PlayerId, bombDrop.Round)
+                    var teammateSteamIds = data.GetTeamRoundStats(bombDrop.PlayerId, bombDrop.Round)
                         .Select(x=>x.PlayerId)
                         .Where(x=>x != bombDrop.PlayerId);
                     foreach (var steamId in teammateSteamIds)
@@ -147,16 +140,6 @@ namespace SituationOperator.SituationManagers
                             .Where(x => x.Round == bombDrop.Round && x.PlayerId == steamId)
                             .Where(x => bombDrop.Time <= x.Time && x.Time <= pickUp.Time)
                             .ToList();
-
-                        // Check REQUIRE_PICKER_DID_NOT_STOP if required
-                        if (REQUIRE_PICKER_DID_NOT_STOP && steamId == pickUp.PlayerId)
-                        {
-                            if(positionsWhileBombOnGround.Any(x => x.PlayerVelo.Length() == 0))
-                            {
-                                pickerDidNotStopConditionHolds = false;
-                                break;
-                            }
-                        }
 
                         // Add last known position before the bombDrop to list because frames can be missing in dataset if he stood still
                         positionsWhileBombOnGround.Insert(0, data.LastPlayerPos(steamId, bombDrop.Time));
@@ -174,12 +157,6 @@ namespace SituationOperator.SituationManagers
                             allTeammatesDetouredConditionHolds = false;
                             break;
                         }
-                    }
-
-                    if(REQUIRE_PICKER_DID_NOT_STOP && pickerDidNotStopConditionHolds == false)
-                    {
-                        _logger.LogDebug($"REQUIRE_PICKER_DID_NOT_STOP condition did not hold for bombdrop in match [ {bombDrop.MatchId} ] and round [ {bombDrop.Round} ]");
-                        continue;
                     }
 
                     if (allTeammatesDetouredConditionHolds == false)

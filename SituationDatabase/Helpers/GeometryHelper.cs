@@ -95,27 +95,27 @@ namespace SituationDatabase.Helpers
         /// Returns a vector on eyelevel, assuming <paramref name="position"/> is the groundlevel position of a player like in the MatchDb.
         /// </summary>
         /// <param name="position"></param>
-        /// <param name="isDucking"></param>
+        /// <param name="isDucking">If null, returns same position.</param>
         /// <returns></returns>
-        public static Vector3 GetEyeLevelVector(Vector3 position, bool isDucking = false)
+        public static Vector3 GetEyeLevelVector(Vector3 position, bool? isDucking = null)
         {
-            return new Vector3(position.X, position.Y, position.Z + (isDucking ? 46 : 64));
+            return isDucking == null ? position : new Vector3(position.X, position.Y, position.Z + ((bool)isDucking ? 46 : 64));
         }
 
         /// <summary>
         /// Determines the angle between the viewDirection of an object or player and a the line to another position.
         /// </summary>
-        /// <param name="position1">Position of the first object or player</param>
-        /// <param name="view1">Viewdirection of the first object or player</param>
+        /// <param name="playerPosition">Position of the first object or player</param>
+        /// <param name="playerView">Viewdirection of the first object or player</param>
         /// <param name="position2">Position of the second object or player</param>
         /// <returns>Angle theta in [0,360] in degrees </returns>
-        public static double AngleFromViewDirection(Vector3 position1, Vector2 view1, Vector3 position2)
+        public static double AngleFromViewDirection(Vector3 playerPosition, Vector2 playerView, Vector3 position2, bool playerIsDucking = false)
         {
             // Determine vector v1 from player to object
-            var positionToObject = position2 - position1;
+            var positionToObject = position2 - GetEyeLevelVector(playerPosition, isDucking: playerIsDucking);
 
             // Determine vector from position1 in direction of view1
-            var v2 = GetViewVectorFromView(view1);
+            var v2 = GetViewVectorFromView(playerView);
 
             // Determine the angle theta between v1 and v2, using 
             // cos(theta) = v1 DOT v2 / (Length(v1) * Length(v2))

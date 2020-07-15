@@ -24,6 +24,19 @@ namespace SituationDatabase
         public virtual DbSet<PlayerRoundEntity> PlayerRound { get; set; }
         #endregion
 
+        #region Highlights - SinglePlayer
+        public virtual DbSet<EffectiveHeGrenade> EffectiveHeGrenade { get; set; }
+        public virtual DbSet<KillWithOwnFlashAssist> KillWithOwnFlashAssist { get; set; }
+        public virtual DbSet<Clutch> Clutch { get; set; }
+        public virtual DbSet<HighImpactRound> HighImpactRound { get; set; }
+        public virtual DbSet<MultiKill> MultiKill { get; set; }
+        public virtual DbSet<TradeKill> TradeKill { get; set; }
+        public virtual DbSet<KillThroughSmoke> KillThroughSmoke { get; set; }
+        public virtual DbSet<WallBangKill> WallBangKill { get; set; }
+        public virtual DbSet<CollateralKill> CollateralKill { get; set; }
+        public virtual DbSet<FlashAssist> FlashAssist { get; set; }
+        #endregion
+
         #region Misplays - Singleplayer
         public virtual DbSet<SmokeFail> SmokeFail { get; set; }
         public virtual DbSet<DeathInducedBombDrop> DeathInducedBombDrop { get; set; }
@@ -34,15 +47,14 @@ namespace SituationDatabase
         public virtual DbSet<PushBeforeSmokeDetonated> PushBeforeSmokeDetonated { get; set; }
         public virtual DbSet<BombDropAtSpawn> BombDropAtSpawn { get; set; }
         public virtual DbSet<HasNotBoughtDefuseKit> HasNotBoughtDefuseKit { get; set; }
+        public virtual DbSet<MissedTradeKill> MissedTradeKill { get; set; }
         #endregion
 
-        #region Highlights - SinglePlayer
-        public virtual DbSet<EffectiveHeGrenade> EffectiveHeGrenade { get; set; }
-        public virtual DbSet<KillWithOwnFlashAssist> KillWithOwnFlashAssist { get; set; }
-        public virtual DbSet<Clutch> Clutch { get; set; }
-        public virtual DbSet<HighImpactRound> HighImpactRound { get; set; }
-        public virtual DbSet<MultiKill> MultiKill { get; set; }
+        #region Keyless
+        public virtual DbSet<SituationInfoByRank> RankDistribution { get; set; }
         #endregion
+
+        public virtual DbSet<UserFeedback> UserFeedback { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -131,6 +143,19 @@ namespace SituationDatabase
             });
             #endregion
 
+            #region Highlights - SinglePlayer
+            modelBuilder.AddSinglePlayerSituation<EffectiveHeGrenade>("EffectiveHeGrenade");
+            modelBuilder.AddSinglePlayerSituation<KillWithOwnFlashAssist>("KillWithOwnFlashAssist");
+            modelBuilder.AddSinglePlayerSituation<Clutch>("Clutch");
+            modelBuilder.AddSinglePlayerSituation<HighImpactRound>("HighImpactRound");
+            modelBuilder.AddSinglePlayerSituation<MultiKill>("MultiKill");
+            modelBuilder.AddSinglePlayerSituation<TradeKill>("TradeKill");
+            modelBuilder.AddSinglePlayerSituation<KillThroughSmoke>("KillThroughSmoke");
+            modelBuilder.AddSinglePlayerSituation<WallBangKill>("WallBangKill");
+            modelBuilder.AddSinglePlayerSituation<CollateralKill>("CollateralKill");
+            modelBuilder.AddSinglePlayerSituation<FlashAssist>("FlashAssist");
+            #endregion
+
             #region Misplays - SinglePlayer
             modelBuilder.AddSinglePlayerSituation<SmokeFail>("SmokeFail");
             modelBuilder.AddSinglePlayerSituation<DeathInducedBombDrop>("DeathInducedBombDrop");
@@ -141,15 +166,18 @@ namespace SituationDatabase
             modelBuilder.AddSinglePlayerSituation<PushBeforeSmokeDetonated>("PushBeforeSmokeDetonated");
             modelBuilder.AddSinglePlayerSituation<BombDropAtSpawn>("BombDropAtSpawn");
             modelBuilder.AddSinglePlayerSituation<HasNotBoughtDefuseKit>("HasNotBoughtDefuseKit");
+            modelBuilder.AddSinglePlayerSituation<MissedTradeKill>("MissedTradeKill");
             #endregion
 
-            #region Highlights - SinglePlayer
-            modelBuilder.AddSinglePlayerSituation<EffectiveHeGrenade>("EffectiveHeGrenade");
-            modelBuilder.AddSinglePlayerSituation<KillWithOwnFlashAssist>("KillWithOwnFlashAssist");
-            modelBuilder.AddSinglePlayerSituation<Clutch>("Clutch");
-            modelBuilder.AddSinglePlayerSituation<HighImpactRound>("HighImpactRound");
-            modelBuilder.AddSinglePlayerSituation<MultiKill>("MultiKill");
+            #region Keyless
+            modelBuilder.Entity<SituationInfoByRank>().HasNoKey();
             #endregion
+
+            modelBuilder.Entity<UserFeedback>(entity =>
+            {
+                entity.HasKey(x => new { x.MatchId, x.SituationType, x.SituationId, x.SteamId });
+            });
+
         }
     }
 

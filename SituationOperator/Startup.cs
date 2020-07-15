@@ -98,7 +98,15 @@ namespace SituationOperator
             if (MYSQL_CONNECTION_STRING != null)
             {
                 // Add context as Transient instead of Scoped, as Scoped lead to DI error and does not have advantages under non-http conditions
-                services.AddDbContext<SituationContext>(o => { o.UseMySql(MYSQL_CONNECTION_STRING); }, ServiceLifetime.Transient, ServiceLifetime.Transient);
+                services.AddDbContext<SituationContext>(o => 
+                {
+                    o.UseMySql(
+                        MYSQL_CONNECTION_STRING, 
+                        options => 
+                        {
+                            options.EnableRetryOnFailure();
+                        });
+                }, ServiceLifetime.Transient, ServiceLifetime.Transient);
             }
             else
             {
@@ -248,6 +256,18 @@ namespace SituationOperator
             #endregion
 
             #region SituationManagers
+            #region Highlights - Singleplayer
+            services.AddTransient<ISituationManager, EffectiveHeGrenadeManager>();
+            services.AddTransient<ISituationManager, KillWithOwnFlashAssistManager>();
+            services.AddTransient<ISituationManager, ClutchManager>();
+            services.AddTransient<ISituationManager, HighImpactRoundManager>();
+            services.AddTransient<ISituationManager, MultiKillManager>();
+            services.AddTransient<ISituationManager, TradeKillManager>();
+            services.AddTransient<ISituationManager, KillThroughSmokeManager>();
+            services.AddTransient<ISituationManager, WallBangKillManager>();
+            services.AddTransient<ISituationManager, CollateralKillManager>();
+            services.AddTransient<ISituationManager, FlashAssistManager>();
+            #endregion
 
             #region Misplays - Singleplayer
             services.AddTransient<ISituationManager, SmokeFailManager>();
@@ -259,16 +279,8 @@ namespace SituationOperator
             services.AddTransient<ISituationManager, PushBeforeSmokeDetonatedManager>();
             services.AddTransient<ISituationManager, BombDropAtSpawnManager>();
             services.AddTransient<ISituationManager, HasNotBoughtDefuseKitManager>();
+            services.AddTransient<ISituationManager, MissedTradeKillManager>();
             #endregion
-
-            #region Highlights - Singleplayer
-            services.AddTransient<ISituationManager, EffectiveHeGrenadeManager>();
-            services.AddTransient<ISituationManager, KillWithOwnFlashAssistManager>();
-            services.AddTransient<ISituationManager, ClutchManager>();
-            services.AddTransient<ISituationManager, HighImpactRoundManager>();
-            services.AddTransient<ISituationManager, MultiKillManager>();
-            #endregion
-
             #endregion
 
             #region Other worker services
@@ -312,15 +324,6 @@ namespace SituationOperator
             #region Prometheus
             app.UseMetricServer(METRICS_PORT);
             #endregion
-
-            #region Run Migrations
-            // migrate if this is not an inmemory database
-            if (services.GetRequiredService<SituationContext>().Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory" && IsDevelopment == false)
-            {
-                services.GetRequiredService<SituationContext>().Database.Migrate();
-            }
-            #endregion
-
         }
 
         /// <summary>

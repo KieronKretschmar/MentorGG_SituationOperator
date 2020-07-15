@@ -115,126 +115,12 @@ namespace SituationOperatorTestProject
 
             return serviceProviderHelper.ServiceProviderMock.Object;
         }
-
-        public static IEnumerable<ISituationManager> GetSituationManagers(SituationContext context)
-        {
-            var serviceProviderHelper = new MockServiceProviderHelper();
-            serviceProviderHelper.AddHelperServices();
-            var serviceProvider = serviceProviderHelper.ServiceProviderMock.Object;
-
-            var managers = new List<ISituationManager>();
-
-            // Add managers
-            // Code could possibly be simplified by requiring a uniform constructor for all ISituationManagers.
-            #region Misplays - Singleplayer
-            managers.Add(
-                new SmokeFailManager(
-                    serviceProvider,
-                    GetMockLogger<SmokeFailManager>(),
-                    context)
-                );
-
-            managers.Add(
-                new DeathInducedBombDropManager(
-                    serviceProvider,
-                    GetMockLogger<DeathInducedBombDropManager>(),
-                    context)
-                );
-
-            managers.Add(
-                new SelfFlashManager(
-                    serviceProvider,
-                    GetMockLogger<SelfFlashManager>(),
-                    context)
-                );
-
-            managers.Add(
-                new TeamFlashManager(
-                    serviceProvider,
-                    GetMockLogger<TeamFlashManager>(),
-                    context)
-                );
-
-            managers.Add(
-                new RifleFiredWhileMovingManager(
-                    serviceProvider,
-                    GetMockLogger<RifleFiredWhileMovingManager>(),
-                    context)
-                );
-
-            managers.Add(
-                new UnnecessaryReloadManager(
-                    serviceProvider,
-                    GetMockLogger<UnnecessaryReloadManager>(),
-                    context)
-                );
-
-            managers.Add(
-                new PushBeforeSmokeDetonatedManager(
-                    serviceProvider,
-                    GetMockLogger<PushBeforeSmokeDetonatedManager>(),
-                    context)
-                );
-
-            managers.Add(
-                new BombDropAtSpawnManager(
-                    serviceProvider,
-                    GetMockLogger<BombDropAtSpawnManager>(),
-                    context)
-                );
-
-            managers.Add(
-                new HasNotBoughtDefuseKitManager(
-                    serviceProvider,
-                    GetMockLogger<HasNotBoughtDefuseKitManager>(),
-                    context)
-                );
-            #endregion
-
-            #region Highlights - Singleplayer
-            managers.Add(
-                new EffectiveHeGrenadeManager(
-                    serviceProvider,
-                    GetMockLogger<EffectiveHeGrenadeManager>(),
-                    context)
-                );
-
-            managers.Add(
-                new KillWithOwnFlashAssistManager(
-                    GetMockLogger<KillWithOwnFlashAssistManager>(),
-                    context)
-                );
-
-            managers.Add(
-                new ClutchManager(
-                    serviceProvider,
-                    GetMockLogger<ClutchManager>(),
-                    context)
-                );
-
-            managers.Add(
-                new HighImpactRoundManager(
-                    serviceProvider,
-                    GetMockLogger<HighImpactRoundManager>(),
-                    context)
-                );
-
-            managers.Add(
-                new MultiKillManager(
-                    serviceProvider,
-                    GetMockLogger<MultiKillManager>(),
-                    context)
-                );
-            #endregion
-
-            return managers;
-        }
-
+        
         public static ISituationManagerProvider GetRealProvider(SituationContext context)
         {
             return new SituationManagerProvider(
                 GetMockLogger<SituationManagerProvider>(),
-                GetSituationManagers(context)
+                SituationManagerHelper.GetSituationManagers(context)
                 );
         }
 

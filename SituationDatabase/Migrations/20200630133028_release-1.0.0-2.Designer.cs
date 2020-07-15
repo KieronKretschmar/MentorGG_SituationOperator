@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SituationDatabase;
 
 namespace SituationDatabase.Migrations
 {
     [DbContext(typeof(SituationContext))]
-    partial class SituationContextModelSnapshot : ModelSnapshot
+    [Migration("20200630133028_release-1.0.0-2")]
+    partial class release1002
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -977,31 +979,6 @@ namespace SituationDatabase.Migrations
                     b.HasIndex("MatchId", "Round", "SteamId");
 
                     b.ToTable("UnnecessaryReload");
-                });
-
-            modelBuilder.Entity("SituationDatabase.Models.UserFeedback", b =>
-                {
-                    b.Property<long>("MatchId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("SituationType")
-                        .HasColumnType("int");
-
-                    b.Property<long>("SituationId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("SteamId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<bool>("IsPositive")
-                        .HasColumnType("tinyint(1)");
-
-                    b.HasKey("MatchId", "SituationType", "SituationId", "SteamId");
-
-                    b.ToTable("UserFeedback");
                 });
 
             modelBuilder.Entity("SituationDatabase.Models.WallBangKill", b =>
