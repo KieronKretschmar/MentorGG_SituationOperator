@@ -91,7 +91,7 @@ namespace SituationOperator.SituationManagers
                 if(potentialClutcher.IsCt == false)
                 {
                     // Apply MIN_TIME_BOMB_TIME_TICKING_LEFT condition
-                    var bombPlant = data.BombPlantList.SingleOrDefault(x => x.Round == round.Round);
+                    var bombPlant = data.BombPlantList.SingleOrDefault(x => x.Success && x.Round == round.Round);
                     if (bombPlant != null)
                     {
                         var tickingTimePassed = lastTeammatesDeath.Time - bombPlant.Time;
